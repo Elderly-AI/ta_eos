@@ -9,9 +9,10 @@ import (
 
 	"google.golang.org/grpc"
 
-	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto"
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
+	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
+	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
@@ -93,7 +94,7 @@ func main() {
 }
 
 func registerServices(s *grpc.Server) {
-	authRepo := AuthRepo{}
+	authRepo := db.AuthRepo{}
 	authDelivery := auth.NewAuthHandler(authRepo)
 	pbAuth.RegisterAuthServer(s, &authDelivery)
-}}
+}
