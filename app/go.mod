@@ -1,4 +1,4 @@
-module backend_ta_eos
+module github.com/Elderly-AI/ta_eos
 
 go 1.17
 

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package auth;
+
+import "google/api/annotations.proto";
+
+// Defines the import path that should be used to import the generated package
+// and the package name
+option go_package = "github.com/Elderly-AI/ta_eos/proto/auth;auth";
+
+// Here is the overall greeting service definition where we define all our endpoints
+service Auth {
+  rpc LoginHandler (LoginRequest) returns (User) {
+    option (google.api.http) = {
+      post: "/v1/auth/login"
+      body: "*"
+    };
+  }
+  rpc RegisterHandler (RegisterRequest) returns (SafeUser) {
+    option (google.api.http) = {
+      post: "/v1/auth/register"
+      body: "*"
+    };
+  }
+  rpc GetCurrentUser (EmptyRequest) returns (SafeUser) {
+    option (google.api.http) = {
+      get: "/v1/auth/get_current_user"
+    };
+  }
+
+}
+
+message User {
+  string name = 1;
+  string surname = 2;
+  string email = 3;
+  string password = 4;
+}
+
+message SafeUser {
+  string name = 1;
+  string surname = 2;
+  string email = 3;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message RegisterRequest {
+  User user = 1;
+}
+
+
+message EmptyRequest{
+
+}

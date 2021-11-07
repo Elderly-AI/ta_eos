@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/helloworld/helloworld.proto",
+    "title": "proto/auth.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "Greeter"
+      "name": "Auth"
     }
   ],
   "consumes": [
@@ -16,15 +16,36 @@
     "application/json"
   ],
   "paths": {
-    "/v1/example/echo": {
-      "post": {
-        "summary": "Sends a greeting",
-        "operationId": "Greeter_SayHello",
+    "/v1/auth/get_current_user": {
+      "get": {
+        "operationId": "Auth_GetCurrentUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/helloworldHelloReply"
+              "$ref": "#/definitions/authSafeUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "operationId": "Auth_LoginHandler",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authUser"
             }
           },
           "default": {
@@ -40,34 +61,98 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/helloworldHelloRequest"
+              "$ref": "#/definitions/authLoginRequest"
             }
           }
         ],
         "tags": [
-          "Greeter"
+          "Auth"
+        ]
+      }
+    },
+    "/v1/auth/register": {
+      "post": {
+        "operationId": "Auth_RegisterHandler",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authSafeUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authRegisterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Auth"
         ]
       }
     }
   },
   "definitions": {
-    "helloworldHelloReply": {
+    "authLoginRequest": {
       "type": "object",
       "properties": {
-        "message": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
           "type": "string"
         }
-      },
-      "title": "The response message containing the greetings"
+      }
     },
-    "helloworldHelloRequest": {
+    "authRegisterRequest": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/authUser"
+        }
+      }
+    },
+    "authSafeUser": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
         }
-      },
-      "title": "The request message containing the user's name"
+      }
+    },
+    "authUser": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "surname": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",
