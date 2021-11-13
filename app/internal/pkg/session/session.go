@@ -23,7 +23,9 @@ func CreateSessionStore(client *redis.Client) Store {
 func (s *Store) AuthMiddleware(ctx context.Context, request *http.Request) metadata.MD {
 	meta := make(map[string]string)
 	token, err := request.Cookie("auth_token")
-
+	if err != nil {
+		return nil
+	}
 	result, err := s.db.Get(ctx, token.Value).Result()
 	if err != nil {
 		glog.Warning("No auth")
