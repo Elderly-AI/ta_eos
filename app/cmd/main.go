@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/golang/glog"
 	"log"
 	"net"
 	"net/http"
@@ -60,17 +61,17 @@ type Options struct {
 
 func createInitialOptions() Options {
 	opts := Options{}
-	//db, err := sqlx.Connect("postgres", "user=postgres dbname=postgres sslmode=disable")
-	//if err != nil {
-	//	glog.Fatal(err)
-	//}
-	//rdb := redis.NewClient(&redis.Options{
-	//	Addr:     "localhost:6379",
-	//	Password: "", // no password set
-	//	DB:       0,  // use default DB
-	//})
-	//opts.PosgtresConnection = db
-	//opts.RedisConnection = rdb
+	db, err := sqlx.Connect("postgres", "user=postgres dbname=postgres sslmode=disable")
+	if err != nil {
+		glog.Fatal(err)
+	}
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+	opts.PosgtresConnection = db
+	opts.RedisConnection = rdb
 	return opts
 }
 
