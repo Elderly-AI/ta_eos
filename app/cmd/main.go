@@ -41,12 +41,8 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 }
 
 type Options struct {
-	// Addr is the address to listen
-	Addr string
-
-	// Mux is a list of options to be passed to the gRPC-Gateway multiplexer
-	Mux []gwruntime.ServeMuxOption
-
+	Addr               string
+	Mux                []gwruntime.ServeMuxOption
 	PosgtresConnection *sqlx.DB
 	RedisConnection    *redis.Client
 	SessionStore       *session.Store
@@ -59,12 +55,15 @@ func createInitialOptions() Options {
 		glog.Fatal(err)
 	}
 	opts.PosgtresConnection = db
+
 	opts.RedisConnection = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+
 	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, 2_678_400)
+	opts.Addr = "0.0.0.0:8080"
 	return opts
 }
 
@@ -77,7 +76,6 @@ func addMiddlewares(opts Options) Options {
 }
 
 func main() {
-
 	opts := createInitialOptions()
 	opts = addMiddlewares(opts)
 
@@ -99,7 +97,7 @@ func main() {
 	// This is where the gRPC-Gateway proxies the requests
 	conn, err := grpc.DialContext(
 		context.Background(),
-		"0.0.0.0:8080",
+		opts.Addr,
 		grpc.WithBlock(),
 		grpc.WithInsecure(),
 	)

@@ -12,7 +12,6 @@ require (
 
 require (
 	github.com/go-redis/redis/v8 v8.11.4
-	github.com/jinzhu/copier v0.3.2
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/lib/pq v1.10.4
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
