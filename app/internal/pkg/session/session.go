@@ -26,7 +26,7 @@ func CreateSessionStore(client *redis.Client, cookieTimeout int) *Store {
 
 func (s *Store) AuthMiddleware(ctx context.Context, request *http.Request) metadata.MD {
 	meta := make(map[string]string)
-	token, err := request.Cookie("auth_token")
+	token, err := request.Cookie("authToken")
 	if err != nil {
 		return nil
 	}
