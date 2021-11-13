@@ -1,4 +1,4 @@
 .idea
-.secrets.env
+.prod.env
 buf.lock
 main

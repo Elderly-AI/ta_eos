@@ -3,15 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/golang/glog"
 	"log"
 	"net"
 	"net/http"
 
 	"github.com/go-redis/redis/v8"
+	"github.com/golang/glog"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
 
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
@@ -58,16 +57,16 @@ type Options struct {
 
 func createInitialOptions() Options {
 	opts := Options{}
-	db, err := sqlx.Connect("postgres", "user=postgres dbname=postgres sslmode=disable")
+	database, err := sqlx.Connect("postgres", "host=postgres user=postgres password=postgres dbname=postgres sslmode=disable")
 	if err != nil {
 		glog.Fatal(err)
 	}
-	opts.PosgtresConnection = db
+	opts.PosgtresConnection = database
 
 	opts.RedisConnection = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Addr:     "redis:6379",
+		Password: "",
+		DB:       0,
 	})
 
 	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, 2_678_400)
