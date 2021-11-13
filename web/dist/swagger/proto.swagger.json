@@ -1,12 +1,15 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/auth.proto",
+    "title": "proto/auth/auth.proto",
     "version": "version not set"
   },
   "tags": [
     {
       "name": "Auth"
+    },
+    {
+      "name": "Calculations"
     }
   ],
   "consumes": [
@@ -101,9 +104,56 @@
           "Auth"
         ]
       }
+    },
+    "/api/v1/calculations/direct_code/left_shift": {
+      "post": {
+        "operationId": "Calculations_DirectCodeLeftShiftCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLeftShiftResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLeftShiftRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Calculations"
+        ]
+      }
     }
   },
   "definitions": {
+    "DirectCodeLeftShiftResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
     "authLoginRequest": {
       "type": "object",
       "properties": {
@@ -151,6 +201,28 @@
         },
         "password": {
           "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeLeftShiftRequest": {
+      "type": "object",
+      "properties": {
+        "multiplier": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeLeftShiftResponse": {
+      "type": "object",
+      "properties": {
+        "Sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DirectCodeLeftShiftResponseStep"
+          }
         }
       }
     },
