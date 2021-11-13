@@ -6,17 +6,21 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
 	"github.com/nu7hatch/gouuid"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net/http"
+	"time"
 )
 
 type Store struct {
-	db *redis.Client
+	db            *redis.Client
+	cookieTimeout int
 }
 
-func CreateSessionStore(client *redis.Client) Store {
-	return Store{
-		db: client,
+func CreateSessionStore(client *redis.Client, cookieTimeout int) *Store {
+	return &Store{
+		db:            client,
+		cookieTimeout: cookieTimeout,
 	}
 }
 
@@ -39,17 +43,36 @@ func (s *Store) AuthMiddleware(ctx context.Context, request *http.Request) metad
 func GetUserIdFromContext(c context.Context) *string {
 	md, ok := metadata.FromIncomingContext(c)
 	if ok {
-		userID := md["user_id"][0]
-		if userID != "" {
-			return &userID
+		userID := md["user_id"]
+		if len(userID) > 0 && userID[0] != "" {
+			return &userID[0]
 		}
 	}
 	glog.Warning("not ok or bad userID")
 	return nil
 }
 
-func GetSetCookieHeader() string {
-	id, _ := uuid.NewV4()
-	return fmt.Sprintf("auth_token=%s; Max-Age=2592000", id.String())
+func (s *Store) SetCookieGRPC(c context.Context, userId string) error {
+	authToken, _ := uuid.NewV4()
+	strToken := authToken.String()
 
+	err := s.db.Set(c, strToken, userId, time.Duration(s.cookieTimeout)).Err()
+	if err != nil {
+		return err
+	}
+	return s.SetAuthCookieHeaderGrpc(c, strToken)
+}
+
+func (s *Store) GetSetCookieHeader(authToken string) string {
+	return fmt.Sprintf("authToken=%s; Max-Age=%d", authToken, s.cookieTimeout)
+}
+
+func (s *Store) SetAuthCookieHeaderGrpc(c context.Context, authToken string) error {
+	cookie := s.GetSetCookieHeader(authToken)
+	header := metadata.Pairs("Set-Cookie", cookie)
+	err := grpc.SetHeader(c, header)
+	if err != nil {
+		return err
+	}
+	return nil
 }

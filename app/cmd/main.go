@@ -23,7 +23,7 @@ import (
 
 func registerServices(opts Options, s *grpc.Server) {
 	authRepo := db.CreateRepo(opts.PosgtresConnection)
-	authDelivery := auth.NewAuthHandler(authRepo)
+	authDelivery := auth.NewAuthHandler(authRepo, opts.SessionStore)
 	pbAuth.RegisterAuthServer(s, &authDelivery)
 }
 
@@ -49,6 +49,7 @@ type Options struct {
 
 	PosgtresConnection *sqlx.DB
 	RedisConnection    *redis.Client
+	SessionStore       *session.Store
 }
 
 func createInitialOptions() Options {
@@ -57,23 +58,26 @@ func createInitialOptions() Options {
 	if err != nil {
 		glog.Fatal(err)
 	}
-	rdb := redis.NewClient(&redis.Options{
+	opts.PosgtresConnection = db
+	opts.RedisConnection = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	opts.PosgtresConnection = db
-	opts.RedisConnection = rdb
+	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, 2_678_400)
 	return opts
 }
 
 func addMiddlewares(opts Options) Options {
-	st := session.CreateSessionStore(opts.RedisConnection)
-	opts.Mux = []gwruntime.ServeMuxOption{gwruntime.WithMetadata(st.AuthMiddleware)}
+	opts.Mux = []gwruntime.ServeMuxOption{
+		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
+		gwruntime.WithOutgoingHeaderMatcher(EmptyHeaderMatcherFunc),
+	}
 	return opts
 }
 
 func main() {
+
 	opts := createInitialOptions()
 	opts = addMiddlewares(opts)
 
@@ -119,4 +123,8 @@ func main() {
 
 	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
 	log.Fatalln(gwServer.ListenAndServe())
+}
+
+func EmptyHeaderMatcherFunc(s string) (string, bool) {
+	return s, true
 }
