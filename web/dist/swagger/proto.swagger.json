@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/auth/get_current_user": {
+    "/api/v1/auth/get_current_user": {
       "get": {
         "operationId": "Auth_GetCurrentUser",
         "responses": {
@@ -38,7 +38,7 @@
         ]
       }
     },
-    "/v1/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "operationId": "Auth_LoginHandler",
         "responses": {
@@ -70,7 +70,7 @@
         ]
       }
     },
-    "/v1/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "operationId": "Auth_RegisterHandler",
         "responses": {
