@@ -12,19 +12,19 @@ option go_package = "github.com/Elderly-AI/ta_eos/proto/auth;auth";
 service Auth {
   rpc LoginHandler (LoginRequest) returns (User) {
     option (google.api.http) = {
-      post: "/v1/auth/login"
+      post: "/api/v1/auth/login"
       body: "*"
     };
   }
   rpc RegisterHandler (RegisterRequest) returns (SafeUser) {
     option (google.api.http) = {
-      post: "/v1/auth/register"
+      post: "/api/v1/auth/register"
       body: "*"
     };
   }
   rpc GetCurrentUser (EmptyRequest) returns (SafeUser) {
     option (google.api.http) = {
-      get: "/v1/auth/get_current_user"
+      get: "/api/v1/auth/get_current_user"
     };
   }
 

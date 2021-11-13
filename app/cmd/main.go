@@ -15,7 +15,7 @@ import (
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
 	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
-	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto"
+	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 	"github.com/go-redis/redis/v8"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	_ "github.com/lib/pq"
