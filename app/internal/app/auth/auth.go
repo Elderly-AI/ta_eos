@@ -50,6 +50,7 @@ func (s *Server) RegisterHandler(c context.Context, in *pb.RegisterRequest) (*pb
 		glog.Errorln(validationErr)
 		return nil, &errors.ApiError{Err: fmt.Sprintf("Incorrect user %s", in.User)}
 	}
+
 	userId, err := s.repo.AddUser(c, cleanUsr)
 	cleanUsr.UserID = userId
 	if err != nil {

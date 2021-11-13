@@ -55,8 +55,9 @@ func GetUserIdFromContext(c context.Context) *string {
 func (s *Store) SetCookieGRPC(c context.Context, userId string) error {
 	authToken, _ := uuid.NewV4()
 	strToken := authToken.String()
+	expired := time.Duration(s.cookieTimeout) * time.Second
 
-	err := s.db.Set(c, strToken, userId, time.Duration(s.cookieTimeout)).Err()
+	err := s.db.Set(c, strToken, userId, expired).Err()
 	if err != nil {
 		return err
 	}
