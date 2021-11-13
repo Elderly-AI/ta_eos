@@ -11,8 +11,9 @@ require (
 )
 
 require (
-	github.com/golang/protobuf v1.5.2 // indirect
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
-	golang.org/x/sys v0.0.0-20210510120138-977fb7262007 // indirect
-	golang.org/x/text v0.3.5 // indirect
+	github.com/go-redis/redis/v8 v8.11.4
+	github.com/jinzhu/copier v0.3.2
+	github.com/jmoiron/sqlx v1.3.4
+	github.com/lib/pq v1.10.4
+	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d
 )

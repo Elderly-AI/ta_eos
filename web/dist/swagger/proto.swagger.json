@@ -112,6 +112,9 @@
         },
         "password": {
           "type": "string"
+        },
+        "group": {
+          "type": "string"
         }
       }
     },
@@ -129,10 +132,10 @@
         "name": {
           "type": "string"
         },
-        "surname": {
+        "email": {
           "type": "string"
         },
-        "email": {
+        "group": {
           "type": "string"
         }
       }
@@ -143,10 +146,10 @@
         "name": {
           "type": "string"
         },
-        "surname": {
+        "email": {
           "type": "string"
         },
-        "email": {
+        "group": {
           "type": "string"
         },
         "password": {

@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
+	"github.com/golang/glog"
+	"github.com/jmoiron/sqlx"
 	"log"
 	"net"
 	"net/http"
@@ -13,8 +16,16 @@ import (
 	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
 	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto"
+	"github.com/go-redis/redis/v8"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	_ "github.com/lib/pq"
 )
+
+func registerServices(opts Options, s *grpc.Server) {
+	authRepo := db.CreateRepo(opts.PosgtresConnection)
+	authDelivery := auth.NewAuthHandler(authRepo)
+	pbAuth.RegisterAuthServer(s, &authDelivery)
+}
 
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
 	mux := gwruntime.NewServeMux(opts...)
@@ -33,22 +44,39 @@ type Options struct {
 	// Addr is the address to listen
 	Addr string
 
-	// OpenAPIDir is a path to a directory from which the server
-	// serves OpenAPI specs.
-	OpenAPIDir string
-
 	// Mux is a list of options to be passed to the gRPC-Gateway multiplexer
 	Mux []gwruntime.ServeMuxOption
+
+	PosgtresConnection *sqlx.DB
+	RedisConnection    *redis.Client
 }
 
 func createInitialOptions() Options {
 	opts := Options{}
-	opts.Mux = []gwruntime.ServeMuxOption{gwruntime.WithMetadata(common.AuthMiddleware)}
+	db, err := sqlx.Connect("postgres", "user=postgres dbname=postgres sslmode=disable")
+	if err != nil {
+		glog.Fatal(err)
+	}
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+	opts.PosgtresConnection = db
+	opts.RedisConnection = rdb
+	return opts
+}
+
+func addMiddlewares(opts Options) Options {
+	st := session.CreateSessionStore(opts.RedisConnection)
+	opts.Mux = []gwruntime.ServeMuxOption{gwruntime.WithMetadata(st.AuthMiddleware)}
 	return opts
 }
 
 func main() {
 	opts := createInitialOptions()
+	opts = addMiddlewares(opts)
+
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
@@ -60,7 +88,7 @@ func main() {
 		log.Fatalln(s.Serve(lis))
 	}()
 
-	registerServices(s)
+	registerServices(opts, s)
 	// register services
 
 	// Create a client connection to the gRPC server we just started
@@ -91,10 +119,4 @@ func main() {
 
 	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
 	log.Fatalln(gwServer.ListenAndServe())
-}
-
-func registerServices(s *grpc.Server) {
-	authRepo := db.AuthRepo{}
-	authDelivery := auth.NewAuthHandler(authRepo)
-	pbAuth.RegisterAuthServer(s, &authDelivery)
 }
