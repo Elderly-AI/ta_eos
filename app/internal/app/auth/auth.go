@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc/metadata"
 
 	auth2 "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
-	pb "github.com/Elderly-AI/ta_eos/pkg/proto"
+	pb "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 )
 
 type AuthServer struct {
