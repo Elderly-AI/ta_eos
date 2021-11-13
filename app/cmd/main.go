@@ -3,28 +3,34 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
-	"github.com/golang/glog"
-	"github.com/jmoiron/sqlx"
 	"log"
 	"net"
 	"net/http"
 
+	"github.com/go-redis/redis/v8"
+	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"google.golang.org/grpc"
 
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
+	calc "github.com/Elderly-AI/ta_eos/internal/app/calculations"
+	calcFacade "github.com/Elderly-AI/ta_eos/internal/pkg/calculations"
 	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
 	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
-	"github.com/go-redis/redis/v8"
-	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	_ "github.com/lib/pq"
+	pbCalculations "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
 )
 
 func registerServices(opts Options, s *grpc.Server) {
 	authRepo := db.CreateRepo(opts.PosgtresConnection)
 	authDelivery := auth.NewAuthHandler(authRepo)
 	pbAuth.RegisterAuthServer(s, &authDelivery)
+
+	calculationsFacade := calcFacade.New()
+	calculationsDelivery := calc.NewCalculationsHandler(calculationsFacade)
+	pbCalculations.RegisterCalculationsServer(s, &calculationsDelivery)
 }
 
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
@@ -32,6 +38,7 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 
 	for _, f := range []func(ctx context.Context, mux *gwruntime.ServeMux, conn *grpc.ClientConn) error{
 		pbAuth.RegisterAuthHandler,
+		pbCalculations.RegisterCalculationsHandler,
 	} {
 		if err := f(ctx, mux, conn); err != nil {
 			return nil, err
@@ -53,17 +60,17 @@ type Options struct {
 
 func createInitialOptions() Options {
 	opts := Options{}
-	db, err := sqlx.Connect("postgres", "user=postgres dbname=postgres sslmode=disable")
-	if err != nil {
-		glog.Fatal(err)
-	}
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
-	opts.PosgtresConnection = db
-	opts.RedisConnection = rdb
+	//db, err := sqlx.Connect("postgres", "user=postgres dbname=postgres sslmode=disable")
+	//if err != nil {
+	//	glog.Fatal(err)
+	//}
+	//rdb := redis.NewClient(&redis.Options{
+	//	Addr:     "localhost:6379",
+	//	Password: "", // no password set
+	//	DB:       0,  // use default DB
+	//})
+	//opts.PosgtresConnection = db
+	//opts.RedisConnection = rdb
 	return opts
 }
 

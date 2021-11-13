@@ -13,6 +13,12 @@ service Calculations {
       body: "*"
     };
   }
+  rpc DirectCodeRightShiftCalculation (DirectCodeRightShiftRequest) returns (DirectCodeRightShiftResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/calculations/direct_code/right_shift"
+      body: "*"
+    };
+  }
 }
 
 message DirectCodeLeftShiftRequest {
@@ -21,6 +27,20 @@ message DirectCodeLeftShiftRequest {
 }
 
 message DirectCodeLeftShiftResponse {
+  message Step {
+    uint64 index = 1;
+    string bin_dec = 2;
+    string value = 3;
+  }
+  repeated Step Sequence = 1;
+}
+
+message DirectCodeRightShiftRequest {
+  string multiplier = 1;
+  string factor = 2;
+}
+
+message DirectCodeRightShiftResponse {
   message Step {
     uint64 index = 1;
     string bin_dec = 2;
