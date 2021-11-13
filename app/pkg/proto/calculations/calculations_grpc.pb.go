@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CalculationsClient interface {
 	DirectCodeLeftShiftCalculation(ctx context.Context, in *DirectCodeLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeLeftShiftResponse, error)
+	DirectCodeRightShiftCalculation(ctx context.Context, in *DirectCodeRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeRightShiftResponse, error)
 }
 
 type calculationsClient struct {
@@ -38,11 +39,21 @@ func (c *calculationsClient) DirectCodeLeftShiftCalculation(ctx context.Context,
 	return out, nil
 }
 
+func (c *calculationsClient) DirectCodeRightShiftCalculation(ctx context.Context, in *DirectCodeRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeRightShiftResponse, error) {
+	out := new(DirectCodeRightShiftResponse)
+	err := c.cc.Invoke(ctx, "/calculations.Calculations/DirectCodeRightShiftCalculation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CalculationsServer is the server API for Calculations service.
 // All implementations must embed UnimplementedCalculationsServer
 // for forward compatibility
 type CalculationsServer interface {
 	DirectCodeLeftShiftCalculation(context.Context, *DirectCodeLeftShiftRequest) (*DirectCodeLeftShiftResponse, error)
+	DirectCodeRightShiftCalculation(context.Context, *DirectCodeRightShiftRequest) (*DirectCodeRightShiftResponse, error)
 	mustEmbedUnimplementedCalculationsServer()
 }
 
@@ -52,6 +63,9 @@ type UnimplementedCalculationsServer struct {
 
 func (UnimplementedCalculationsServer) DirectCodeLeftShiftCalculation(context.Context, *DirectCodeLeftShiftRequest) (*DirectCodeLeftShiftResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeLeftShiftCalculation not implemented")
+}
+func (UnimplementedCalculationsServer) DirectCodeRightShiftCalculation(context.Context, *DirectCodeRightShiftRequest) (*DirectCodeRightShiftResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeRightShiftCalculation not implemented")
 }
 func (UnimplementedCalculationsServer) mustEmbedUnimplementedCalculationsServer() {}
 
@@ -84,6 +98,24 @@ func _Calculations_DirectCodeLeftShiftCalculation_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Calculations_DirectCodeRightShiftCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectCodeRightShiftRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculationsServer).DirectCodeRightShiftCalculation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calculations.Calculations/DirectCodeRightShiftCalculation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculationsServer).DirectCodeRightShiftCalculation(ctx, req.(*DirectCodeRightShiftRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Calculations_ServiceDesc is the grpc.ServiceDesc for Calculations service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -94,6 +126,10 @@ var Calculations_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DirectCodeLeftShiftCalculation",
 			Handler:    _Calculations_DirectCodeLeftShiftCalculation_Handler,
+		},
+		{
+			MethodName: "DirectCodeRightShiftCalculation",
+			Handler:    _Calculations_DirectCodeRightShiftCalculation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

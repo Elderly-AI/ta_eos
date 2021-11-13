@@ -136,24 +136,41 @@
           "Calculations"
         ]
       }
+    },
+    "/api/v1/calculations/direct_code/right_shift": {
+      "post": {
+        "operationId": "Calculations_DirectCodeRightShiftCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeRightShiftResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeRightShiftRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Calculations"
+        ]
+      }
     }
   },
   "definitions": {
-    "DirectCodeLeftShiftResponseStep": {
-      "type": "object",
-      "properties": {
-        "index": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "binDec": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string"
-        }
-      }
-    },
     "authLoginRequest": {
       "type": "object",
       "properties": {
@@ -224,8 +241,60 @@
         "Sequence": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/DirectCodeLeftShiftResponseStep"
+            "$ref": "#/definitions/calculationsDirectCodeLeftShiftResponseStep"
           }
+        }
+      }
+    },
+    "calculationsDirectCodeLeftShiftResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeRightShiftRequest": {
+      "type": "object",
+      "properties": {
+        "multiplier": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeRightShiftResponse": {
+      "type": "object",
+      "properties": {
+        "Sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/calculationsDirectCodeRightShiftResponseStep"
+          }
+        }
+      }
+    },
+    "calculationsDirectCodeRightShiftResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
         }
       }
     },

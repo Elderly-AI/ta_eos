@@ -3,12 +3,21 @@ package auth
 import (
 	"context"
 	"fmt"
+
 	authRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/errors"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/models"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 	"github.com/golang/glog"
+	"github.com/jinzhu/copier"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
+
+	authRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/models"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
+	pb "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 )
 
 type Server struct {
@@ -46,8 +55,7 @@ func (s *Server) RegisterHandler(c context.Context, in *pb.RegisterRequest) (*pb
 	userId, err := s.repo.AddUser(c, cleanUsr)
 	cleanUsr.UserID = userId
 	if err != nil {
-		glog.Errorln(err)
-		return nil, &errors.ApiError{Err: fmt.Sprintf("Incorrect user dont have all required fields: %s", in.User)}
+		return err
 	}
 	err = s.sessionRepo.SetCookieGRPC(c, userId)
 	return models.UserToGRPCSafeUser(cleanUsr), err
