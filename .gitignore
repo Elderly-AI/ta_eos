@@ -2,3 +2,6 @@
 .prod.env
 buf.lock
 main
+
+web/dev/node_modules
+web/dev/build
