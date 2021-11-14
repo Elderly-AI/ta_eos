@@ -79,7 +79,7 @@ const Registration = () => {
       };
     }
 
-    fetch(URLS.registr, {
+    fetch(URLS.register, {
       method: "POST",
       headers,
       body: JSON.stringify(fd),
