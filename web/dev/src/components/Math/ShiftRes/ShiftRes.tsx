@@ -1,8 +1,8 @@
-import classes from "*.module.css";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
-import { IMath, IResult } from "../Math";
+import { IMath } from "../Math";
 import {Fade} from "@material-ui/core";
+import {calcDirectCodeResponseStep} from "../../../data/Models";
 
 // Забивка пустого места при сдвиге
 const placeholder = 9;
@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface ShiftResProps {
   input: IMath;
-  res: IResult[];
+  res: calcDirectCodeResponseStep[];
   tmpRow: number;
 }
 
@@ -79,7 +79,7 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
     setSavedInput(input);
   }, [res]);
 
-  const getRow = (count: number | null, val: string, num: number, arr: IResult[]) => {
+  const getRow = (count: string, val: string, num: number) => {
     const res: any[] = [];
 
     if (count === null) {
@@ -89,19 +89,19 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
 
     val.split('').map((bit) => res.push(<div className={classes.bit}>{bit}</div>));
 
-    for (let i = 0; i < (count as number); i++) {
+    for (let i = 0; i < (count as unknown as number); i++) {
       res.push(<span className={classes.space}>{placeholder}</span>);
     }
 
     return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><span className={classes.number}>{res}</span></Fade>;
   };
 
-  const getShowBit = (row: IResult, num: number) => {
-    if (row.bin_dec !== null) {
+  const getShowBit = (row: calcDirectCodeResponseStep, num: number) => {
+    if (row.binDec !== null) {
       return (
           <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>
             <p className={classes.row}>
-              b<sub className={classes.down}>{row.index}</sub>={row.bin_dec}
+              b<sub className={classes.down}>{row.index}</sub>={row.binDec}
             </p>
           </Fade>
       );
@@ -121,8 +121,8 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
         <p className={`${classes.row} ${classes.lastRow}`}>
           {savedInput.secondVal}
         </p>
-        {res.map((row, num, arr) => (
-          <p className={classes.row}>{getRow(row.index, row.value, num, arr)}</p>
+        {res.map((row, num) => (
+          <p className={classes.row}>{getRow(row.index, row.value, num)}</p>
         ))}
       </div>
       <div className={classes.showPow}>

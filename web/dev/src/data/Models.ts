@@ -21,34 +21,19 @@ export type authSafeUser = {
     group: string
 }
 
-export type calculationsDirectCodeLeftShiftRequest = {
+export type calcDirectCodeRequest = {
     multiplier: string,
     factor: string
 }
 
-export type calculationsDirectCodeLeftShiftResponseStep = {
+export type calcDirectCodeResponseStep = {
     index: string,
     binDec: string,
     value: string
 }
 
-export type calculationsDirectCodeLeftShiftResponse = {
-    Sequence: calculationsDirectCodeLeftShiftResponseStep
-}
-
-export type calculationsDirectCodeRightShiftRequest = {
-    multiplier: string,
-    factor: string
-}
-
-export type calculationsDirectCodeRightShiftResponse = {
-    Sequence: calculationsDirectCodeRightShiftResponseStep
-}
-
-export type calculationsDirectCodeRightShiftResponseStep = {
-    index: string,
-    binDec: string,
-    value: string
+export type calcDirectCodeResponse = {
+    Sequence: calcDirectCodeResponseStep[]
 }
 
 export type protobufAny = {

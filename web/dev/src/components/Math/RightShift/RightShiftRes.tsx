@@ -1,8 +1,8 @@
-import classes from "*.module.css";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
-import { IMath, IResult } from "../Math";
+import { IMath } from "../Math";
 import {Fade} from "@material-ui/core";
+import {calcDirectCodeResponseStep} from "../../../data/Models";
 
 // Забивка пустого места при сдвиге
 const placeholder = 9;
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface RightShiftResProps {
     input: IMath;
-    res: IResult[];
+    res: calcDirectCodeResponseStep[];
     tmpRow: number;
 }
 
@@ -83,7 +83,7 @@ const RightShiftRes = ({ res, input, tmpRow }: RightShiftResProps) => {
         setSavedInput(input);
     }, [res]);
 
-    const getRow = (count: number | null, val: string, num: number, arr: IResult[]) => {
+    const getRow = (count: string, val: string, num: number, arr: calcDirectCodeResponseStep[]) => {
         const res: any[] = [];
 
         if (num > 0 && val.length < arr[num-1].value.length) {
@@ -97,12 +97,12 @@ const RightShiftRes = ({ res, input, tmpRow }: RightShiftResProps) => {
         return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><span className={classes.number}>{res}</span></Fade>;
     };
 
-    const getShowBit = (row: IResult, num: number) => {
-        if (row.bin_dec !== null) {
+    const getShowBit = (row: calcDirectCodeResponseStep, num: number) => {
+        if (row.binDec !== null) {
             return (
                 <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>
             <p className={classes.row}>
-                b<sub className={classes.down}>{res.length - (row.index as number) - 1}</sub>={row.bin_dec}
+                b<sub className={classes.down}>{res.length - (row.index as unknown as number) - 1}</sub>={row.binDec}
                 </p>
                 </Fade>
         );
@@ -134,11 +134,11 @@ const RightShiftRes = ({ res, input, tmpRow }: RightShiftResProps) => {
             <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
         <p className={classes.row}>
             A·2<sup className={classes.up}>{`-${row.index}`}</sup>&nbsp;b
-            <sub className={classes.superDown}>{res.length - (row.index as number) - 1}</sub>
+            <sub className={classes.superDown}>{res.length - (row.index as unknown as number) - 1}</sub>
         </p>
         </Fade>
     ) : (
-        ""
+        ''
     )
     )}
     </div>

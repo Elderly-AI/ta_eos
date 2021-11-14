@@ -4,10 +4,8 @@ import {
     authRegisterRequest,
     authSafeUser,
     authUser,
-    calculationsDirectCodeLeftShiftRequest,
-    calculationsDirectCodeLeftShiftResponse,
-    calculationsDirectCodeRightShiftRequest,
-    calculationsDirectCodeRightShiftResponse
+    calcDirectCodeRequest,
+    calcDirectCodeResponse,
 } from "./Models";
 
 
@@ -19,24 +17,24 @@ class DataService implements ApiInterface {
             .then((dat: authSafeUser) => dat)
     }
 
-    async directCodeLeftShift(data: calculationsDirectCodeLeftShiftRequest): Promise<calculationsDirectCodeLeftShiftResponse> {
+    async directCodeLeftShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
         return await fetch(api.math.directCode.leftShift, {
             method: "POST",
             body: JSON.stringify(data)
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: calculationsDirectCodeLeftShiftResponse) => dat)
+            .then((dat: calcDirectCodeResponse) => dat)
     }
 
-    async directCodeRightShift(data: calculationsDirectCodeRightShiftRequest): Promise<calculationsDirectCodeRightShiftResponse> {
+    async directCodeRightShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
         return await fetch(api.math.directCode.rightShift, {
             method: "POST",
             body: JSON.stringify(data)
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: calculationsDirectCodeRightShiftResponse) => dat)
+            .then((dat: calcDirectCodeResponse) => dat)
     }
 
     async login(data: authLoginRequest): Promise<authUser> {

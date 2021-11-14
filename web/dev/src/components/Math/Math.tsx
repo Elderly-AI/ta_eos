@@ -4,15 +4,16 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
-import { blue, grey, red } from "@material-ui/core/colors";
+import { blue, grey } from "@material-ui/core/colors";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import React, { ChangeEvent, useState } from "react";
 import CustomInput, { CustomInputProps } from "../CustomInput/CustomInput";
 import Res from "./ShiftRes";
 import RightRes from "./RightShift";
-import api from "../../data/api";
 import TextField from "@material-ui/core/TextField";
+import DataService from "../../data/DataService";
+import {calcDirectCodeResponse, calcDirectCodeResponseStep} from "../../data/Models";
 
 const useStyles = makeStyles((theme: Theme) => ({
   header: {
@@ -105,15 +106,6 @@ export interface IMath {
 }
 
 /**
- * Интерфейс для результата примера (если на беке он меняется, то надо поменять и тут)
- */
-export interface IResult {
-  index: number | null;
-  bin_dec: string | null;
-  value: string;
-}
-
-/**
  * Перечисляем инпуты чтобы их потом отриосвать
  */
 const inputs: CustomInputProps[] = [
@@ -131,7 +123,7 @@ const Math = () => {
   const classes = useStyles();
   const [multiply, setMultiply] = useState<string>(multiplyEnum.NONE);
   const [math, setMath] = useState<IMath>({} as IMath);
-  const [res, setRes] = useState<IResult[]>({} as IResult[]);
+  const [res, setRes] = useState<calcDirectCodeResponseStep[]>([]);
   const [tmpPoint, setPoint] = useState<number>(-1);
   const [tmpStep, setStep] = useState<string>(""); // тут лежит то, что написано в инпуте текущего шага
   const [stepValue, setStepValue] = useState<string>(""); // а тут последнее значение, которое юзер отправил в ответ (чтобы поле error у инпута работало)
@@ -147,34 +139,26 @@ const Math = () => {
     setMath({ ...math, [e?.target?.id]: e.target.value });
   };
 
+  const setDirectCodeResult = ({Sequence}: calcDirectCodeResponse) => {
+    if (Sequence && Sequence.length > 0) {
+      setStepValue(Sequence[0].value as string);
+    }
+    setPoint(0);
+    setRes(Sequence);
+  }
+
   const sendDirectShiftLeft = () => {
     const { firstVal, secondVal } = math;
-    const newUrl: string = api.math.directCode.leftShift(firstVal, secondVal);
 
-    fetch(newUrl)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json && json.length > 0) {
-          setStepValue(json[0].value as string);
-        }
-        setPoint(0);
-        setRes(json);
-      });
+    DataService.directCodeLeftShift({multiplier: firstVal, factor: secondVal})
+        .then((data) => setDirectCodeResult(data));
   };
 
   const sendDirectShiftRight = () => {
     const { firstVal, secondVal } = math;
-    const newUrl: string = api.math.directCode.rightShift(firstVal, secondVal);
 
-    fetch(newUrl)
-        .then((res) => res.json())
-        .then((json) => {
-          if (json && json.length > 0) {
-            setStepValue(json[0].value as string);
-          }
-          setPoint(0);
-          setRes(json);
-        });
+    DataService.directCodeRightShift({multiplier: firstVal, factor: secondVal})
+        .then((data) => setDirectCodeResult(data));
   };
 
   /**
