@@ -11,7 +11,7 @@ import React, { ChangeEvent, useState } from "react";
 import CustomInput, { CustomInputProps } from "../CustomInput/CustomInput";
 import Res from "./ShiftRes";
 import RightRes from "./RightShift";
-import Api from "../../data/api";
+import api from "../../data/api";
 import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -149,7 +149,7 @@ const Math = () => {
 
   const sendDirectShiftLeft = () => {
     const { firstVal, secondVal } = math;
-    const newUrl: string = Api.math.directCode.leftShift(firstVal, secondVal);
+    const newUrl: string = api.math.directCode.leftShift(firstVal, secondVal);
 
     fetch(newUrl)
       .then((res) => res.json())
@@ -164,7 +164,7 @@ const Math = () => {
 
   const sendDirectShiftRight = () => {
     const { firstVal, secondVal } = math;
-    const newUrl: string = Api.math.directCode.rightShift(firstVal, secondVal);
+    const newUrl: string = api.math.directCode.rightShift(firstVal, secondVal);
 
     fetch(newUrl)
         .then((res) => res.json())

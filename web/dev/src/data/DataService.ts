@@ -1,35 +1,64 @@
-import {ApiInterface} from "./api";
+import api, {ApiInterface} from "./api";
 import {
-    authLoginRequest, authRegisterRequest,
-    authSafeUser, authUser,
+    authLoginRequest,
+    authRegisterRequest,
+    authSafeUser,
+    authUser,
     calculationsDirectCodeLeftShiftRequest,
     calculationsDirectCodeLeftShiftResponse,
-    calculationsDirectCodeRightShiftRequest, calculationsDirectCodeRightShiftResponse
+    calculationsDirectCodeRightShiftRequest,
+    calculationsDirectCodeRightShiftResponse
 } from "./Models";
 
 
 class DataService implements ApiInterface {
-    curUser(): authSafeUser {
-        return undefined;
+    async curUser(): Promise<authSafeUser> {
+        return await fetch(api.curUser)
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: authSafeUser) => dat)
     }
 
-    directCodeLeftShift(data: calculationsDirectCodeLeftShiftRequest): calculationsDirectCodeLeftShiftResponse {
-        return undefined;
+    async directCodeLeftShift(data: calculationsDirectCodeLeftShiftRequest): Promise<calculationsDirectCodeLeftShiftResponse> {
+        return await fetch(api.math.directCode.leftShift, {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: calculationsDirectCodeLeftShiftResponse) => dat)
     }
 
-    directCodeRightShift(data: calculationsDirectCodeRightShiftRequest): calculationsDirectCodeRightShiftResponse {
-        return undefined;
+    async directCodeRightShift(data: calculationsDirectCodeRightShiftRequest): Promise<calculationsDirectCodeRightShiftResponse> {
+        return await fetch(api.math.directCode.rightShift, {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: calculationsDirectCodeRightShiftResponse) => dat)
     }
 
-    login(data: authLoginRequest): authUser {
-        return undefined;
+    async login(data: authLoginRequest): Promise<authUser> {
+        return await fetch(api.login, {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: authUser) => dat)
     }
 
-    register(data: authRegisterRequest): authSafeUser {
-        return undefined;
+    async register(data: authRegisterRequest): Promise<authSafeUser> {
+        return await fetch(api.register, {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: authSafeUser) => dat)
     }
 }
-
 
 
 export default new DataService();

@@ -10,7 +10,7 @@ import {
 
 const port: string = "3000"; // ???
 
-const Api = {
+const api = {
   inside: "api/v1/users/", // ???
   curUser: "api/v1/auth/get_current_user",
   register: `api/v1/auth/register`,
@@ -24,11 +24,11 @@ const Api = {
 };
 
 export interface ApiInterface {
-  curUser: () => authSafeUser,
-  login: (data: authLoginRequest) => authUser,
-  register: (data: authRegisterRequest) => authSafeUser,
-  directCodeLeftShift: (data: calculationsDirectCodeLeftShiftRequest) => calculationsDirectCodeLeftShiftResponse,
-  directCodeRightShift: (data: calculationsDirectCodeRightShiftRequest) => calculationsDirectCodeRightShiftResponse
+  curUser: () => Promise<authSafeUser>,
+  login: (data: authLoginRequest) => Promise<authUser>,
+  register: (data: authRegisterRequest) => Promise<authSafeUser>,
+  directCodeLeftShift: (data: calculationsDirectCodeLeftShiftRequest) => Promise<calculationsDirectCodeLeftShiftResponse>,
+  directCodeRightShift: (data: calculationsDirectCodeRightShiftRequest) => Promise<calculationsDirectCodeRightShiftResponse>
 }
 
-export default Api;
+export default api;

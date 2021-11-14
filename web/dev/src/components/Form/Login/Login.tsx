@@ -1,7 +1,7 @@
 import Button from "@material-ui/core/Button";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { ChangeEvent, useState } from "react";
-import Api from "../../../data/api";
+import api from "../../../data/api";
 import { useActions } from "../../../hooks/useActions";
 import { IAuth } from "../../../Redux/reducers/auth";
 import CustomInput, { CustomInputProps } from "../../CustomInput/CustomInput";
@@ -71,7 +71,7 @@ const Login = () => {
     }
 
     e.preventDefault();
-    fetch(Api.login, {
+    fetch(api.login, {
       method: "POST",
       headers,
       body: JSON.stringify(fd),
