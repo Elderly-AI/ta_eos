@@ -3,9 +3,8 @@ import {
   authRegisterRequest,
   authSafeUser,
   authUser,
-  calculationsDirectCodeLeftShiftRequest,
-  calculationsDirectCodeLeftShiftResponse,
-  calculationsDirectCodeRightShiftRequest, calculationsDirectCodeRightShiftResponse
+  calcDirectCodeRequest,
+  calcDirectCodeResponse,
 } from "./Models";
 
 const port: string = "3000"; // ???
@@ -27,8 +26,8 @@ export interface ApiInterface {
   curUser: () => Promise<authSafeUser>,
   login: (data: authLoginRequest) => Promise<authUser>,
   register: (data: authRegisterRequest) => Promise<authSafeUser>,
-  directCodeLeftShift: (data: calculationsDirectCodeLeftShiftRequest) => Promise<calculationsDirectCodeLeftShiftResponse>,
-  directCodeRightShift: (data: calculationsDirectCodeRightShiftRequest) => Promise<calculationsDirectCodeRightShiftResponse>
+  directCodeLeftShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>,
+  directCodeRightShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>
 }
 
 export default api;
