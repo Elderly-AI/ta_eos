@@ -1,63 +1,53 @@
-enum authAPI {
-  AUTHORIZE = "AUTHORIZE",
-  LOG_OUT = "LOG_OUT",
-  INSIDE = "INSIDE",
-  NOT_INSIDE = "NOT_INSIDE",
-}
+import {authLoginRequest, authSafeUser} from "../../data/Models";
 
-export interface IAuth {
-  id: number | null;
-  email: string;
-  name: string;
-  surname: string;
-  patronymic: string;
-  group: string;
-  token: string | null;
-  inside?: boolean;
+enum authAPI {
+    AUTHORIZE = "AUTHORIZE",
+    LOG_OUT = "LOG_OUT",
+    INSIDE = "INSIDE",
+    NOT_INSIDE = "NOT_INSIDE",
 }
 
 const initialState: null = null;
 
 type authorize = {
-  type: authAPI.AUTHORIZE;
-  payload: IAuth;
+    type: authAPI.AUTHORIZE;
+    payload: authLoginRequest;
 };
 
 type logOut = {
-  type: authAPI.LOG_OUT;
+    type: authAPI.LOG_OUT;
 };
 
 type inside = {
-  type: authAPI.INSIDE;
-  payload: IAuth;
-  inside: boolean;
+    type: authAPI.INSIDE;
+    payload: authSafeUser;
+    inside: boolean;
 };
 
 type notInside = {
-  type: authAPI.NOT_INSIDE;
+    type: authAPI.NOT_INSIDE;
 };
 
 export type authAction = authorize | logOut | inside | notInside;
 
 export default function auth(
-  state: IAuth | null = initialState,
-  action: authAction
+    state: authSafeUser | null = initialState,
+    action: authAction
 ) {
-  switch (action.type) {
-    case authAPI.AUTHORIZE:
-      return action.payload;
-    case authAPI.LOG_OUT:
-      return null;
-    case authAPI.INSIDE:
-      return {
-        ...action.payload,
-        inside: action.inside,
-      } as IAuth;
-    case authAPI.NOT_INSIDE:
-      return null;
-    default:
-      return state;
-  }
+    switch (action.type) {
+        case authAPI.AUTHORIZE:
+            return action.payload;
+        case authAPI.LOG_OUT:
+            return null;
+        case authAPI.INSIDE:
+            return {
+                ...action.payload,
+            } as authSafeUser;
+        case authAPI.NOT_INSIDE:
+            return null;
+        default:
+            return state;
+    }
 }
 
-export { authAPI };
+export {authAPI};
