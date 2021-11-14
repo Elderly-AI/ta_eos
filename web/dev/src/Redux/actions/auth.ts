@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import URLS from "../../config/urls";
+import Api from "../../data/api";
 import { authAction, authAPI, IAuth } from "../reducers/auth";
 
 export const authorize = (user: IAuth) => {
@@ -18,7 +18,7 @@ export const logOut = () => {
 export const authInside = () => {
   console.log('authInside >>> ')
   return (dispatch: Dispatch<authAction>) => {
-    fetch(URLS.inside).then((res) => {
+    fetch(Api.inside).then((res) => {
       if (res.status !== 400) {
         res.json().then((json) => {
           json.token = document.cookie.split("=")[1];

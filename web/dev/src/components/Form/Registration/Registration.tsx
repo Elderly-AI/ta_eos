@@ -1,7 +1,7 @@
 import Button from "@material-ui/core/Button";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { ChangeEvent, useState } from "react";
-import URLS from "../../../config/urls";
+import Api from "../../../data/api";
 import { IRegistrationForm } from "../Form";
 import CustomInput from "../../CustomInput";
 import { CustomInputProps } from "../../CustomInput/CustomInput";
@@ -79,7 +79,7 @@ const Registration = () => {
       };
     }
 
-    fetch(URLS.register, {
+    fetch(Api.register, {
       method: "POST",
       headers,
       body: JSON.stringify(fd),
