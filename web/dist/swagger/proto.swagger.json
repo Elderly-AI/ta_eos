@@ -1,12 +1,15 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/auth.proto",
+    "title": "proto/auth/auth.proto",
     "version": "version not set"
   },
   "tags": [
     {
       "name": "Auth"
+    },
+    {
+      "name": "Calculations"
     }
   ],
   "consumes": [
@@ -16,7 +19,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/auth/get_current_user": {
+    "/api/v1/auth/get_current_user": {
       "get": {
         "operationId": "Auth_GetCurrentUser",
         "responses": {
@@ -38,7 +41,7 @@
         ]
       }
     },
-    "/v1/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "operationId": "Auth_LoginHandler",
         "responses": {
@@ -70,7 +73,7 @@
         ]
       }
     },
-    "/v1/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "operationId": "Auth_RegisterHandler",
         "responses": {
@@ -101,6 +104,70 @@
           "Auth"
         ]
       }
+    },
+    "/api/v1/calculations/direct_code/left_shift": {
+      "post": {
+        "operationId": "Calculations_DirectCodeLeftShiftCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLeftShiftResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLeftShiftRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Calculations"
+        ]
+      }
+    },
+    "/api/v1/calculations/direct_code/right_shift": {
+      "post": {
+        "operationId": "Calculations_DirectCodeRightShiftCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeRightShiftResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeRightShiftRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Calculations"
+        ]
+      }
     }
   },
   "definitions": {
@@ -111,6 +178,9 @@
           "type": "string"
         },
         "password": {
+          "type": "string"
+        },
+        "group": {
           "type": "string"
         }
       }
@@ -129,10 +199,10 @@
         "name": {
           "type": "string"
         },
-        "surname": {
+        "email": {
           "type": "string"
         },
-        "email": {
+        "group": {
           "type": "string"
         }
       }
@@ -143,13 +213,87 @@
         "name": {
           "type": "string"
         },
-        "surname": {
-          "type": "string"
-        },
         "email": {
           "type": "string"
         },
+        "group": {
+          "type": "string"
+        },
         "password": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeLeftShiftRequest": {
+      "type": "object",
+      "properties": {
+        "multiplier": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeLeftShiftResponse": {
+      "type": "object",
+      "properties": {
+        "Sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/calculationsDirectCodeLeftShiftResponseStep"
+          }
+        }
+      }
+    },
+    "calculationsDirectCodeLeftShiftResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeRightShiftRequest": {
+      "type": "object",
+      "properties": {
+        "multiplier": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeRightShiftResponse": {
+      "type": "object",
+      "properties": {
+        "Sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/calculationsDirectCodeRightShiftResponseStep"
+          }
+        }
+      }
+    },
+    "calculationsDirectCodeRightShiftResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
           "type": "string"
         }
       }

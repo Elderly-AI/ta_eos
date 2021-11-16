@@ -1,21 +1,11 @@
 package middleware
 
 import (
-	"context"
 	"net/http"
 	"strings"
 
 	"github.com/golang/glog"
-	"google.golang.org/grpc/metadata"
 )
-
-func AuthMiddleware(ctx context.Context, request *http.Request) metadata.MD {
-	testValue := make(map[string]string)
-	testValue["test2"] = "res2"
-	md := metadata.New(testValue)
-	ctx = context.WithValue(ctx, "test2", "val2")
-	return md
-}
 
 func AllowCORS(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

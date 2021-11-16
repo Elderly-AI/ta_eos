@@ -1,11 +1,25 @@
+FROM node:14.18.1-alpine as frontend_builder
+
+WORKDIR /code
+
+COPY dev/yarn.lock .
+COPY dev/package.json .
+COPY dist/swagger /dist/swagger
+RUN yarn install
+
+COPY dev/public public
+COPY dev/src src
+COPY dev/tsconfig.json .
+RUN yarn build
+
+
 FROM nginx:alpine
 
-COPY . .
+COPY .nginx .nginx
 
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY /dist/app /usr/share/nginx/html
-COPY /dist/swagger /usr/share/nginx/swagger
+COPY --from=frontend_builder /dist /usr/share/nginx/html/
 COPY /.nginx/nginx.conf /etc/nginx/nginx.conf
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

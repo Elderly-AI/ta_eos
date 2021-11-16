@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package calculations;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/Elderly-AI/ta_eos/proto/calculations;calculations";
+
+service Calculations {
+  rpc DirectCodeLeftShiftCalculation (DirectCodeLeftShiftRequest) returns (DirectCodeLeftShiftResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/calculations/direct_code/left_shift"
+      body: "*"
+    };
+  }
+  rpc DirectCodeRightShiftCalculation (DirectCodeRightShiftRequest) returns (DirectCodeRightShiftResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/calculations/direct_code/right_shift"
+      body: "*"
+    };
+  }
+}
+
+message DirectCodeLeftShiftRequest {
+  string multiplier = 1;
+  string factor = 2;
+}
+
+message DirectCodeLeftShiftResponse {
+  message Step {
+    uint64 index = 1;
+    string bin_dec = 2;
+    string value = 3;
+  }
+  repeated Step Sequence = 1;
+}
+
+message DirectCodeRightShiftRequest {
+  string multiplier = 1;
+  string factor = 2;
+}
+
+message DirectCodeRightShiftResponse {
+  message Step {
+    uint64 index = 1;
+    string bin_dec = 2;
+    string value = 3;
+  }
+  repeated Step Sequence = 1;
+}

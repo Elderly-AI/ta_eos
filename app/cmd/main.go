@@ -7,20 +7,38 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/go-redis/redis/v8"
+	"github.com/golang/glog"
+	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/jmoiron/sqlx"
 	"google.golang.org/grpc"
 
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
+	calc "github.com/Elderly-AI/ta_eos/internal/app/calculations"
+	calcFacade "github.com/Elderly-AI/ta_eos/internal/pkg/calculations"
 	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
-	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto"
-	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
+	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
+	pbCalculations "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
 )
+
+func registerServices(opts Options, s *grpc.Server) {
+	authRepo := db.CreateRepo(opts.PosgtresConnection)
+	authDelivery := auth.NewAuthHandler(authRepo, opts.SessionStore)
+	pbAuth.RegisterAuthServer(s, &authDelivery)
+
+	calculationsFacade := calcFacade.New()
+	calculationsDelivery := calc.NewCalculationsHandler(calculationsFacade)
+	pbCalculations.RegisterCalculationsServer(s, &calculationsDelivery)
+}
 
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
 	mux := gwruntime.NewServeMux(opts...)
 
 	for _, f := range []func(ctx context.Context, mux *gwruntime.ServeMux, conn *grpc.ClientConn) error{
 		pbAuth.RegisterAuthHandler,
+		pbCalculations.RegisterCalculationsHandler,
 	} {
 		if err := f(ctx, mux, conn); err != nil {
 			return nil, err
@@ -30,25 +48,44 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 }
 
 type Options struct {
-	// Addr is the address to listen
-	Addr string
-
-	// OpenAPIDir is a path to a directory from which the server
-	// serves OpenAPI specs.
-	OpenAPIDir string
-
-	// Mux is a list of options to be passed to the gRPC-Gateway multiplexer
-	Mux []gwruntime.ServeMuxOption
+	Addr               string
+	Mux                []gwruntime.ServeMuxOption
+	PosgtresConnection *sqlx.DB
+	RedisConnection    *redis.Client
+	SessionStore       *session.Store
 }
 
 func createInitialOptions() Options {
 	opts := Options{}
-	opts.Mux = []gwruntime.ServeMuxOption{gwruntime.WithMetadata(common.AuthMiddleware)}
+	database, err := sqlx.Connect("postgres", "host=postgres user=postgres password=postgres dbname=postgres sslmode=disable")
+	if err != nil {
+		glog.Fatal(err)
+	}
+	opts.PosgtresConnection = database
+
+	opts.RedisConnection = redis.NewClient(&redis.Options{
+		Addr:     "redis:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, 2_678_400)
+	opts.Addr = "0.0.0.0:8080"
+	return opts
+}
+
+func addMiddlewares(opts Options) Options {
+	opts.Mux = []gwruntime.ServeMuxOption{
+		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
+		gwruntime.WithOutgoingHeaderMatcher(EmptyHeaderMatcherFunc),
+	}
 	return opts
 }
 
 func main() {
 	opts := createInitialOptions()
+	opts = addMiddlewares(opts)
+
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatalln("Failed to listen:", err)
@@ -60,14 +97,14 @@ func main() {
 		log.Fatalln(s.Serve(lis))
 	}()
 
-	registerServices(s)
+	registerServices(opts, s)
 	// register services
 
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
 	conn, err := grpc.DialContext(
 		context.Background(),
-		"0.0.0.0:8080",
+		opts.Addr,
 		grpc.WithBlock(),
 		grpc.WithInsecure(),
 	)
@@ -93,8 +130,6 @@ func main() {
 	log.Fatalln(gwServer.ListenAndServe())
 }
 
-func registerServices(s *grpc.Server) {
-	authRepo := db.AuthRepo{}
-	authDelivery := auth.NewAuthHandler(authRepo)
-	pbAuth.RegisterAuthServer(s, &authDelivery)
+func EmptyHeaderMatcherFunc(s string) (string, bool) {
+	return s, true
 }

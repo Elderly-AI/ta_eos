@@ -4,8 +4,9 @@ services:
     build: "./app"
     ports:
       - "8090"
-#    depends_on:
-#      - "db"
+    depends_on:
+      - "postgres"
+      - "redis"
   web:
     build: "./web"
     ports:
@@ -13,9 +14,14 @@ services:
       - "84:84"
     depends_on:
       - "app"
-#  db:
-#    image: "postgres"
-#    env_file:
-#      - .secrets.env
-#    ports:
-#      - "5432"
+  postgres:
+    image: "postgres"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432"
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379"
