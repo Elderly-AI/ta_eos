@@ -4,6 +4,7 @@ WORKDIR /code
 
 COPY dev/yarn.lock .
 COPY dev/package.json .
+COPY dist/swagger /dist/swagger
 RUN yarn install
 
 COPY dev/public public
@@ -18,7 +19,7 @@ COPY .nginx .nginx
 
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=frontend_builder /dist/app /usr/share/nginx/html/
+COPY --from=frontend_builder /dist /usr/share/nginx/html/
 COPY /.nginx/nginx.conf /etc/nginx/nginx.conf
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
