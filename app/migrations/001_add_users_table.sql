@@ -7,7 +7,9 @@ CREATE TABLE users (
     email       VARCHAR(20)  default '',
     study_group VARCHAR(5)   default '',
     password    VARCHAR(256) default ''
-)
+);
+
+ALTER TABLE users ADD role VARCHAR(20) DEFAULT 'user';
 -- +goose StatementEnd
 
 -- +goose Down

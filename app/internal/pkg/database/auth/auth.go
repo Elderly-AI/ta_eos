@@ -30,3 +30,22 @@ func (r *Repo) AddUser(ctx context.Context, usr models.User) (string, error) {
 	err := r.conn.GetContext(ctx, &userID, query, usr.Name, usr.Email, usr.Group, usr.Password)
 	return userID, err
 }
+
+func (r *Repo) GetUserByEmailAndPassword(ctx context.Context, email string, password string) (models.User, error) {
+	var res models.User
+	err := r.conn.GetContext(ctx, &res, "SELECT * from users WHERE email=$1 and password=$2", email, password)
+	return res, err
+}
+
+func (r *Repo) SearchUsersByGroup(ctx context.Context, group string) ([]models.User, error) {
+	var res []models.User
+	err := r.conn.SelectContext(ctx, &res, "SELECT * from users WHERE lower(study_group) LIKE lower(?)", "%"+group+"%")
+	return res, err
+}
+
+func (r *Repo) SearchUsersByFIO(ctx context.Context, fio string) ([]models.User, error) {
+
+	var res []models.User
+	err := r.conn.SelectContext(ctx, &res, "SELECT * from users WHERE lower(name) LIKE lower(?)", "%"+fio+"%")
+	return res, err
+}

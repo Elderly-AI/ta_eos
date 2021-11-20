@@ -63,7 +63,7 @@ func createInitialOptions() Options {
 	if os.Getenv("ENV_TYPE") == "local" {
 		database, err = sqlx.Connect("postgres", "host=localhost user=postgres password=postgres dbname=postgres sslmode=disable")
 	} else {
-		database, err = sqlx.Connect("postgres", "host=localhost user=postgres password=postgres dbname=postgres sslmode=disable")
+		database, err = sqlx.Connect("postgres", "host=postgres user=postgres password=postgres dbname=postgres sslmode=disable")
 	}
 	if err != nil {
 		glog.Fatal(err)
