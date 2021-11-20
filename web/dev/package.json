@@ -22,6 +22,9 @@
   },
   "scripts": {
     "start": "PORT=3000 react-scripts start",
+    "start-seren": "PORT=4000 react-scripts start",
+    "start-psina": "PORT=5000 react-scripts start",
+    "start-alkirys": "PORT=6000 react-scripts start",
     "build": "PORT=3000 BUILD_PATH='../dist/app' react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
