@@ -3,20 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
-	"net"
-	"net/http"
-	"os"
-
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jmoiron/sqlx"
 	"google.golang.org/grpc"
+	"log"
+	"net"
+	"net/http"
 
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
 	calc "github.com/Elderly-AI/ta_eos/internal/app/calculations"
 	calcFacade "github.com/Elderly-AI/ta_eos/internal/pkg/calculations"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/config"
 	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
@@ -56,38 +55,22 @@ type Options struct {
 	SessionStore       *session.Store
 }
 
-func createInitialOptions() Options {
+func createInitialOptions(conf config.Config) Options {
 	opts := Options{}
-	var database *sqlx.DB
-	var err error
-	if os.Getenv("ENV_TYPE") == "local" {
-		database, err = sqlx.Connect("postgres", "host=localhost user=postgres password=postgres dbname=postgres sslmode=disable")
-	} else {
-		database, err = sqlx.Connect("postgres", "host=postgres user=postgres password=postgres dbname=postgres sslmode=disable")
-	}
+	database, err := sqlx.Connect("postgres", fmt.Sprintf("host=%s user=postgres password=postgres dbname=postgres sslmode=disable", conf.PostgresHost))
 	if err != nil {
 		glog.Fatal(err)
 	}
 	opts.PosgtresConnection = database
 
-	var redisClient *redis.Client
-	if os.Getenv("ENV_TYPE") == "local" {
-		redisClient = redis.NewClient(&redis.Options{
-			Addr:     "localhost:6379",
-			Password: "",
-			DB:       0,
-		})
-
-	} else {
-		redisClient = redis.NewClient(&redis.Options{
-			Addr:     "redis:6379",
-			Password: "",
-			DB:       0,
-		})
-	}
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     conf.RedisAddr,
+		Password: "",
+		DB:       0,
+	})
 	opts.RedisConnection = redisClient
 
-	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, 2_678_400)
+	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, conf.CookieTimeout)
 	opts.Addr = "0.0.0.0:8080"
 	return opts
 }
@@ -101,7 +84,8 @@ func addMiddlewares(opts Options) Options {
 }
 
 func main() {
-	opts := createInitialOptions()
+	conf := config.GetConfig()
+	opts := createInitialOptions(conf)
 	opts = addMiddlewares(opts)
 
 	lis, err := net.Listen("tcp", ":8080")
@@ -110,12 +94,11 @@ func main() {
 	}
 
 	s := grpc.NewServer()
+	registerServices(opts, s)
 	log.Println("Serving gRPC on 0.0.0.0:8080")
 	go func() {
 		log.Fatalln(s.Serve(lis))
 	}()
-
-	registerServices(opts, s)
 	// register services
 
 	// Create a client connection to the gRPC server we just started
