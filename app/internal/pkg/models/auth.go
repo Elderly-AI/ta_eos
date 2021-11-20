@@ -51,7 +51,7 @@ func UserToGRPCSafeUser(usr User) *pb.SafeUser {
 }
 
 func UsersToGRPCSafeUsers(usrs []User) *pb.SafeUsers {
-	res := make([]*pb.SafeUser, len(usrs))
+	res := make([]*pb.SafeUser, 0, len(usrs))
 	for _, usr := range usrs {
 		res = append(res, UserToGRPCSafeUser(usr))
 	}

@@ -69,6 +69,8 @@ message SafeUsers{
 }
 
 message SearchRequest{
-  optional string name = 1;
-  optional string group = 2;
+  oneof search {
+    string group = 1;
+    string name = 2;
+  }
 }

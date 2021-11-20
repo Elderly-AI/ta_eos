@@ -39,13 +39,12 @@ func (s *Server) GetCurrentUser(ctx context.Context, request *pb.EmptyRequest) (
 func (s *Server) SearchUsers(ctx context.Context, request *pb.SearchRequest) (*pb.SafeUsers, error) {
 	var users []models.User
 	var err error
-	if request.Name != nil {
-		users, err = s.repo.SearchUsersByFIO(ctx, *request.Name)
+	if request.GetName() != "" {
+		users, err = s.repo.SearchUsersByFIO(ctx, request.GetName())
 	} else {
-		if request.Group != nil {
-			users, err = s.repo.SearchUsersByGroup(ctx, *request.Group)
-		}
+		users, err = s.repo.SearchUsersByGroup(ctx, request.GetGroup())
 	}
+
 	if err != nil {
 		return nil, err
 	}

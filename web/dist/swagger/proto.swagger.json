@@ -124,13 +124,13 @@
         },
         "parameters": [
           {
-            "name": "name",
+            "name": "group",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
-            "name": "group",
+            "name": "name",
             "in": "query",
             "required": false,
             "type": "string"
