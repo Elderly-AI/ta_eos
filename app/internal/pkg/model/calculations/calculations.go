@@ -8,10 +8,12 @@ type Number struct {
 type CalculationRequest struct {
 	Multiplier *Number
 	Factor     *Number
+	GridSize   uint32
 }
 
 type Step struct {
-	Index  uint64
-	BinDec string
-	Value  string
+	Index      uint64
+	BinDec     string
+	Value      string
+	PartialSum string
 }
