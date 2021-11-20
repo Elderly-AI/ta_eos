@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
@@ -57,17 +58,34 @@ type Options struct {
 
 func createInitialOptions() Options {
 	opts := Options{}
-	database, err := sqlx.Connect("postgres", "host=postgres user=postgres password=postgres dbname=postgres sslmode=disable")
+	var database *sqlx.DB
+	var err error
+	if os.Getenv("ENV_TYPE") == "local" {
+		database, err = sqlx.Connect("postgres", "host=localhost user=postgres password=postgres dbname=postgres sslmode=disable")
+	} else {
+		database, err = sqlx.Connect("postgres", "host=localhost user=postgres password=postgres dbname=postgres sslmode=disable")
+	}
 	if err != nil {
 		glog.Fatal(err)
 	}
 	opts.PosgtresConnection = database
 
-	opts.RedisConnection = redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
-		Password: "",
-		DB:       0,
-	})
+	var redisClient *redis.Client
+	if os.Getenv("ENV_TYPE") == "local" {
+		redisClient = redis.NewClient(&redis.Options{
+			Addr:     "localhost:6379",
+			Password: "",
+			DB:       0,
+		})
+
+	} else {
+		redisClient = redis.NewClient(&redis.Options{
+			Addr:     "redis:6379",
+			Password: "",
+			DB:       0,
+		})
+	}
+	opts.RedisConnection = redisClient
 
 	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, 2_678_400)
 	opts.Addr = "0.0.0.0:8080"
