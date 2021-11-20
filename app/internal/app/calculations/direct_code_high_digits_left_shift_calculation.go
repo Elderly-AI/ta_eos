@@ -2,6 +2,7 @@ package calculations
 
 import (
 	"context"
+
 	model "github.com/Elderly-AI/ta_eos/internal/pkg/model/calculations"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
 )
@@ -18,6 +19,9 @@ func (s *CalculationsServer) DirectCodeHighDigitsLeftShiftCalculation(ctx contex
 	gridSize := req.GetGridSize()
 	if gridSize == 0 {
 		gridSize = defaultGridSize
+	}
+	if err = validateFactorAndMultiplier(factor.BinValue, multiplier.BinValue, gridSize); err != nil {
+		return nil, err
 	}
 	steps := s.CalculationsFacade.DirectCodeHighDigitsLeftShiftCalculation(
 		model.CalculationRequest{

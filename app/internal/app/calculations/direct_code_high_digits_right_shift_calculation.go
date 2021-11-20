@@ -20,6 +20,9 @@ func (s *CalculationsServer) DirectCodeHighDigitsRightShiftCalculation(ctx conte
 	if gridSize == 0 {
 		gridSize = defaultGridSize
 	}
+	if err = validateFactorAndMultiplier(factor.BinValue, multiplier.BinValue, gridSize); err != nil {
+		return nil, err
+	}
 	steps := s.CalculationsFacade.DirectCodeHighDigitsRightShiftCalculation(
 		model.CalculationRequest{
 			Factor:     factor,
