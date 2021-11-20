@@ -8,7 +8,7 @@ import (
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
 )
 
-func (s *CalculationsServer) DirectCodeLeftShiftCalculation(ctx context.Context, req *pb.DirectCodeLeftShiftRequest) (*pb.DirectCodeLeftShiftResponse, error) {
+func (s *CalculationsServer) DirectCodeLowDigitsLeftShiftCalculation(ctx context.Context, req *pb.DirectCodeLowDigitsLeftShiftRequest) (*pb.DirectCodeLowDigitsLeftShiftResponse, error) {
 	factor, err := convertBinStringToNumber(req.GetFactor())
 	if err != nil {
 		return nil, err
@@ -17,12 +17,17 @@ func (s *CalculationsServer) DirectCodeLeftShiftCalculation(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	steps := s.CalculationsFacade.DirectCodeLeftShiftCalculation(
+	gridSize := req.GetGridSize()
+	if gridSize == 0 {
+		gridSize = defaultGridSize
+	}
+	steps := s.CalculationsFacade.DirectCodeLowDigitsLeftShiftCalculation(
 		model.CalculationRequest{
 			Factor:     factor,
 			Multiplier: multiplier,
+			GridSize:   gridSize,
 		})
-	resp := convertStepsIntoDirectCodeLeftShiftResponse(steps)
+	resp := convertStepsIntoDirectCodeLowDigitsLeftShiftResponse(steps)
 	return &resp, nil
 }
 
@@ -37,12 +42,13 @@ func convertBinStringToNumber(binValue string) (*model.Number, error) {
 	}, nil
 }
 
-func convertStepsIntoDirectCodeLeftShiftResponse(steps []model.Step) (resp pb.DirectCodeLeftShiftResponse) {
+func convertStepsIntoDirectCodeLowDigitsLeftShiftResponse(steps []model.Step) (resp pb.DirectCodeLowDigitsLeftShiftResponse) {
 	for _, step := range steps {
-		resp.Sequence = append(resp.Sequence, &pb.DirectCodeLeftShiftResponse_Step{
-			Index:  step.Index,
-			BinDec: step.BinDec,
-			Value:  step.Value,
+		resp.Sequence = append(resp.Sequence, &pb.DirectCodeLowDigitsLeftShiftResponse_Step{
+			Index:      step.Index,
+			BinDec:     step.BinDec,
+			Value:      step.Value,
+			PartialSum: step.PartialSum,
 		})
 	}
 	return
