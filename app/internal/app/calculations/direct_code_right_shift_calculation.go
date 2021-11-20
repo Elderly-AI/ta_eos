@@ -8,6 +8,10 @@ import (
 )
 
 func (s *CalculationsServer) DirectCodeRightShiftCalculation(ctx context.Context, req *pb.DirectCodeRightShiftRequest) (*pb.DirectCodeRightShiftResponse, error) {
+	err := validateFactorAndMultiplier(req.GetFactor(), req.GetMultiplier())
+	if err != nil {
+		return nil, err
+	}
 	factor, err := convertBinStringToNumber(req.GetFactor())
 	if err != nil {
 		return nil, err
