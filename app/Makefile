@@ -9,4 +9,5 @@ build:
 	go mod tidy
 	go build ./cmd/main.go
 
-
+docker:
+	docker-compose up --build

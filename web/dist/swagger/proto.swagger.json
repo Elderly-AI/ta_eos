@@ -48,7 +48,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/authUser"
+              "$ref": "#/definitions/authSafeUser"
             }
           },
           "default": {
@@ -105,14 +105,50 @@
         ]
       }
     },
-    "/api/v1/calculations/direct_code/left_shift": {
-      "post": {
-        "operationId": "Calculations_DirectCodeLeftShiftCalculation",
+    "/api/v1/auth/search": {
+      "get": {
+        "operationId": "Auth_SearchUsers",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/calculationsDirectCodeLeftShiftResponse"
+              "$ref": "#/definitions/authSafeUsers"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "group",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/calculations/direct_code/high_digits/left_shift": {
+      "post": {
+        "operationId": "Calculations_DirectCodeHighDigitsLeftShiftCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeHighDigitsLeftShiftResponse"
             }
           },
           "default": {
@@ -128,7 +164,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/calculationsDirectCodeLeftShiftRequest"
+              "$ref": "#/definitions/calculationsDirectCodeHighDigitsLeftShiftRequest"
             }
           }
         ],
@@ -137,14 +173,14 @@
         ]
       }
     },
-    "/api/v1/calculations/direct_code/right_shift": {
+    "/api/v1/calculations/direct_code/high_digits/right_shift": {
       "post": {
-        "operationId": "Calculations_DirectCodeRightShiftCalculation",
+        "operationId": "Calculations_DirectCodeHighDigitsRightShiftCalculation",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/calculationsDirectCodeRightShiftResponse"
+              "$ref": "#/definitions/calculationsDirectCodeHighDigitsRightShiftResponse"
             }
           },
           "default": {
@@ -160,7 +196,71 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/calculationsDirectCodeRightShiftRequest"
+              "$ref": "#/definitions/calculationsDirectCodeHighDigitsRightShiftRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Calculations"
+        ]
+      }
+    },
+    "/api/v1/calculations/direct_code/low_digits/left_shift": {
+      "post": {
+        "operationId": "Calculations_DirectCodeLowDigitsLeftShiftCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLowDigitsLeftShiftResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLowDigitsLeftShiftRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Calculations"
+        ]
+      }
+    },
+    "/api/v1/calculations/direct_code/low_digits/right_shift": {
+      "post": {
+        "operationId": "Calculations_DirectCodeLowDigitsRightShiftCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLowDigitsRightShiftResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/calculationsDirectCodeLowDigitsRightShiftRequest"
             }
           }
         ],
@@ -204,6 +304,20 @@
         },
         "group": {
           "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "authSafeUsers": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/authSafeUser"
+          }
         }
       }
     },
@@ -224,7 +338,7 @@
         }
       }
     },
-    "calculationsDirectCodeLeftShiftRequest": {
+    "calculationsDirectCodeHighDigitsLeftShiftRequest": {
       "type": "object",
       "properties": {
         "multiplier": {
@@ -232,21 +346,25 @@
         },
         "factor": {
           "type": "string"
+        },
+        "gridSize": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
-    "calculationsDirectCodeLeftShiftResponse": {
+    "calculationsDirectCodeHighDigitsLeftShiftResponse": {
       "type": "object",
       "properties": {
         "Sequence": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/calculationsDirectCodeLeftShiftResponseStep"
+            "$ref": "#/definitions/calculationsDirectCodeHighDigitsLeftShiftResponseStep"
           }
         }
       }
     },
-    "calculationsDirectCodeLeftShiftResponseStep": {
+    "calculationsDirectCodeHighDigitsLeftShiftResponseStep": {
       "type": "object",
       "properties": {
         "index": {
@@ -258,10 +376,13 @@
         },
         "value": {
           "type": "string"
+        },
+        "partialSum": {
+          "type": "string"
         }
       }
     },
-    "calculationsDirectCodeRightShiftRequest": {
+    "calculationsDirectCodeHighDigitsRightShiftRequest": {
       "type": "object",
       "properties": {
         "multiplier": {
@@ -269,21 +390,25 @@
         },
         "factor": {
           "type": "string"
+        },
+        "gridSize": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
-    "calculationsDirectCodeRightShiftResponse": {
+    "calculationsDirectCodeHighDigitsRightShiftResponse": {
       "type": "object",
       "properties": {
         "Sequence": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/calculationsDirectCodeRightShiftResponseStep"
+            "$ref": "#/definitions/calculationsDirectCodeHighDigitsRightShiftResponseStep"
           }
         }
       }
     },
-    "calculationsDirectCodeRightShiftResponseStep": {
+    "calculationsDirectCodeHighDigitsRightShiftResponseStep": {
       "type": "object",
       "properties": {
         "index": {
@@ -294,6 +419,97 @@
           "type": "string"
         },
         "value": {
+          "type": "string"
+        },
+        "partialSum": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeLowDigitsLeftShiftRequest": {
+      "type": "object",
+      "properties": {
+        "multiplier": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        },
+        "gridSize": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "calculationsDirectCodeLowDigitsLeftShiftResponse": {
+      "type": "object",
+      "properties": {
+        "Sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/calculationsDirectCodeLowDigitsLeftShiftResponseStep"
+          }
+        }
+      }
+    },
+    "calculationsDirectCodeLowDigitsLeftShiftResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "partialSum": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsDirectCodeLowDigitsRightShiftRequest": {
+      "type": "object",
+      "properties": {
+        "multiplier": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        },
+        "gridSize": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "calculationsDirectCodeLowDigitsRightShiftResponse": {
+      "type": "object",
+      "properties": {
+        "Sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/calculationsDirectCodeLowDigitsRightShiftResponseStep"
+          }
+        }
+      }
+    },
+    "calculationsDirectCodeLowDigitsRightShiftResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "partialSum": {
           "type": "string"
         }
       }
