@@ -48,7 +48,6 @@ func GetUserIdFromContext(c context.Context) *string {
 			return &userID[0]
 		}
 	}
-	glog.Warning("not ok or bad userID")
 	return nil
 }
 
