@@ -2,7 +2,8 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
 import { IMath } from "../Math";
 import {Fade} from "@material-ui/core";
-import {calcDirectCodeResponseStep} from "../../../data/Models";
+import {calcDirectCodeHighDigitsResponseStep} from "../../../data/Models";
+import classNames from "classnames";
 
 // Забивка пустого места при сдвиге
 const placeholder = 9;
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   row: {
     margin: 0,
     fontSize: "20px",
+    minHeight: "25px",
   },
   lastRow: {
     borderBottom: "1px solid black",
@@ -63,11 +65,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   number: {
     display: "flex",
   },
+  minHeight: {
+    minHeight: "25px",
+  }
 }));
 
 export interface ShiftResProps {
   input: IMath;
-  res: calcDirectCodeResponseStep[];
+  res: calcDirectCodeHighDigitsResponseStep[];
   tmpRow: number;
 }
 
@@ -82,12 +87,29 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
   const getRow = (count: string, val: string, num: number) => {
     const res: any[] = [];
 
-    if (count === null) {
-      val.split("").map((bit) => res.push(<div className={classes.bit}>{bit}</div>));
+    // это для строки с результатом выражения
+    if (Number(count) === val.length / 2) {
+      if (!val.includes('1')) {
+        for (let i = 0; i < val.length - 1; ++i) {
+          res.push(<div className={classes.bit}>{0}</div>);
+        }
+      } else {
+        let wasOneBit = false;
+        val.split("").map((bit, index) => {
+          wasOneBit = !wasOneBit ? !wasOneBit && bit === '1' : true;
+          if (wasOneBit) {
+            return res.push(<div className={classes.bit}>{bit}</div>);
+          }
+        });
+      }
       return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><div className={classes.final}><span className={classes.number}>{res}</span></div></Fade>;
     }
 
-    val.split('').map((bit) => res.push(<div className={classes.bit}>{bit}</div>));
+    val.split('').map((bit, index) => {
+      if (index >= (val.length / 2)) {
+        return res.push(<div className={classes.bit}>{bit}</div>);
+      }
+    });
 
     for (let i = 0; i < (count as unknown as number); i++) {
       res.push(<span className={classes.space}>{placeholder}</span>);
@@ -96,7 +118,7 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
     return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><span className={classes.number}>{res}</span></Fade>;
   };
 
-  const getShowBit = (row: calcDirectCodeResponseStep, num: number) => {
+  const getShowBit = (row: calcDirectCodeHighDigitsResponseStep, num: number) => {
     if (row.binDec !== null) {
       return (
           <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>
@@ -112,8 +134,8 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
   return (
     <div className={classes.layout}>
       <div className={classes.showBit}>
-        <p>A</p>
-        <p>B</p>
+        <p className={classes.minHeight}>A</p>
+        <p className={classes.minHeight}>B</p>
         {res.map((row, num) => getShowBit(row, num))}
       </div>
       <div className={classes.res}>
@@ -121,13 +143,13 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
         <p className={`${classes.row} ${classes.lastRow}`}>
           {savedInput.secondVal}
         </p>
-        {res.map((row, num) => (
-          <p className={classes.row}>{getRow(row.index, row.value, num)}</p>
-        ))}
+        {res.map((row, index) => {
+            return <p className={classes.row}>{getRow(row.index,row.value ? row.value : row.partialSum, index)}</p>;
+        })}
       </div>
       <div className={classes.showPow}>
-        <p className={classes.space}>{placeholder}</p>
-        <p className={classes.space}>{placeholder}</p>
+        <p className={classNames(classes.space, classes.minHeight)}>{placeholder}</p>
+        <p className={classNames(classes.space, classes.minHeight)}>{placeholder}</p>
         {res.map((row, index) =>
           index !== res.length - 1 ? (
               <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>

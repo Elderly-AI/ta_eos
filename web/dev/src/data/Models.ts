@@ -24,16 +24,18 @@ export type authSafeUser = {
 export type calcDirectCodeRequest = {
     multiplier: string,
     factor: string
+    gridSize: number,
 }
 
-export type calcDirectCodeResponseStep = {
+export type calcDirectCodeHighDigitsResponseStep = {
     index: string,
     binDec: string,
-    value: string
+    value: string,
+    partialSum: string,
 }
 
 export type calcDirectCodeResponse = {
-    Sequence: calcDirectCodeResponseStep[]
+    Sequence: calcDirectCodeHighDigitsResponseStep[]
 }
 
 export type protobufAny = {

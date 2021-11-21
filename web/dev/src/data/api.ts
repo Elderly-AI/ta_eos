@@ -16,8 +16,8 @@ const api = {
     login: host + `/api/v1/auth/login/`,
     math: { // Добавляем сюда новые ручки
         directCode: {
-            leftShift: host + '/api/v1/calculations/direct_code/left_shift',
-            rightShift: host + '/api/v1/calculations/direct_code/right_shift',
+            leftShift: host + '/api/v1/calculations/direct_code/high_digits/left_shift',
+            rightShift: host + '/api/v1/calculations/direct_code/high_digits/right_shift',
         },
     },
 };

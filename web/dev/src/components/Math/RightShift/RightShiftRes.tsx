@@ -2,7 +2,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
 import { IMath } from "../Math";
 import {Fade} from "@material-ui/core";
-import {calcDirectCodeResponseStep} from "../../../data/Models";
+import {calcDirectCodeHighDigitsResponseStep} from "../../../data/Models";
 
 // Забивка пустого места при сдвиге
 const placeholder = 9;
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface RightShiftResProps {
     input: IMath;
-    res: calcDirectCodeResponseStep[];
+    res: calcDirectCodeHighDigitsResponseStep[];
     tmpRow: number;
 }
 
@@ -83,7 +83,7 @@ const RightShiftRes = ({ res, input, tmpRow }: RightShiftResProps) => {
         setSavedInput(input);
     }, [res]);
 
-    const getRow = (count: string, val: string, num: number, arr: calcDirectCodeResponseStep[]) => {
+    const getRow = (count: string, val: string, num: number, arr: calcDirectCodeHighDigitsResponseStep[]) => {
         const res: any[] = [];
 
         if (num > 0 && val.length < arr[num-1].value.length) {
@@ -97,7 +97,7 @@ const RightShiftRes = ({ res, input, tmpRow }: RightShiftResProps) => {
         return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><span className={classes.number}>{res}</span></Fade>;
     };
 
-    const getShowBit = (row: calcDirectCodeResponseStep, num: number) => {
+    const getShowBit = (row: calcDirectCodeHighDigitsResponseStep, num: number) => {
         if (row.binDec !== null) {
             return (
                 <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>
@@ -123,7 +123,8 @@ const RightShiftRes = ({ res, input, tmpRow }: RightShiftResProps) => {
     {savedInput.secondVal}
     </p>
     {res.map((row, num, arr) => (
-        <p className={classes.row}>{getRow(row.index, row.value, num, arr)}</p>
+        // TODO вот тут тот самый костыль, чтобы пока что нормально работало отображение работало решения
+        <p className={classes.row}>{getRow(row.index, row.value ? row.value : row.partialSum, num, arr)}</p>
     ))}
     </div>
     <div className={classes.showPow}>

@@ -13,7 +13,7 @@ import Res from "./ShiftRes";
 import RightRes from "./RightShift";
 import TextField from "@material-ui/core/TextField";
 import DataService from "../../data/DataService";
-import {calcDirectCodeResponse, calcDirectCodeResponseStep} from "../../data/Models";
+import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from "../../data/Models";
 
 const useStyles = makeStyles((theme: Theme) => ({
     header: {
@@ -123,7 +123,7 @@ const Math = () => {
     const classes = useStyles();
     const [multiply, setMultiply] = useState<string>(multiplyEnum.NONE);
     const [math, setMath] = useState<IMath>({} as IMath);
-    const [res, setRes] = useState<calcDirectCodeResponseStep[]>([]);
+    const [res, setRes] = useState<calcDirectCodeHighDigitsResponseStep[]>([]);
     const [tmpPoint, setPoint] = useState<number>(-1);
     const [tmpStep, setStep] = useState<string>(""); // тут лежит то, что написано в инпуте текущего шага
     const [stepValue, setStepValue] = useState<string>(""); // а тут последнее значение, которое юзер отправил в ответ (чтобы поле error у инпута работало)
@@ -150,14 +150,18 @@ const Math = () => {
     const sendDirectShiftLeft = () => {
         const { firstVal, secondVal } = math;
 
-        DataService.directCodeLeftShift({multiplier: firstVal, factor: secondVal})
+        const grid = firstVal.length > secondVal.length ? firstVal.length : secondVal.length;
+
+        DataService.directCodeLeftShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
             .then((data) => setDirectCodeResult(data));
     };
 
     const sendDirectShiftRight = () => {
         const { firstVal, secondVal } = math;
 
-        DataService.directCodeRightShift({multiplier: firstVal, factor: secondVal})
+        const grid = firstVal.length > secondVal.length ? firstVal.length : secondVal.length;
+
+        DataService.directCodeRightShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
             .then((data) => setDirectCodeResult(data));
     };
 
