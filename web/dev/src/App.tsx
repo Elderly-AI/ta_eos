@@ -3,6 +3,7 @@ import Form from "./components/Form";
 import Modal from "./components/Modal";
 import {useTypedSelector} from "./hooks/useTypedSelector";
 import {Route, Switch, useHistory} from "react-router-dom";
+import Home from "./components/Home";
 
 function App() {
     const auth = useTypedSelector((state) => state.auth);
@@ -13,7 +14,7 @@ function App() {
         <div className="App">
             <Switch>
                 <Route exact path="/auth" component={Form}/>
-                {/*<Route path="/home" component={Home}/>*/}
+                <Route path="/home" component={Home}/>
                 {/*{auth?.inside ? history.push("/home") : history.push("/auth")}*/}
             </Switch>
             {modal.show ? <Modal/> : ""}
