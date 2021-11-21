@@ -37,19 +37,14 @@ func (s *Server) GetCurrentUser(ctx context.Context, request *pb.EmptyRequest) (
 }
 
 func (s *Server) SearchUsers(ctx context.Context, request *pb.SearchRequest) (*pb.SafeUsers, error) {
-	var users []models.User
-	var err error
-	if request.GetName() != "" {
-		users, err = s.repo.SearchUsersByFIO(ctx, request.GetName())
-	} else {
-		users, err = s.repo.SearchUsersByGroup(ctx, request.GetGroup())
+	if request.Text != "" {
+		users, err := s.repo.SearchUsersByFIOOrGroup(ctx, request.Text)
+		if err != nil {
+			return nil, err
+		}
+		return models.UsersToGRPCSafeUsers(users), nil
 	}
-
-	if err != nil {
-		return nil, err
-	}
-	return models.UsersToGRPCSafeUsers(users), nil
-
+	return nil, errors.New("empty search request")
 }
 
 func NewAuthHandler(repo authRepo.Repo, sessionRepo *session.Store) Server {

@@ -65,12 +65,9 @@ message EmptyRequest{
 }
 
 message SafeUsers{
-  repeated SafeUser users =1;
+  repeated SafeUser users = 1;
 }
 
 message SearchRequest{
-  oneof search {
-    string group = 1;
-    string name = 2;
-  }
+  string text = 1;
 }

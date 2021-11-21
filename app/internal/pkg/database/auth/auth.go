@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"fmt"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/models"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
@@ -38,7 +37,6 @@ func (r *Repo) GetUserByEmailAndPassword(ctx context.Context, email string, pass
 }
 
 func (r *Repo) SearchUsersByGroup(ctx context.Context, group string) ([]models.User, error) {
-	fmt.Println(group)
 	var res []models.User
 	err := r.conn.SelectContext(ctx, &res, "SELECT * from users WHERE lower(study_group) LIKE lower($1)", "%"+group+"%")
 	return res, err
@@ -48,5 +46,12 @@ func (r *Repo) SearchUsersByFIO(ctx context.Context, fio string) ([]models.User,
 
 	var res []models.User
 	err := r.conn.SelectContext(ctx, &res, "SELECT * from users WHERE lower(name) LIKE lower($1)", "%"+fio+"%")
+	return res, err
+}
+
+func (r *Repo) SearchUsersByFIOOrGroup(ctx context.Context, searchText string) ([]models.User, error) {
+	var res []models.User
+	likeText := "%" + searchText + "%"
+	err := r.conn.SelectContext(ctx, &res, "SELECT * from users WHERE lower(name) LIKE lower($1) OR lower(study_group) LIKE lower($1)", likeText)
 	return res, err
 }
