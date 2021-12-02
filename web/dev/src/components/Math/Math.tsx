@@ -14,6 +14,7 @@ import RightRes from "./RightShift";
 import DataService from "../../data/DataService";
 import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from "../../data/Models";
 import SumShift from "./SumShift/SumShift";
+import FactorShift from "./FactorShift/FactorShift";
 
 const useStyles = makeStyles((theme: Theme) => ({
     header: {
@@ -232,13 +233,15 @@ const Math = () => {
             {res.length > 0 && tmpPoint > -1 ? (
                 multiply == multiplyEnum.DIRECT_SHIFT_LEFT ?
                     <Res input={math} res={res} tmpRow={tmpPoint}/> :
-                    <RightRes input={math} res={res} tmpRow={tmpPoint}/>
+                    <RightRes input={math} stepsRes={res} tmpRow={tmpPoint}/>
             ) : (
                 ""
             )}
 
             {res.length > 0 ? (
-                <SumShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/>
+                multiply === multiplyEnum.DIRECT_SHIFT_LEFT ? // TODO тут надо сравнивать по SumShift и FactorShift
+                <SumShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/> :
+                <FactorShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/>
             ) : (
                 ""
             )}
