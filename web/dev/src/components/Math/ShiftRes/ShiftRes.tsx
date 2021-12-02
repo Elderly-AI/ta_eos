@@ -37,9 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: 0,
     fontSize: "20px",
     minHeight: "25px",
-  },
-  lastRow: {
-    borderBottom: "1px solid black",
+    position: "relative",
   },
   space: {
     margin: 0,
@@ -48,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   final: {
     borderTop: "1px solid black",
+    minHeight: "24px",
   },
   stretch: {
     border: "1px dotted black",
@@ -64,9 +63,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   number: {
     display: "flex",
+    justifyContent: "flex-end",
   },
   minHeight: {
     minHeight: "25px",
+  },
+  regularPlus : {
+    position: "absolute",
+    bottom: "-13px",
+    left: "-13px",
+  },
+  unregularPlus : {
+    position: "absolute",
+    bottom: "63px",
+    left: "-6px",
   }
 }));
 
@@ -84,26 +94,8 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
     setSavedInput(input);
   }, [res]);
 
-  const getRow = (count: string, val: string, num: number) => {
+  const getValueRow = (num: number, val: string, count: number) => {
     const res: any[] = [];
-
-    // это для строки с результатом выражения
-    if (Number(count) === val.length / 2) {
-      if (!val.includes('1')) {
-        for (let i = 0; i < val.length - 1; ++i) {
-          res.push(<div className={classes.bit}>{0}</div>);
-        }
-      } else {
-        let wasOneBit = false;
-        val.split("").map((bit, index) => {
-          wasOneBit = !wasOneBit ? !wasOneBit && bit === '1' : true;
-          if (wasOneBit) {
-            return res.push(<div className={classes.bit}>{bit}</div>);
-          }
-        });
-      }
-      return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><div className={classes.final}><span className={classes.number}>{res}</span></div></Fade>;
-    }
 
     val.split('').map((bit, index) => {
       if (index >= (val.length / 2)) {
@@ -111,19 +103,49 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
       }
     });
 
-    for (let i = 0; i < (count as unknown as number); i++) {
-      res.push(<span className={classes.space}>{placeholder}</span>);
+    return <Fade in={tmpRow > count} timeout={{enter: 1500, exit: 0}}><span className={classNames(classes.number, classes.minHeight)}>{res}</span></Fade>;
+  };
+
+  const getRow = (num: number, val: string, count: number, isfinal = false) => {
+    const res: any[] = [];
+    if (!val) {
+      return [];
+    }
+    let styles = isfinal ? classNames(classes.number, classes.final) :
+        classNames(classes.minHeight, classes.number);
+
+    if (!val.includes('1')) {
+      for (let i = 0; i < val.length / 2 + num; ++i) {
+        res.push(<div className={classes.bit}>{0}</div>);
+      }
+    } else {
+      let wasOneBit = false;
+      if (!isfinal) {
+        val += '0';
+      }
+      val.split("").map((bit, index) => {
+        wasOneBit = !wasOneBit ? !wasOneBit && bit === '1' : true;
+        if (wasOneBit) {
+          return res.push(<div className={classes.bit}>{bit}</div>);
+        }
+      });
     }
 
-    return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><span className={classes.number}>{res}</span></Fade>;
+    return <Fade in={tmpRow > count} timeout={{enter: 1500, exit: 0}}><span className={styles}>{res}</span></Fade>;
   };
 
   const getShowBit = (row: calcDirectCodeHighDigitsResponseStep, num: number) => {
-    if (row.binDec !== null) {
+    if (row.binDec) {
       return (
           <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>
-            <p className={classes.row}>
-              b<sub className={classes.down}>{row.index}</sub>={row.binDec}
+            <p>
+              <p className={classes.row}>
+              </p>
+              <p className={classes.row}>
+                b<sub className={classes.down}>{row.index}</sub>={row.binDec}
+              </p>
+              <p className={classes.row}>
+              </p>
             </p>
           </Fade>
       );
@@ -140,27 +162,57 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
       </div>
       <div className={classes.res}>
         <p className={classes.row}>{savedInput.firstVal}</p>
-        <p className={`${classes.row} ${classes.lastRow}`}>
+        <p className={classes.row}>
           {savedInput.secondVal}
         </p>
-        {res.map((row, index) => {
-            return <p className={classes.row}>{getRow(row.index,row.value ? row.value : row.partialSum, index)}</p>;
+        {res.map((row, index, arr) => {
+          if (index === 0) {
+            return <p className={classes.row}>
+              <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.unregularPlus}>+</div></Fade>
+              {getRow(index, '0'.repeat(row.value.length), index, true)}
+              {getValueRow(index, row.value, index)}
+              {getRow(index + 1, arr[index + 1].partialSum, index, true)}
+              {(index < arr.length - 2) ? getRow(index + 1, arr[index + 1].partialSum, index) : ''}
+              <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.regularPlus}>+</div></Fade>
+            </p>;
+          }
+          if (index < arr.length - 1) {
+            return <p className={classes.row}>
+              {getValueRow(index, row.value, index)}
+              {getRow(index + 1, arr[index + 1].partialSum, index, true)}
+              {(index < arr.length - 2) ? getRow(index + 1, arr[index + 1].partialSum, index) : ''}
+              {(index < arr.length - 2) ? <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.regularPlus}>+</div></Fade> : ''}
+            </p>;
+          }
         })}
       </div>
-      <div className={classes.showPow}>
+      <div>
         <p className={classNames(classes.space, classes.minHeight)}>{placeholder}</p>
         <p className={classNames(classes.space, classes.minHeight)}>{placeholder}</p>
         {res.map((row, index) =>
-          index !== res.length - 1 ? (
-              <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
-                  <p className={classes.row}>
-                    A·2<sup className={classes.up}>{row.index}</sup>&nbsp;b
-                    <sub className={classes.up}>{row.index}</sub>
-                  </p>
-              </Fade>
-          ) : (
-            ""
-          )
+            index !== 0 ? (
+                <Fade in={tmpRow > index - 1} timeout={{enter: 1500, exit: 0}}>
+                  <div>
+                    <p className={classes.row}>
+                      |A|
+                    </p>
+                    <p className={classes.row}>
+                      S<sub className={classes.down}>{row.index}</sub>
+                    </p>
+                    {index !== res.length - 1 ? <p className={classes.row}>
+                      2·S<sub className={classes.down}>{row.index}</sub>
+                    </p> : ""}
+                  </div>
+                </Fade>
+            ) : (
+                <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
+                  <div>
+                    <p className={classes.row}>
+                      S<sub className={classes.down}>{row.index}</sub>
+                    </p>
+                  </div>
+                </Fade>
+            )
         )}
       </div>
     </div>
