@@ -11,9 +11,9 @@ import React, {ChangeEvent, useState} from "react";
 import CustomInput, {CustomInputProps} from "../CustomInput/CustomInput";
 import Res from "./ShiftRes";
 import RightRes from "./RightShift";
-import TextField from "@material-ui/core/TextField";
 import DataService from "../../data/DataService";
 import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from "../../data/Models";
+import SumShift from "./SumShift/SumShift";
 
 const useStyles = makeStyles((theme: Theme) => ({
     header: {
@@ -126,10 +126,6 @@ const Math = () => {
     const [math, setMath] = useState<IMath>({} as IMath);
     const [res, setRes] = useState<calcDirectCodeHighDigitsResponseStep[]>([]);
     const [tmpPoint, setPoint] = useState<number>(-1);
-    const [sumStep, setSumStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
-    const [shiftedSumStep, setShiftedSumStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
-    const [termStep, setTermStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
-    const [buttonWasClicked, setButtonWasClicked] = useState(false); // а тут последнее значение, которое юзер отправил в ответ (чтобы поле error у инпута работало)
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setRes([]);
@@ -143,6 +139,7 @@ const Math = () => {
     };
 
     const setDirectCodeResult = ({Sequence}: calcDirectCodeResponse) => {
+        setPoint(0);
         setPoint(0);
         setRes(Sequence);
     }
@@ -181,46 +178,6 @@ const Math = () => {
                 console.error("нет такого метода");
                 break;
         }
-    };
-
-    const onSumStepChange = (event: any) => {
-        setSumStep(event.target.value);
-        if (buttonWasClicked) {
-            setButtonWasClicked(false);
-        }    };
-
-    const onShiftedSumStepChange = (event: any) => {
-        setShiftedSumStep(event.target.value);
-        if (buttonWasClicked) {
-            setButtonWasClicked(false);
-        }    };
-
-    const onTermStepChange = (event: any) => {
-        setTermStep(event.target.value);
-        if (buttonWasClicked) {
-            setButtonWasClicked(false);
-        }
-    };
-
-    const nextStep = () => {
-        setButtonWasClicked(false);
-        if (tmpPoint < res.length - 1) {
-            // setStepValue(res[tmpPoint + 1].value as string);
-            setPoint(tmpPoint + 1);
-        } else {
-            setPoint(tmpPoint + 1);
-        }
-    };
-
-    const checkStepClick = () => {
-        if (+termStep === +res[tmpPoint].value && +sumStep === +res[tmpPoint].partialSum && +shiftedSumStep === +(res[tmpPoint].partialSum + '0')) {
-            setSumStep('');
-            setShiftedSumStep('');
-            setTermStep('');
-            nextStep();
-            return;
-        }
-        setButtonWasClicked(true);
     };
 
     return (
@@ -281,56 +238,7 @@ const Math = () => {
             )}
 
             {res.length > 0 ? (
-                <div className={classes.steps}>
-                    <TextField
-                        value={termStep}
-                        id="stepTermVal"
-                        className={classes.stepInput}
-                        onChange={onTermStepChange}
-                        key="stepVal"
-                        variant="outlined"
-                        label="Слагаемое"
-                        error={buttonWasClicked && +termStep !== +res[tmpPoint].value}
-                    />
-                    <TextField
-                        value={sumStep}
-                        id="stepSumVal"
-                        className={classes.stepInput}
-                        onChange={onSumStepChange}
-                        key="stepVal"
-                        variant="outlined"
-                        label="Текущая сумма"
-                        error={buttonWasClicked && +sumStep !== +res[tmpPoint].partialSum}
-                    />
-                    <TextField
-                        value={shiftedSumStep}
-                        id="stepShiftedSumVal"
-                        className={classes.stepInput}
-                        onChange={onShiftedSumStepChange}
-                        key="stepVal"
-                        variant="outlined"
-                        label="Сдвиг суммы"
-                        error={buttonWasClicked && +shiftedSumStep !== +(res[tmpPoint].partialSum + '0')}
-                    />
-                    <Button
-                        onClick={checkStepClick}
-                        disabled={tmpPoint >= res.length - 1}
-                        id="nextStepButton"
-                        variant="contained"
-                        color="primary"
-                    >
-                        Следующий шаг
-                    </Button>
-                    <Button
-                        onClick={nextStep}
-                        disabled={tmpPoint >= res.length - 1}
-                        id="nextStepButton"
-                        variant="contained"
-                        color="primary"
-                    >
-                        Подсказать значение
-                    </Button>
-                </div>
+                <SumShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/>
             ) : (
                 ""
             )}
