@@ -9,8 +9,9 @@ import Paper from "@material-ui/core/Paper";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import React, {ChangeEvent, useState} from "react";
 import CustomInput, {CustomInputProps} from "../CustomInput/CustomInput";
-import Res from "./HighDigitsLeftShift";
-import RightRes from "./HighDigitsRightShift";
+import HighDigitsLeftShift from "./HighDigitsLeftShift";
+import LowDigitsLeftShift from "./LowDigitsLeftShift";
+import HighDigitsRightShift from "./HighDigitsRightShift";
 import DataService from "../../data/DataService";
 import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from "../../data/Models";
 import SumShift from "./SumShift/SumShift";
@@ -97,7 +98,7 @@ export enum multiplyEnum {
   NONE = "",
   DIRECT_HIGH_DIGITS_SHIFT_RIGHT = "Прямой код со старших разрядов сдвигом вправо",
   DIRECT_HIGH_DIGITS_SHIFT_LEFT = "Прямой код со со старших разрядов сдвигом влево",
-  DIRECT_LOW_DIGITS_SHIFT_LEFT = "Прямой код со с младших разрядов сдвигом влево",
+  DIRECT_LOW_DIGITS_SHIFT_LEFT = "Прямой код с младших разрядов сдвигом влево",
 }
 
 export enum shiftEnum {
@@ -139,13 +140,13 @@ const Math = () => {
 
     switch (multiply) {
         case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
-            MultipleTypeSelector = <Res input={math} res={res} tmpRow={tmpPoint}/>;
+            MultipleTypeSelector = <HighDigitsLeftShift input={math} res={res} tmpRow={tmpPoint}/>;
             break;
         case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
-            MultipleTypeSelector =  <RightRes input={math} stepsRes={res} tmpRow={tmpPoint}/>;
+            MultipleTypeSelector =  <HighDigitsRightShift input={math} stepsRes={res} tmpRow={tmpPoint}/>;
             break;
         case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
-            MultipleTypeSelector =  <div/>;
+            MultipleTypeSelector =  <LowDigitsLeftShift  input={math} stepsRes={res} tmpRow={tmpPoint}/>;
             break;
         default:
             MultipleTypeSelector = null;

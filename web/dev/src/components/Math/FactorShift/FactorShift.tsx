@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
     const [sumStep, setSumStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
-    const [shiftedSumStep, setShiftedSumStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
+    const [valueStep, setValueStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
     const [buttonWasClicked, setButtonWasClicked] = useState(false);
     const classes = useStyles();
 
@@ -48,8 +48,8 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
             setButtonWasClicked(false);
         }    };
 
-    const onShiftedSumStepChange = (event: any) => {
-        setShiftedSumStep(event.target.value);
+    const onValueStepChange = (event: any) => {
+        setValueStep(event.target.value);
         if (buttonWasClicked) {
             setButtonWasClicked(false);
         }    };
@@ -65,9 +65,9 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
     };
 
     const checkStepClick = () => {
-        if (+sumStep === +res[tmpPoint].partialSum && +shiftedSumStep === +(res[tmpPoint].partialSum + '0')) {
+        if (+sumStep === +res[tmpPoint].partialSum && +valueStep === +res[tmpPoint].value) {
             setSumStep('');
-            setShiftedSumStep('');
+            setValueStep('');
             nextStep();
             return;
         }
@@ -86,14 +86,14 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
             error={buttonWasClicked && +sumStep !== +res[tmpPoint].partialSum}
         />
         <TextField
-            value={shiftedSumStep}
+            value={valueStep}
             id="stepShiftedSumVal"
             className={classes.stepInput}
-            onChange={onShiftedSumStepChange}
+            onChange={onValueStepChange}
             key="stepVal"
             variant="outlined"
             label="Сдвиг слагаемого"
-            error={buttonWasClicked && +shiftedSumStep !== +(res[tmpPoint].value)}
+            error={buttonWasClicked && +valueStep !== +(res[tmpPoint].value)}
         />
         <Button
             onClick={checkStepClick}
