@@ -87,7 +87,7 @@ export interface RightShiftResProps {
     tmpRow: number;
 }
 
-const RightShiftRes = ({ stepsRes, input, tmpRow }: RightShiftResProps) => {
+const HighDigitsRightShift = ({ stepsRes, input, tmpRow }: RightShiftResProps) => {
     const classes = useStyles();
     const [savedInput, setSavedInput] = useState<IMath>({} as IMath);
 
@@ -199,4 +199,4 @@ const RightShiftRes = ({ stepsRes, input, tmpRow }: RightShiftResProps) => {
 );
 };
 
-export default RightShiftRes;
+export default HighDigitsRightShift;

@@ -84,7 +84,7 @@ export interface ShiftResProps {
   tmpRow: number;
 }
 
-const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
+const HighDigitsLeftShift = ({ res, input, tmpRow }: ShiftResProps) => {
   const classes = useStyles();
   const [savedInput, setSavedInput] = useState<IMath>({} as IMath);
 
@@ -192,4 +192,4 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
   );
 };
 
-export default ShiftRes;
+export default HighDigitsLeftShift;
