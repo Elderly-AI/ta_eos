@@ -95,8 +95,15 @@ const useStyles = makeStyles((theme: Theme) => ({
  */
 export enum multiplyEnum {
   NONE = "",
-  DIRECT_SHIFT_RIGHT = "Прямой код со сдвигом вправо",
-  DIRECT_SHIFT_LEFT = "Прямой код со сдвигом влево",
+  DIRECT_HIGH_DIGITS_SHIFT_RIGHT = "Прямой код со старших разрядов сдвигом вправо",
+  DIRECT_HIGH_DIGITS_SHIFT_LEFT = "Прямой код со со старших разрядов сдвигом влево",
+  DIRECT_LOW_DIGITS_SHIFT_LEFT = "Прямой код со с младших разрядов сдвигом влево",
+}
+
+export enum shiftEnum {
+    NONE = "",
+    sumShift = "Сдвиг суммы частичных произведений",
+    factorShift = "Сдвиг множимого",
 }
 
 /**
@@ -124,13 +131,43 @@ const inputs: CustomInputProps[] = [
 const Math = () => {
     const classes = useStyles();
     const [multiply, setMultiply] = useState<string>(multiplyEnum.NONE);
+    const [shiftType, setShiftType] = useState(shiftEnum.NONE);
     const [math, setMath] = useState<IMath>({} as IMath);
     const [res, setRes] = useState<calcDirectCodeHighDigitsResponseStep[]>([]);
     const [tmpPoint, setPoint] = useState<number>(-1);
+    let MultipleTypeSelector: JSX.Element | null;
+
+    switch (multiply) {
+        case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
+            MultipleTypeSelector = <Res input={math} res={res} tmpRow={tmpPoint}/>;
+            break;
+        case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
+            MultipleTypeSelector =  <RightRes input={math} stepsRes={res} tmpRow={tmpPoint}/>;
+            break;
+        case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
+            MultipleTypeSelector =  <div/>;
+            break;
+        default:
+            MultipleTypeSelector = null;
+            break;
+    }
+
+    const changeShiftType = (multiple: string) => {
+        switch (multiple as multiplyEnum) {
+            case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
+            case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
+                setShiftType(shiftEnum.factorShift);
+                break;
+            case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
+                setShiftType(shiftEnum.sumShift);
+                break;
+        }
+    }
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setRes([]);
         setMultiply(event.target.value as string);
+        changeShiftType(event.target.value as string);
     };
 
     const inputHandleChange = (
@@ -145,21 +182,30 @@ const Math = () => {
         setRes(Sequence);
     }
 
-    const sendDirectShiftLeft = () => {
+    const sendDirectHighShiftLeft = () => {
         const { firstVal, secondVal } = math;
 
         const grid = firstVal.length > secondVal.length ? firstVal.length : secondVal.length;
 
-        DataService.directCodeLeftShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
+        DataService.directCodeHighLeftShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
             .then((data) => setDirectCodeResult(data));
     };
 
-    const sendDirectShiftRight = () => {
+    const sendDirectHighShiftRight = () => {
         const { firstVal, secondVal } = math;
 
         const grid = firstVal.length > secondVal.length ? firstVal.length : secondVal.length;
 
-        DataService.directCodeRightShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
+        DataService.directCodeHighRightShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
+            .then((data) => setDirectCodeResult(data));
+    };
+
+    const sendDirectLowShiftLeft = () => {
+        const { firstVal, secondVal } = math;
+
+        const grid = firstVal.length > secondVal.length ? firstVal.length : secondVal.length;
+
+        DataService.directCodeLowLeftShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
             .then((data) => setDirectCodeResult(data));
     };
 
@@ -169,11 +215,14 @@ const Math = () => {
      */
     const sendMath = () => {
         switch (multiply) {
-            case multiplyEnum.DIRECT_SHIFT_LEFT:
-                sendDirectShiftLeft();
+            case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
+                sendDirectHighShiftLeft();
                 break;
-            case multiplyEnum.DIRECT_SHIFT_RIGHT:
-                sendDirectShiftRight();
+            case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
+                sendDirectHighShiftRight();
+                break;
+            case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
+                sendDirectLowShiftLeft();
                 break;
             default:
                 console.error("нет такого метода");
@@ -201,11 +250,14 @@ const Math = () => {
                         onChange={handleChange}
                     >
                         {/* Добавляем селект для выбора способа умножения */}
-                        <MenuItem value={multiplyEnum.DIRECT_SHIFT_LEFT}>
-                            {multiplyEnum.DIRECT_SHIFT_LEFT}
+                        <MenuItem value={multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT}>
+                            {multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT}
                         </MenuItem>
-                        <MenuItem value={multiplyEnum.DIRECT_SHIFT_RIGHT}>
-                            {multiplyEnum.DIRECT_SHIFT_RIGHT}
+                        <MenuItem value={multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT}>
+                            {multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT}
+                        </MenuItem>
+                        <MenuItem value={multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT}>
+                            {multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT}
                         </MenuItem>
                     </Select>
                     <FormHelperText>Выберите способ умножения</FormHelperText>
@@ -230,16 +282,13 @@ const Math = () => {
                 ""
             )}
 
-            {res.length > 0 && tmpPoint > -1 ? (
-                multiply == multiplyEnum.DIRECT_SHIFT_LEFT ?
-                    <Res input={math} res={res} tmpRow={tmpPoint}/> :
-                    <RightRes input={math} stepsRes={res} tmpRow={tmpPoint}/>
-            ) : (
+            {res.length > 0 && tmpPoint > -1 ?
+                MultipleTypeSelector : (
                 ""
             )}
 
             {res.length > 0 ? (
-                multiply === multiplyEnum.DIRECT_SHIFT_LEFT ? // TODO тут надо сравнивать по SumShift и FactorShift
+                shiftType === shiftEnum.sumShift ?
                 <SumShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/> :
                 <FactorShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/>
             ) : (

@@ -17,8 +17,8 @@ class DataService implements ApiInterface {
             .then((dat: authSafeUser) => dat)
     }
 
-    async directCodeLeftShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
-        return await fetch(api.math.directCode.leftShift, {
+    async directCodeHighLeftShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
+        return await fetch(api.math.directCode.highLeftShift, {
             method: "POST",
             body: JSON.stringify(data)
         })
@@ -27,8 +27,18 @@ class DataService implements ApiInterface {
             .then((dat: calcDirectCodeResponse) => dat)
     }
 
-    async directCodeRightShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
-        return await fetch(api.math.directCode.rightShift, {
+    async directCodeLowLeftShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
+        return await fetch(api.math.directCode.lowLeftShift, {
+            method: "POST",
+            body: JSON.stringify(data)
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: calcDirectCodeResponse) => dat)
+    }
+
+    async directCodeHighRightShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
+        return await fetch(api.math.directCode.highRightShift, {
             method: "POST",
             body: JSON.stringify(data)
         })

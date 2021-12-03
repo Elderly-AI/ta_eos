@@ -118,7 +118,7 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
       }
     } else {
       let wasOneBit = false;
-      val.split("").map((bit, index) => {
+      val.split("").map((bit) => {
         wasOneBit = !wasOneBit ? !wasOneBit && bit === '1' : true;
         if (wasOneBit) {
           return res.push(<div className={classes.bit}>{bit}</div>);
@@ -131,7 +131,6 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
 
   const getShowBit = (row: calcDirectCodeHighDigitsResponseStep, num: number) => {
     if (row.binDec) {
-      console.log(num, res.length - 1);
       return (
           <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>
             <p>
