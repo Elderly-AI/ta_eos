@@ -93,7 +93,7 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
             key="stepVal"
             variant="outlined"
             label="Сдвиг слагаемого"
-            error={buttonWasClicked && +shiftedSumStep !== +(res[tmpPoint].partialSum + '0')}
+            error={buttonWasClicked && +shiftedSumStep !== +(res[tmpPoint].value)}
         />
         <Button
             onClick={checkStepClick}

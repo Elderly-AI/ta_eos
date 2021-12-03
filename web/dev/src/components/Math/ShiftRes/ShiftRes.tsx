@@ -70,14 +70,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   regularPlus : {
     position: "absolute",
-    bottom: "-13px",
+    bottom: "39px",
     left: "-13px",
   },
-  unregularPlus : {
-    position: "absolute",
-    bottom: "63px",
-    left: "-6px",
-  }
+  lastRow: {
+    borderBottom: "1px solid black",
+  },
 }));
 
 export interface ShiftResProps {
@@ -115,14 +113,11 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
         classNames(classes.minHeight, classes.number);
 
     if (!val.includes('1')) {
-      for (let i = 0; i < val.length / 2 + num; ++i) {
+      for (let i = 0; i < Math.floor(val.length / 2) + num; ++i) {
         res.push(<div className={classes.bit}>{0}</div>);
       }
     } else {
       let wasOneBit = false;
-      if (!isfinal) {
-        val += '0';
-      }
       val.split("").map((bit, index) => {
         wasOneBit = !wasOneBit ? !wasOneBit && bit === '1' : true;
         if (wasOneBit) {
@@ -136,6 +131,7 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
 
   const getShowBit = (row: calcDirectCodeHighDigitsResponseStep, num: number) => {
     if (row.binDec) {
+      console.log(num, res.length - 1);
       return (
           <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>
             <p>
@@ -144,13 +140,11 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
               <p className={classes.row}>
                 b<sub className={classes.down}>{row.index}</sub>={row.binDec}
               </p>
-              <p className={classes.row}>
-              </p>
+              <p className={classes.row}>{num === res.length - 2 ? 'П =' : ''}</p>
             </p>
           </Fade>
       );
     }
-    return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><p className={classes.row}>П =</p></Fade>;
   };
 
   return (
@@ -162,26 +156,16 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
       </div>
       <div className={classes.res}>
         <p className={classes.row}>{savedInput.firstVal}</p>
-        <p className={classes.row}>
+        <p className={classNames(classes.row, classes.lastRow)}>
           {savedInput.secondVal}
         </p>
         {res.map((row, index, arr) => {
-          if (index === 0) {
-            return <p className={classes.row}>
-              <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.unregularPlus}>+</div></Fade>
-              {getRow(index, '0'.repeat(row.value.length), index, true)}
-              {getValueRow(index, row.value, index)}
-              {getRow(index + 1, arr[index + 1].partialSum, index, true)}
-              {(index < arr.length - 2) ? getRow(index + 1, arr[index + 1].partialSum, index) : ''}
-              <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.regularPlus}>+</div></Fade>
-            </p>;
-          }
           if (index < arr.length - 1) {
             return <p className={classes.row}>
+              {getRow(index, row.partialSum + '0', index)}
               {getValueRow(index, row.value, index)}
-              {getRow(index + 1, arr[index + 1].partialSum, index, true)}
-              {(index < arr.length - 2) ? getRow(index + 1, arr[index + 1].partialSum, index) : ''}
-              {(index < arr.length - 2) ? <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.regularPlus}>+</div></Fade> : ''}
+              {getRow(index, arr[index + 1].partialSum, index, true)}
+              {index !== res.length - 1 ? <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.regularPlus}>+</div></Fade> : ''}
             </p>;
           }
         })}
@@ -190,29 +174,19 @@ const ShiftRes = ({ res, input, tmpRow }: ShiftResProps) => {
         <p className={classNames(classes.space, classes.minHeight)}>{placeholder}</p>
         <p className={classNames(classes.space, classes.minHeight)}>{placeholder}</p>
         {res.map((row, index) =>
-            index !== 0 ? (
-                <Fade in={tmpRow > index - 1} timeout={{enter: 1500, exit: 0}}>
-                  <div>
-                    <p className={classes.row}>
-                      |A|
-                    </p>
-                    <p className={classes.row}>
-                      S<sub className={classes.down}>{row.index}</sub>
-                    </p>
-                    {index !== res.length - 1 ? <p className={classes.row}>
-                      2·S<sub className={classes.down}>{row.index}</sub>
-                    </p> : ""}
-                  </div>
-                </Fade>
-            ) : (
-                <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
-                  <div>
-                    <p className={classes.row}>
-                      S<sub className={classes.down}>{row.index}</sub>
-                    </p>
-                  </div>
-                </Fade>
-            )
+            <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
+              <div>
+                <p className={classes.row}>
+                  {index !== 0 ? '2·S' : 'S'}<sub className={classes.down}>{row.index}</sub>
+                </p>
+                <p className={classes.row}>
+                  |A|
+                </p>
+                {index !== res.length - 2 ? <p className={classes.row}>
+                  S<sub className={classes.down}>{+row.index + 1}</sub>
+                </p> : ""}
+              </div>
+            </Fade>
         )}
       </div>
     </div>

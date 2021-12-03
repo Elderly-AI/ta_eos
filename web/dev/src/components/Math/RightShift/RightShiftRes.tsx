@@ -95,38 +95,6 @@ const RightShiftRes = ({ stepsRes, input, tmpRow }: RightShiftResProps) => {
         setSavedInput(input);
     }, [stepsRes]);
 
-    // const getRow = (count: number, val: string, num: number, arr: calcDirectCodeHighDigitsResponseStep[]) => {
-    //     const res: any[] = [];
-    //
-    //     // это для строки с результатом выражения
-    //     if (Number(count) === val.length / 2) {
-    //         if (!val.includes('1')) {
-    //             for (let i = 0; i < val.length; ++i) {
-    //                 res.push(<div className={classes.bit}>{0}</div>);
-    //             }
-    //         } else {
-    //             let wasOneBit = false;
-    //             val.split("").map((bit, index) => {
-    //                 wasOneBit = !wasOneBit ? !wasOneBit && bit === '1' : true;
-    //                 if (wasOneBit) {
-    //                     return res.push(<div className={classes.bit}>{bit}</div>);
-    //                 }
-    //             });
-    //         }
-    //
-    //         return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><div className={classes.final}><span className={classes.number}>{res}</span></div></Fade>;
-    //     }
-    //
-    //
-    //     val.split('').map((bit, index) => {
-    //         if (index >= val.length / 2 - count) {
-    //             return res.push(<div className={classes.bit}>{bit}</div>);
-    //         }
-    //     });
-    //
-    //     return <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}><span className={classes.number}>{res}</span></Fade>;
-    // };
-
     const getValueRow = (num: number, val: string, count: number) => {
         const res: any[] = [];
         if (!val) {

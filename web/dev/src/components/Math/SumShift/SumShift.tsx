@@ -65,7 +65,6 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
     const nextStep = () => {
         setButtonWasClicked(false);
         if (tmpPoint < res.length - 1) {
-            // setStepValue(res[tmpPoint + 1].value as string);
             setPoint(tmpPoint + 1);
         } else {
             setPoint(tmpPoint + 1);
@@ -73,7 +72,7 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
     };
 
     const checkStepClick = () => {
-        if (+termStep === +res[tmpPoint].value && +sumStep === +res[tmpPoint].partialSum && +shiftedSumStep === +(res[tmpPoint].partialSum + '0')) {
+        if (+termStep === +res[tmpPoint].value && +sumStep === +res[tmpPoint + 1].partialSum && +shiftedSumStep === +(res[tmpPoint].partialSum + '0')) {
             setSumStep('');
             setShiftedSumStep('');
             setTermStep('');
@@ -84,6 +83,16 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
     };
 
     return (<div className={classes.steps}>
+        <TextField
+            value={shiftedSumStep}
+            id="stepShiftedSumVal"
+            className={classes.stepInput}
+            onChange={onShiftedSumStepChange}
+            key="stepVal"
+            variant="outlined"
+            label="Сдвиг суммы"
+            error={buttonWasClicked && +shiftedSumStep !== +(res[tmpPoint].partialSum + '0')}
+        />
         <TextField
             value={termStep}
             id="stepTermVal"
@@ -102,17 +111,7 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
             key="stepVal"
             variant="outlined"
             label="Текущая сумма"
-            error={buttonWasClicked && +sumStep !== +res[tmpPoint].partialSum}
-        />
-        <TextField
-            value={shiftedSumStep}
-            id="stepShiftedSumVal"
-            className={classes.stepInput}
-            onChange={onShiftedSumStepChange}
-            key="stepVal"
-            variant="outlined"
-            label="Сдвиг суммы"
-            error={buttonWasClicked && +shiftedSumStep !== +(res[tmpPoint].partialSum + '0')}
+            error={buttonWasClicked && +sumStep !== +res[tmpPoint + 1].partialSum}
         />
         <Button
             onClick={checkStepClick}
