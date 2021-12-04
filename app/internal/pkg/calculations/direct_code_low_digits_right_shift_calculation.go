@@ -6,7 +6,7 @@ import (
 
 func (c *Facade) DirectCodeLowDigitsRightShiftCalculation(req model.CalculationRequest) (steps []model.Step) {
 	var sum uint64 = 0
-	multiplier := req.Multiplier.Value << (int(req.GridSize) - len(req.Factor.BinValue))
+	multiplier := req.Multiplier.Value << len(req.Factor.BinValue)
 	for index, binDec := range reverseString(req.Factor.BinValue) {
 		steps = append(steps, createStep(multiplier, string(binDec), uint64(index), sum, req.GridSize))
 		sum = sum >> 1
