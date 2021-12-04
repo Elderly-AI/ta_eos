@@ -102,7 +102,7 @@ const HighDigitsRightShift = ({stepsRes, input, tmpRow}: RightShiftResProps) => 
         }
 
         val.split('').map((bit, index) => {
-            if (index >= (val.length / 2) - num - 1) {
+            if (index <= (val.length / 2) + num) {
                 return res.push(<div className={classes.bit}>{bit}</div>);
             }
         });

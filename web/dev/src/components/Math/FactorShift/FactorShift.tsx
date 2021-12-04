@@ -59,7 +59,6 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
     const nextStep = () => {
         setButtonWasClicked(false);
         if (tmpPoint < res.length) {
-            // setStepValue(res[tmpPoint + 1].value as string);
             setPoint(tmpPoint + 1);
         } else {
             setPoint(tmpPoint + 1);
@@ -67,7 +66,11 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
     };
 
     const checkStepClick = () => {
-        if (+sumStep === +res[tmpPoint].partialSum && +valueStep === +res[tmpPoint].value) {
+        const trim = (num: string) => {
+            return num.replace(/0+$/, '');
+        };
+
+        if (trim(sumStep) === trim(res[tmpPoint].partialSum) && trim(valueStep) === trim(res[tmpPoint].value)) {
             setSumStep('');
             setValueStep('');
             nextStep();

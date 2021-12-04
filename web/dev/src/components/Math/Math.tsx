@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: '16px',
         transition: 'all 0.5s',
     },
-    containerGetted: {
+    containerGot: {
         transition: 'all 0.5s',
         justifyContent: 'initial',
         gridTemplateColumns: 'repeat(3,1fr)',
@@ -226,7 +226,7 @@ const Math = () => {
             sendDirectLowShiftLeft();
             break;
         default:
-            console.error('нет такого метода');
+            console.error('Нет такого метода');
             break;
         }
     };
@@ -236,7 +236,7 @@ const Math = () => {
             className={`${classes.container} ${
                 multiply === multiplyEnum.NONE ? '' : classes.selected
             } 
-      ${res.length > 0 ? classes.containerGetted : ''}`}
+      ${res.length > 0 ? classes.containerGot : ''}`}
             variant="outlined"
         >
             <div className={classes.header}>
