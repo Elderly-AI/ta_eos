@@ -3,13 +3,13 @@
 
 CREATE TABLE users (
     user_id     SERIAL PRIMARY KEY,
-    name        VARCHAR(20)  default '',
-    email       VARCHAR(20)  default '',
-    study_group VARCHAR(5)   default '',
+    name        VARCHAR(256)  default '',
+    email       VARCHAR(256)  default '',
+    study_group VARCHAR(256)   default '',
     password    VARCHAR(256) default ''
 );
 
-ALTER TABLE users ADD role VARCHAR(20) DEFAULT 'user';
+ALTER TABLE users ADD role VARCHAR(256) DEFAULT 'user';
 -- +goose StatementEnd
 
 -- +goose Down

@@ -1,7 +1,7 @@
 package models
 
 import (
-	utills "github.com/Elderly-AI/ta_eos/internal/pkg/utils"
+	"errors"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 )
 
@@ -30,6 +30,10 @@ func SafeUserFromUser(usr User) SafeUser {
 }
 
 func UserFromGrpc(usr *pb.User) (User, error) {
+	err := validatePbUser(usr)
+	if err != nil {
+		return User{}, err
+	}
 	user := User{
 		UserID:   "",
 		Name:     usr.Name,
@@ -37,8 +41,23 @@ func UserFromGrpc(usr *pb.User) (User, error) {
 		Group:    usr.Group,
 		Password: usr.Password,
 	}
-	err := utills.ValidateStruct(user)
-	return user, err
+	return user, nil
+}
+
+func validatePbUser(user *pb.User) error {
+	if len(user.Name) > 256 || user.Name == "" {
+		return errors.New("user name is too long or too short")
+	}
+	if len(user.Password) > 256 || user.Password == "" {
+		return errors.New("user password is too long or too short")
+	}
+	if len(user.Email) > 256 || user.Email == "" {
+		return errors.New("user email is too long or too short")
+	}
+	if len(user.Group) > 256 || user.Group == "" {
+		return errors.New("user group is too long or too short")
+	}
+	return nil
 }
 
 func UserToGRPCSafeUser(usr User) *pb.SafeUser {
