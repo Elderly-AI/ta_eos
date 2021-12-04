@@ -1,4 +1,4 @@
-package calculations
+package model
 
 type Number struct {
 	Value    uint64

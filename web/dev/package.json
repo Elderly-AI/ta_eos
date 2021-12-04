@@ -4,23 +4,27 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "classnames": "^2.3.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.3",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1"
+  },
+  "devDependencies": {
+    "react-app-rewire-alias": "^1.1.5",
+    "react-app-rewired": "^2.1.8",
     "@types/classnames": "^2.3.1",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
-    "classnames": "^2.3.1",
-    "http-proxy-middleware": "^2.0.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-redux": "^7.2.3",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0",
-    "typescript": "^4.1.2",
-    "web-vitals": "^1.0.1"
+    "eslint-config-google": "^0.14.0",
+    "react-scripts": "4.0.3"
   },
   "scripts": {
     "start": "PORT=3000 HOST=127.0.0.1 react-app-rewired start",
@@ -30,9 +34,36 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+      "google",
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "rules": {
+      "indent": ["error", 4],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"],
+      "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+      "no-duplicate-imports": "error",
+      "no-var": "error",
+      "no-redeclare": "error",
+      "no-unused-vars": "off",
+      "require-jsdoc": "off",
+      "no-multi-spaces": "off",
+      "key-spacing": ["error", { "beforeColon": false, "afterColon": true, "mode": "minimum" }],
+      "max-len": ["error", 120],
+      "no-undef": "off",
+      "new-cap": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/ban-ts-ignore": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "comma-dangle": "off",
+      "react/prop-types":"off",
+      "react/no-children-prop": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -45,9 +76,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "react-app-rewire-alias": "^1.1.5",
-    "react-app-rewired": "^2.1.8"
   }
 }

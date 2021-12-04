@@ -1,34 +1,34 @@
-import Button from "@material-ui/core/Button";
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {ChangeEvent, useState} from "react";
-import {useActions} from "@hooks/useActions";
-import CustomInput, {CustomInputProps} from "@CustomInput";
-import {Link} from "react-router-dom";
+import React, {ChangeEvent, useState} from 'react';
+import Button from '@material-ui/core/Button';
+import {makeStyles, Theme} from '@material-ui/core/styles';
+import {useActions} from '@hooks/useActions';
+import CustomInput, {CustomInputProps} from '@CustomInput';
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexWrap: "wrap",
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexWrap: 'wrap',
     },
     textInputs: {
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
     },
 }));
 
 const inputs: CustomInputProps[] = [
     {
-        id: "email",
-        label: "Email",
+        id: 'email',
+        label: 'Email',
         isPassword: false,
     },
     {
-        id: "password",
-        label: "Пароль",
+        id: 'password',
+        label: 'Пароль',
         isPassword: true,
     },
 ];
@@ -46,35 +46,35 @@ const Login = () => {
     const [fd, setFd] = useState<ILoginForm>({} as ILoginForm);
 
     const formHandler = (e: any) => {
-        // TOKEN
-        // let headers: HeadersInit | undefined;
-        //
-        // if (document.cookie && token) {
-        //     headers = {
-        //         "Content-Type": "application/json;charset=utf-8",
-        //         "X-CSRFToken": token,
-        //     };
-        // } else {
-        //     headers = {
-        //         "Content-Type": "application/json;charset=utf-8",
-        //     };
-        // }
+    // TOKEN
+    // let headers: HeadersInit | undefined;
+    //
+    // if (document.cookie && token) {
+    //     headers = {
+    //         "Content-Type": "application/json;charset=utf-8",
+    //         "X-CSRFToken": token,
+    //     };
+    // } else {
+    //     headers = {
+    //         "Content-Type": "application/json;charset=utf-8",
+    //     };
+    // }
 
         e.preventDefault();
-        // fetch(api.login, {
-        //     method: "POST",
-        //     // headers,
-        //     body: JSON.stringify(fd),
-        // })
-        //     .then((res) => res.json())
-        //     .then((json) => {
-        //         json.token = document.cookie.split("=")[1];
-        //         json.inside = true;
-        //         authorize(json as IAuth);
-        //     })
-        //     .catch((error) => {
-        //         showModal("Неправильно введен email или пароль");
-        //     });
+    // fetch(api.login, {
+    //     method: "POST",
+    //     // headers,
+    //     body: JSON.stringify(fd),
+    // })
+    //     .then((res) => res.json())
+    //     .then((json) => {
+    //         json.token = document.cookie.split("=")[1];
+    //         json.inside = true;
+    //         authorize(json as IAuth);
+    //     })
+    //     .catch((error) => {
+    //         showModal("Неправильно введен email или пароль");
+    //     });
     };
 
     const handleChange = (

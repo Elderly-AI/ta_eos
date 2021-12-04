@@ -1,1 +1,1 @@
-export { default } from "./SumShift";
+export {default} from './SumShift';

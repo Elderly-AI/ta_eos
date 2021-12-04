@@ -1,0 +1,1 @@
+goose -dir ./migrations postgres "host=postgres user=postgres dbname=postgres password=postgres sslmode=disable" up && ./main

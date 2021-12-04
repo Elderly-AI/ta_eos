@@ -3,7 +3,7 @@ package auth
 import (
 	"context"
 	authRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
-	"github.com/Elderly-AI/ta_eos/internal/pkg/models"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 	"github.com/golang/glog"
@@ -25,7 +25,7 @@ func (s *Server) LoginHandler(ctx context.Context, request *pb.LoginRequest) (*p
 			err.Error(),
 		)
 	}
-	return models.UserToGRPCSafeUser(usr), nil
+	return model.UserToGRPCSafeUser(usr), nil
 }
 
 func (s *Server) GetCurrentUser(ctx context.Context, request *pb.EmptyRequest) (*pb.SafeUser, error) {
@@ -38,7 +38,7 @@ func (s *Server) GetCurrentUser(ctx context.Context, request *pb.EmptyRequest) (
 				err.Error(),
 			)
 		}
-		return models.UserToGRPCSafeUser(usr), nil
+		return model.UserToGRPCSafeUser(usr), nil
 	}
 	return nil, status.Error(
 		codes.NotFound,
@@ -52,7 +52,7 @@ func (s *Server) SearchUsers(ctx context.Context, request *pb.SearchRequest) (*p
 		if err != nil {
 			return nil, err
 		}
-		return models.UsersToGRPCSafeUsers(users), nil
+		return model.UsersToGRPCSafeUsers(users), nil
 	}
 	return nil, status.Error(
 		codes.InvalidArgument,
@@ -78,9 +78,9 @@ func (s *Server) RegisterHandler(c context.Context, in *pb.RegisterRequest) (*pb
 				err.Error(),
 			)
 		}
-		return models.UserToGRPCSafeUser(userFromRepo), nil
+		return model.UserToGRPCSafeUser(userFromRepo), nil
 	}
-	cleanUsr, err := models.UserFromGrpc(in.User)
+	cleanUsr, err := model.UserFromGrpc(in.User)
 	if err != nil {
 		return nil, status.Error(
 			codes.InvalidArgument,
@@ -101,5 +101,6 @@ func (s *Server) RegisterHandler(c context.Context, in *pb.RegisterRequest) (*pb
 	if err != nil {
 		return nil, err
 	}
-	return models.UserToGRPCSafeUser(cleanUsr), nil
+	err = s.sessionRepo.SetCookieGRPC(c, userId)
+	return model.UserToGRPCSafeUser(cleanUsr), err
 }

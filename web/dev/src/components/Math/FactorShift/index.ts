@@ -1,1 +1,1 @@
-export { default } from "./FactorShift";
+export {default} from './FactorShift';

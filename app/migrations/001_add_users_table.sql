@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id     SERIAL PRIMARY KEY,
     name        VARCHAR(256)  default '',
     email       VARCHAR(256)  default '',
@@ -9,7 +9,7 @@ CREATE TABLE users (
     password    VARCHAR(256) default ''
 );
 
-ALTER TABLE users ADD role VARCHAR(256) DEFAULT 'user';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(256) DEFAULT 'user';
 -- +goose StatementEnd
 
 -- +goose Down

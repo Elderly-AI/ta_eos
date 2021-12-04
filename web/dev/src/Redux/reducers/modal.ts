@@ -1,6 +1,6 @@
 enum modalAPI {
-  MODAL_SHOW = "MODAL_SHOW",
-  MODAL_UNSHOW = "MODAL_UNSHOW",
+  MODAL_SHOW = 'MODAL_SHOW',
+  MODAL_UNSHOW = 'MODAL_UNSHOW',
 }
 
 export interface IModal {
@@ -9,8 +9,8 @@ export interface IModal {
 }
 
 const initialState: IModal = {
-  text: "",
-  show: false,
+    text: '',
+    show: false,
 };
 
 type show = {
@@ -25,23 +25,23 @@ type unshow = {
 export type modalAction = show | unshow;
 
 export default function modal(
-  state: IModal = initialState,
-  action: modalAction
+    state: IModal = initialState,
+    action: modalAction
 ) {
-  switch (action.type) {
+    switch (action.type) {
     case modalAPI.MODAL_SHOW:
-      return {
-        text: action.payload,
-        show: true,
-      } as IModal;
+        return {
+            text: action.payload,
+            show: true,
+        } as IModal;
     case modalAPI.MODAL_UNSHOW:
-      return {
-        ...state,
-        show: false,
-      };
+        return {
+            ...state,
+            show: false,
+        };
     default:
-      return state;
-  }
+        return state;
+    }
 }
 
-export { modalAPI };
+export {modalAPI};

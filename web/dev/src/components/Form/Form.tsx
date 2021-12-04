@@ -1,34 +1,34 @@
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import {grey} from "@material-ui/core/colors";
-import {useState} from "react";
-import Registration from "@Form/Registration";
-import Login from "@Form/Login";
+import React, {useState} from 'react';
+import {makeStyles, Theme} from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import {grey} from '@material-ui/core/colors';
+import Registration from '@Form/Registration';
+import Login from '@Form/Login';
 
 const animDur = 500;
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
     },
     layout: {
-        overflow: "hidden",
-        padding: "32px 32px",
+        overflow: 'hidden',
+        padding: '32px 32px',
         width: theme.spacing(64),
         backgroundColor: grey[200],
-        borderRadius: "16px",
-        transition: "all 0.5s ease-in-out"
+        borderRadius: '16px',
+        transition: 'all 0.5s ease-in-out',
     },
     tabBar: {
-        marginBottom: theme.spacing(2),
-        "& .MuiTabs-flexContainer": {
-            justifyContent: "center",
+        'marginBottom': theme.spacing(2),
+        '& .MuiTabs-flexContainer': {
+            justifyContent: 'center',
         },
     },
     login: {
@@ -38,9 +38,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         height: theme.spacing(64),
     },
     close: {
-        height: theme.spacing(3.5)
+        height: theme.spacing(3.5),
     },
-    tab: {}
+    tab: {},
 }));
 
 export interface TabPanelProps {
@@ -67,8 +67,8 @@ function TabPanel(props: TabPanelProps) {
 
 function a11yProps(index: any) {
     return {
-        id: `simple-tab-${index}`,
-        "aria-controls": `simple-tabpanel-${index}`,
+        'id': `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
     };
 }
 
@@ -77,19 +77,19 @@ const Form = () => {
     const [value, setValue] = useState(0);
     const [anim, setAnim] = useState<string>(classes.login);
 
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    const handleChange = (event: React.ChangeEvent<Record<any, any>>, newValue: number) => {
         setTimeout(() => {
-            setValue(newValue)
-        }, animDur)
+            setValue(newValue);
+        }, animDur);
         close();
     };
 
     const close = () => {
         setAnim(classes.close);
         setTimeout(() => {
-            return setAnim(value ? classes.login : classes.reg)
-        }, animDur)
-    }
+            return setAnim(value ? classes.login : classes.reg);
+        }, animDur);
+    };
 
     return (
         <div className={classes.root}>
