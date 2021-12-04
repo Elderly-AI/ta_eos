@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	authRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
-	"github.com/Elderly-AI/ta_eos/internal/pkg/models"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 	"github.com/golang/glog"
@@ -21,7 +21,7 @@ func (s *Server) LoginHandler(ctx context.Context, request *pb.LoginRequest) (*p
 	if err != nil {
 		return nil, err
 	}
-	return models.UserToGRPCSafeUser(usr), nil
+	return model.UserToGRPCSafeUser(usr), nil
 }
 
 func (s *Server) GetCurrentUser(ctx context.Context, request *pb.EmptyRequest) (*pb.SafeUser, error) {
@@ -31,7 +31,7 @@ func (s *Server) GetCurrentUser(ctx context.Context, request *pb.EmptyRequest) (
 		if err != nil {
 			return nil, err
 		}
-		return models.UserToGRPCSafeUser(usr), nil
+		return model.UserToGRPCSafeUser(usr), nil
 	}
 	return nil, errors.New("no authenticated user")
 }
@@ -42,7 +42,7 @@ func (s *Server) SearchUsers(ctx context.Context, request *pb.SearchRequest) (*p
 		if err != nil {
 			return nil, err
 		}
-		return models.UsersToGRPCSafeUsers(users), nil
+		return model.UsersToGRPCSafeUsers(users), nil
 	}
 	return nil, errors.New("empty search request")
 }
@@ -62,9 +62,9 @@ func (s *Server) RegisterHandler(c context.Context, in *pb.RegisterRequest) (*pb
 		if err != nil {
 			glog.Error(err)
 		}
-		return models.UserToGRPCSafeUser(userFromRepo), nil
+		return model.UserToGRPCSafeUser(userFromRepo), nil
 	}
-	cleanUsr, err := models.UserFromGrpc(in.User)
+	cleanUsr, err := model.UserFromGrpc(in.User)
 	if err != nil {
 		return nil, err
 	}
@@ -76,5 +76,5 @@ func (s *Server) RegisterHandler(c context.Context, in *pb.RegisterRequest) (*pb
 		return nil, err
 	}
 	err = s.sessionRepo.SetCookieGRPC(c, userId)
-	return models.UserToGRPCSafeUser(cleanUsr), err
+	return model.UserToGRPCSafeUser(cleanUsr), err
 }

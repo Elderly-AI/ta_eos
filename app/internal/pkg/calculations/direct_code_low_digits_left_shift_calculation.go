@@ -1,10 +1,9 @@
 package calculations
 
 import (
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	"strconv"
 	"strings"
-
-	model "github.com/Elderly-AI/ta_eos/internal/pkg/model/calculations"
 )
 
 const (

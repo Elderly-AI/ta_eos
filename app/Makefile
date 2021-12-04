@@ -11,3 +11,9 @@ build:
 
 docker:
 	docker-compose up --build
+
+docker-run:
+	docker-compose up
+
+migrations:
+	goose -dir ./migrations postgres "user=postgres dbname=postgres sslmode=disable" up

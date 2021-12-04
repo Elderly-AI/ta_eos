@@ -75,10 +75,11 @@ func createInitialOptions(conf config.Config) Options {
 	return opts
 }
 
-func addMiddlewares(opts Options) Options {
+func addGRPCMiddlewares(opts Options) Options {
 	opts.Mux = []gwruntime.ServeMuxOption{
 		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
 		gwruntime.WithOutgoingHeaderMatcher(EmptyHeaderMatcherFunc),
+		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
 	}
 	return opts
 }
@@ -86,7 +87,7 @@ func addMiddlewares(opts Options) Options {
 func main() {
 	conf := config.GetConfig()
 	opts := createInitialOptions(conf)
-	opts = addMiddlewares(opts)
+	opts = addGRPCMiddlewares(opts)
 
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
@@ -117,14 +118,13 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	mux := http.NewServeMux()
-
 	mux.Handle("/", gw)
 
+	m := common.NewPostgresMiddleware(opts.PosgtresConnection)
 	gwServer := &http.Server{
 		Addr:    ":8090",
-		Handler: common.AllowCORS(mux),
+		Handler: m.MetricsMiddleware(common.AllowCORS(mux)),
 	}
 
 	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")
