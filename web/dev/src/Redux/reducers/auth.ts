@@ -1,13 +1,13 @@
-import {authLoginRequest, authSafeUser} from "@data/Models";
+import {authLoginRequest, authSafeUser} from '@data/Models';
 
 enum authAPI {
-    AUTHORIZE = "AUTHORIZE",
-    LOG_OUT = "LOG_OUT",
-    INSIDE = "INSIDE",
-    NOT_INSIDE = "NOT_INSIDE",
+    AUTHORIZE = 'AUTHORIZE',
+    LOG_OUT = 'LOG_OUT',
+    INSIDE = 'INSIDE',
+    NOT_INSIDE = 'NOT_INSIDE',
 }
 
-const initialState: null = null;
+const initialState = null;
 
 type authorize = {
     type: authAPI.AUTHORIZE;
@@ -35,18 +35,18 @@ export default function auth(
     action: authAction
 ) {
     switch (action.type) {
-        case authAPI.AUTHORIZE:
-            return action.payload;
-        case authAPI.LOG_OUT:
-            return null;
-        case authAPI.INSIDE:
-            return {
-                ...action.payload,
-            } as authSafeUser;
-        case authAPI.NOT_INSIDE:
-            return null;
-        default:
-            return state;
+    case authAPI.AUTHORIZE:
+        return action.payload;
+    case authAPI.LOG_OUT:
+        return null;
+    case authAPI.INSIDE:
+        return {
+            ...action.payload,
+        } as authSafeUser;
+    case authAPI.NOT_INSIDE:
+        return null;
+    default:
+        return state;
     }
 }
 

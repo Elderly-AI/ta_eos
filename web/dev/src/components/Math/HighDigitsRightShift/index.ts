@@ -1,1 +1,1 @@
-export { default } from "./HighDigitsRightShift";
+export {default} from './HighDigitsRightShift';

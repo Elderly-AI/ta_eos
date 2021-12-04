@@ -1,11 +1,12 @@
-import {Route, Switch, useHistory} from "react-router-dom";
-import "./App.css";
-import Form from "@Form";
-import Modal from "@Modal";
-import Home from "@Home";
-import {useTypedSelector} from "@hooks/useTypedSelector";
+import React from 'react';
+import {Route, Switch, useHistory} from 'react-router-dom';
+import './App.css';
+import Form from '@Form';
+import Modal from '@Modal';
+import Home from '@Home';
+import {useTypedSelector} from '@hooks/useTypedSelector';
 
-function App() {
+const App: React.FC = () => {
     const auth = useTypedSelector((state) => state.auth);
     const modal = useTypedSelector((state) => state.modal);
     const history = useHistory();
@@ -15,13 +16,13 @@ function App() {
             <Switch>
                 <Route exact path="/auth" component={Form}/>
                 <Route path="/home" component={Home}/>
-                {/*{auth?.inside ? history.push("/home") : history.push("/auth")}*/}
+                {/* {auth?.inside ? history.push("/home") : history.push("/auth")}*/}
             </Switch>
-            {modal.show ? <Modal/> : ""}
-             {/*{auth?.inside ? <Home/> : <Form/>} */}
+            {modal.show ? <Modal/> : ''}
+            {/* {auth?.inside ? <Home/> : <Form/>} */}
 
         </div>
     );
-}
+};
 
 export default App;

@@ -1,1 +1,1 @@
-export { default } from './LowDigitsLeftShift';
+export {default} from './LowDigitsLeftShift';

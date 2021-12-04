@@ -1,9 +1,9 @@
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {blue} from "@material-ui/core/colors";
-import React, {Dispatch, SetStateAction, useState} from "react";
-import {calcDirectCodeHighDigitsResponseStep} from "@data/Models";
+import React, {Dispatch, SetStateAction, useState} from 'react';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import {makeStyles, Theme} from '@material-ui/core/styles';
+import {blue} from '@material-ui/core/colors';
+import {calcDirectCodeHighDigitsResponseStep} from '@data/Models';
 
 interface SumShiftProps {
     res: calcDirectCodeHighDigitsResponseStep[],
@@ -13,23 +13,23 @@ interface SumShiftProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
     steps: {
-        justifyItems: "center",
-        alignItems: "center",
-        gridArea: "steps",
-        display: "grid",
+        justifyItems: 'center',
+        alignItems: 'center',
+        gridArea: 'steps',
+        display: 'grid',
         gap: theme.spacing(1),
-        width: "100%",
+        width: '100%',
     },
     stepInput: {
-        width: "100%",
-        color: blue[800],
-        "&:not(:last-child)": {
+        'width': '100%',
+        'color': blue[800],
+        '&:not(:last-child)': {
             marginBottom: theme.spacing(2),
         },
-        "& .MuiOutlinedInput-root": {
-            borderRadius: "16px",
-            "& input": {},
-            "& fieldset": {
+        '& .MuiOutlinedInput-root': {
+            'borderRadius': '16px',
+            '& input': {},
+            '& fieldset': {
                 borderColor: blue[800],
             },
         },
@@ -46,13 +46,15 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
         setSumStep(event.target.value);
         if (buttonWasClicked) {
             setButtonWasClicked(false);
-        }    };
+        }
+    };
 
     const onValueStepChange = (event: any) => {
         setValueStep(event.target.value);
         if (buttonWasClicked) {
             setButtonWasClicked(false);
-        }    };
+        }
+    };
 
     const nextStep = () => {
         setButtonWasClicked(false);
@@ -114,6 +116,6 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
             Подсказать значение
         </Button>
     </div>);
-}
+};
 
 export default SumShift;

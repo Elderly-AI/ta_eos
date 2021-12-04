@@ -1,84 +1,84 @@
-import { makeStyles, Theme } from "@material-ui/core/styles";
-import { useEffect, useState } from "react";
-import { IMath } from "@Math";
-import {Fade} from "@material-ui/core";
-import {calcDirectCodeHighDigitsResponseStep} from "@data/Models";
-import classNames from "classnames";
+import {makeStyles, Theme} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {IMath} from '@Math';
+import {Fade} from '@material-ui/core';
+import {calcDirectCodeHighDigitsResponseStep} from '@data/Models';
+import classNames from 'classnames';
 
 // Забивка пустого места при сдвиге
 const placeholder = 9;
 
 const useStyles = makeStyles((theme: Theme) => ({
     layout: {
-        display: "grid",
+        display: 'grid',
         gap: theme.spacing(4),
-        gridTemplateColumns: "repeat(3, 1fr)",
-        gridArea: "math",
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gridArea: 'math',
     },
     showBit: {
-        "& > p": {
+        '& > p': {
             margin: 0,
-            textAlign: "end",
-            fontSize: "20px",
+            textAlign: 'end',
+            fontSize: '20px',
         },
     },
     showPow: {
-        "& > p": {
-            display: "flex",
-            justifyContent: "flex-start",
+        '& > p': {
+            display: 'flex',
+            justifyContent: 'flex-start',
         },
     },
     res: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
     },
     row: {
         margin: 0,
-        fontSize: "20px",
-        minHeight: "25px",
-        position: "relative",
+        fontSize: '20px',
+        minHeight: '25px',
+        position: 'relative',
     },
     lastRow: {
-        // borderBottom: "1px solid black",
+    // borderBottom: "1px solid black",
     },
     space: {
         margin: 0,
-        fontSize: "20px",
-        color: "rgb(238, 238, 238)",
+        fontSize: '20px',
+        color: 'rgb(238, 238, 238)',
     },
     final: {
-        borderTop: "1px solid black",
-        minHeight: "24px",
+        borderTop: '1px solid black',
+        minHeight: '24px',
     },
     stretch: {
-        border: "1px dotted black",
+        border: '1px dotted black',
     },
     up: {
-        fontSize: "12px",
+        fontSize: '12px',
     },
     down: {
-        fontSize: "7px",
+        fontSize: '7px',
     },
     bit: {
-        width: "12px",
-        textAlign: "center",
+        width: '12px',
+        textAlign: 'center',
     },
     number: {
-        display: "flex",
-        justifyContent: "flex-end",
+        display: 'flex',
+        justifyContent: 'flex-end',
     },
     superDown: { // почему-то тэг sub не работает, поэтому херачим костыли
-        alignSelf: "flex-end",
-        fontSize: "7px",
+        alignSelf: 'flex-end',
+        fontSize: '7px',
     },
     minHeight: {
-        minHeight: "25px",
+        minHeight: '25px',
     },
-    regularPlus : {
-        position: "absolute",
-        bottom: "14px",
-        left: "-13px",
+    regularPlus: {
+        position: 'absolute',
+        bottom: '14px',
+        left: '-13px',
     },
 }));
 
@@ -88,7 +88,7 @@ export interface RightShiftResProps {
     tmpRow: number;
 }
 
-const LowDigitsRightShift = ({ stepsRes, input, tmpRow }: RightShiftResProps) => {
+const LowDigitsRightShift = ({stepsRes, input, tmpRow}: RightShiftResProps) => {
     const classes = useStyles();
     const [savedInput, setSavedInput] = useState<IMath>({} as IMath);
 
@@ -108,7 +108,9 @@ const LowDigitsRightShift = ({ stepsRes, input, tmpRow }: RightShiftResProps) =>
             }
         });
 
-        return <Fade in={tmpRow > count} timeout={{enter: 1500, exit: 0}}><span className={classNames(classes.number, classes.minHeight)}>{res}</span></Fade>;
+        return <Fade in={tmpRow > count} timeout={{enter: 1500, exit: 0}}>
+            <span className={classNames(classes.number, classes.minHeight)}>{res}</span>
+        </Fade>;
     };
 
     const getRow = (num: number, val: string, count: number, isfinal = false) => {
@@ -116,7 +118,7 @@ const LowDigitsRightShift = ({ stepsRes, input, tmpRow }: RightShiftResProps) =>
         if (!val) {
             return [];
         }
-        let styles = isfinal ? classNames(classes.number, classes.final) :
+        const styles = isfinal ? classNames(classes.number, classes.final) :
             classNames(classes.minHeight, classes.number);
 
         if (!val.includes('1')) {
@@ -124,7 +126,7 @@ const LowDigitsRightShift = ({ stepsRes, input, tmpRow }: RightShiftResProps) =>
                 res.push(<div className={classes.bit}>{0}</div>);
             }
         } else {
-            val.split("").map((bit, index) => {
+            val.split('').map((bit, index) => {
                 if (index !== 0 || +bit === 1 || num !== stepsRes.length - 1) {
                     return res.push(<div className={classes.bit}>{bit}</div>);
                 } else {
@@ -145,8 +147,8 @@ const LowDigitsRightShift = ({ stepsRes, input, tmpRow }: RightShiftResProps) =>
                         <p className={classes.row}/>
                         <p className={classes.row}>
                             b<sub className={classes.down}>
-                            {stepsRes.length - (row.index as unknown as number) - 1}
-                        </sub>
+                                {stepsRes.length - (row.index as unknown as number) - 1}
+                            </sub>
                             ={row.binDec}
                         </p>
                     </p>
@@ -169,11 +171,18 @@ const LowDigitsRightShift = ({ stepsRes, input, tmpRow }: RightShiftResProps) =>
                     {savedInput.secondVal}
                 </p>
                 {stepsRes.map((row, index) => {
-                    return <p className={classes.row}>
-                        {getRow(Number(row.index), row.partialSum, index, true)}
-                        {getValueRow(Number(row.index), row.value, index)}
-                        {index !== stepsRes.length - 1 ? <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}><div className={classes.regularPlus}>+</div></Fade> : ''}
-                    </p>
+                    return (
+                        <p key={`key_${row.partialSum}${row.value}${index}`} className={classes.row}>
+                            {getRow(Number(row.index), row.partialSum, index, true)}
+                            {getValueRow(Number(row.index), row.value, index)}
+                            {index !== stepsRes.length - 1 ?
+                                <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
+                                    <div className={classes.regularPlus}>+</div>
+                                </Fade> :
+                                ''
+                            }
+                        </p>
+                    );
                 })}
             </div>
             <div className={classes.showPow}>
