@@ -1,7 +1,7 @@
 package calculations
 
 import (
-	model "github.com/Elderly-AI/ta_eos/internal/pkg/model/calculations"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 )
 
 func (c *Facade) DirectCodeHighDigitsRightShiftCalculation(req model.CalculationRequest) (steps []model.Step) {

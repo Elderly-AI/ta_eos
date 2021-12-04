@@ -2,8 +2,8 @@ package calculations
 
 import (
 	"context"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 
-	model "github.com/Elderly-AI/ta_eos/internal/pkg/model/calculations"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
 )
 

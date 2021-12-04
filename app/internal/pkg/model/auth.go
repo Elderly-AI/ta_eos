@@ -1,4 +1,4 @@
-package models
+package model
 
 import (
 	utills "github.com/Elderly-AI/ta_eos/internal/pkg/utils"

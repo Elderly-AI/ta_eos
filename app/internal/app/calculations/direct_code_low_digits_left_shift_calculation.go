@@ -3,12 +3,12 @@ package calculations
 import (
 	"context"
 	"fmt"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	"strconv"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	model "github.com/Elderly-AI/ta_eos/internal/pkg/model/calculations"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
 )
 
