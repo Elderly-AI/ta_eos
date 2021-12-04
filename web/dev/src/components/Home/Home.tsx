@@ -1,6 +1,6 @@
 import { blue } from "@material-ui/core/colors";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import Math from "../Math"
+import Math from "@Math";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {

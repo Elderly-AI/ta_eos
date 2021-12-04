@@ -1,9 +1,9 @@
-import "./App.css";
-import Form from "./components/Form";
-import Modal from "./components/Modal";
-import {useTypedSelector} from "./hooks/useTypedSelector";
 import {Route, Switch, useHistory} from "react-router-dom";
-import Home from "./components/Home";
+import "./App.css";
+import Form from "@Form";
+import Modal from "@Modal";
+import Home from "@Home";
+import {useTypedSelector} from "@hooks/useTypedSelector";
 
 function App() {
     const auth = useTypedSelector((state) => state.auth);

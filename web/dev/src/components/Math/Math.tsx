@@ -8,14 +8,14 @@ import {blue, grey} from "@material-ui/core/colors";
 import Paper from "@material-ui/core/Paper";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import React, {ChangeEvent, useState} from "react";
-import CustomInput, {CustomInputProps} from "../CustomInput/CustomInput";
+import CustomInput, {CustomInputProps} from "@CustomInput";
 import HighDigitsLeftShift from "./HighDigitsLeftShift";
 import LowDigitsLeftShift from "./LowDigitsLeftShift";
 import HighDigitsRightShift from "./HighDigitsRightShift";
-import DataService from "../../data/DataService";
-import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from "../../data/Models";
-import SumShift from "./SumShift/SumShift";
-import FactorShift from "./FactorShift/FactorShift";
+import DataService from "@data/DataService";
+import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from "@data/Models";
+import SumShift from "./SumShift";
+import FactorShift from "./FactorShift";
 
 const useStyles = makeStyles((theme: Theme) => ({
     header: {

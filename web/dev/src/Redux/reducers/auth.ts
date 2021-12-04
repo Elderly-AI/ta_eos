@@ -1,4 +1,4 @@
-import {authLoginRequest, authSafeUser} from "../../data/Models";
+import {authLoginRequest, authSafeUser} from "@data/Models";
 
 enum authAPI {
     AUTHORIZE = "AUTHORIZE",

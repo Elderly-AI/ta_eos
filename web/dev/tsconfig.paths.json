@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@CustomInput": ["src/components/CustomInput"],
+      "@Form": ["src/components/Form"],
+      "@Form/*": ["src/components/Form/*"],
+      "@Home": ["src/components/Home"],
+      "@Math": ["src/components/Math"],
+      "@Math/*": ["src/components/Math/*"],
+      "@Modal": ["src/components/Modal"],
+      "@data/*": ["src/data/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@Redux/*": ["src/Redux/*"]
+    }
+  }
+}

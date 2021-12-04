@@ -1,6 +1,6 @@
 import {Dispatch} from "redux";
-import {authAction, authAPI} from "../reducers/auth";
-import {authLoginRequest} from "../../data/Models";
+import {authAction, authAPI} from "@Redux/reducers/auth";
+import {authLoginRequest} from "@data/Models";
 
 export const authorize = (user: authLoginRequest) => {
     return (dispatch: Dispatch<authAction>) => {

@@ -1,8 +1,8 @@
 import Button from "@material-ui/core/Button";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {ChangeEvent, useState} from "react";
-import {useActions} from "../../../hooks/useActions";
-import CustomInput, {CustomInputProps} from "../../CustomInput/CustomInput";
+import {useActions} from "@hooks/useActions";
+import CustomInput, {CustomInputProps} from "@CustomInput";
 import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({

@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import { modalAction, modalAPI, IModal} from "../reducers/modal";
+import { modalAction, modalAPI} from "@Redux/reducers/modal";
 
 export const showModal = (text: string) => {
   return (dispatch: Dispatch<modalAction>) => {

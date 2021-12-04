@@ -5,8 +5,8 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import {grey} from "@material-ui/core/colors";
 import {useState} from "react";
-import Registration from "./Registration";
-import Login from "./Login";
+import Registration from "@Form/Registration";
+import Login from "@Form/Login";
 
 const animDur = 500;
 
