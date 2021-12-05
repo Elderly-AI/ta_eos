@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     res: {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
     },
     row: {
         margin: 0,
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     number: {
         display: 'flex',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
     },
     minHeight: {
         minHeight: '25px',
@@ -79,12 +79,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export interface ShiftResProps {
-  input: IMath;
-  stepsRes: calcDirectCodeHighDigitsResponseStep[];
-  tmpRow: number;
+    input: IMath;
+    stepsRes: calcDirectCodeHighDigitsResponseStep[];
+    tmpRow: number;
 }
 
-const HighDigitsLeftShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
+const LowDigitsRightShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
     const classes = useStyles();
     const [savedInput, setSavedInput] = useState<IMath>({} as IMath);
 
@@ -96,7 +96,7 @@ const HighDigitsLeftShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
         const res: any[] = [];
 
         val.split('').map((bit, index) => {
-            if (index >= (val.length / 2)) {
+            if (index < (val.length / 2) + num) {
                 return res.push(<div className={classes.bit}>{bit}</div>);
             }
         });
@@ -119,12 +119,13 @@ const HighDigitsLeftShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
                 res.push(<div className={classes.bit}>{0}</div>);
             }
         } else {
-            let wasOneBit = false;
+            if (num === stepsRes.length - 2 && isfinal) {
+                val = (+val).toString();
+            } else {
+                val = val.replace(/0+$/, '');
+            }
             val.split('').map((bit) => {
-                wasOneBit = !wasOneBit ? !wasOneBit && bit === '1' : true;
-                if (wasOneBit) {
-                    return res.push(<div className={classes.bit}>{bit}</div>);
-                }
+                return res.push(<div className={classes.bit}>{bit}</div>);
             });
         }
 
@@ -139,7 +140,7 @@ const HighDigitsLeftShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
                         <p className={classes.row}>
                         </p>
                         <p className={classes.row}>
-                b<sub className={classes.down}>{row.index}</sub>={row.binDec}
+                            b<sub className={classes.down}>{`-${stepsRes.length - +row.index - 1}`}</sub>={row.binDec}
                         </p>
                         <p className={classes.row}>{num === stepsRes.length - 2 ? 'П =' : ''}</p>
                     </p>
@@ -163,7 +164,7 @@ const HighDigitsLeftShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
                 {stepsRes.map((row, index, arr) => {
                     if (index < arr.length - 1) {
                         return <p className={classes.row}>
-                            {getRow(index, row.partialSum + '0', index)}
+                            {getRow(index, '0' + row.partialSum, index)}
                             {getValueRow(index, row.value, index)}
                             {getRow(index, arr[index + 1].partialSum, index, true)}
                             {index !== stepsRes.length - 1 ?
@@ -183,15 +184,25 @@ const HighDigitsLeftShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
                         in={tmpRow > index}
                         timeout={{enter: 1500, exit: 0}}>
                         <div>
+                            {index !== 0 ?
+                                <p className={classes.row}>
+                                    S<sub className={classes.down}>{row.index}</sub>
+                                    ·2<sup className={classes.up}>{'-1'}</sup>
+                                </p> :
+                                <p className={classes.row}>
+                                    S<sub className={classes.down}>{row.index}</sub>
+                                </p>
+                            }
                             <p className={classes.row}>
-                                {index !== 0 ? '2·S' : 'S'}<sub className={classes.down}>{row.index}</sub>
+                                {'|A|·b'}
+                                <sub className={classes.down}>{`-${stepsRes.length - +row.index - 1}`}</sub>
                             </p>
-                            <p className={classes.row}>
-                  |A|
-                            </p>
-                            {index !== stepsRes.length - 2 ? <p className={classes.row}>
-                  S<sub className={classes.down}>{+row.index + 1}</sub>
-                            </p> : ''}
+                            {index !== stepsRes.length - 2 ?
+                                <p className={classes.row}>
+                                S<sub className={classes.down}>{+row.index + 1}</sub>
+                                </p> :
+                                ''
+                            }
                         </div>
                     </Fade>
                 )}
@@ -200,4 +211,4 @@ const HighDigitsLeftShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
     );
 };
 
-export default HighDigitsLeftShift;
+export default LowDigitsRightShift;

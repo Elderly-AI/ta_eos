@@ -12,6 +12,7 @@ import CustomInput, {CustomInputProps} from '@CustomInput';
 import HighDigitsLeftShift from './HighDigitsLeftShift';
 import LowDigitsLeftShift from './LowDigitsLeftShift';
 import HighDigitsRightShift from './HighDigitsRightShift';
+import LowDigitsRightShift from './LowDigitsRightShift';
 import DataService from '@data/DataService';
 import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from '@data/Models';
 import SumShift from './SumShift';
@@ -99,6 +100,7 @@ export enum multiplyEnum {
   DIRECT_HIGH_DIGITS_SHIFT_RIGHT = 'Прямой код со старших разрядов сдвигом вправо',
   DIRECT_HIGH_DIGITS_SHIFT_LEFT = 'Прямой код со со старших разрядов сдвигом влево',
   DIRECT_LOW_DIGITS_SHIFT_LEFT = 'Прямой код с младших разрядов сдвигом влево',
+  DIRECT_LOW_DIGITS_SHIFT_RIGHT = 'Прямой код с младших разрядов сдвигом вправо',
 }
 
 export enum shiftEnum {
@@ -140,13 +142,16 @@ const Math = () => {
 
     switch (multiply) {
     case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
-        MultipleTypeSelector = <HighDigitsLeftShift input={math} res={res} tmpRow={tmpPoint}/>;
+        MultipleTypeSelector = <HighDigitsLeftShift input={math} stepsRes={res} tmpRow={tmpPoint}/>;
         break;
     case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
         MultipleTypeSelector = <HighDigitsRightShift input={math} stepsRes={res} tmpRow={tmpPoint}/>;
         break;
     case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
         MultipleTypeSelector = <LowDigitsLeftShift input={math} stepsRes={res} tmpRow={tmpPoint}/>;
+        break;
+    case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT:
+        MultipleTypeSelector = <LowDigitsRightShift input={math} stepsRes={res} tmpRow={tmpPoint}/>;
         break;
     default:
         MultipleTypeSelector = null;
@@ -159,6 +164,7 @@ const Math = () => {
         case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
             setShiftType(shiftEnum.factorShift);
             break;
+        case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT:
         case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
             setShiftType(shiftEnum.sumShift);
             break;
@@ -210,6 +216,15 @@ const Math = () => {
             .then((data) => setDirectCodeResult(data));
     };
 
+    const sendDirectLowShiftRight = () => {
+        const {firstVal, secondVal} = math;
+
+        const grid = firstVal.length > secondVal.length ? firstVal.length : secondVal.length;
+
+        DataService.directCodeLowRightShift({multiplier: firstVal, factor: secondVal, gridSize: grid})
+            .then((data) => setDirectCodeResult(data));
+    };
+
     /**
      * Сюда закидываем новые методы
      * Пишем их в кейсы, не забывая объявить в перечислениях
@@ -224,6 +239,9 @@ const Math = () => {
             break;
         case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
             sendDirectLowShiftLeft();
+            break;
+        case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT:
+            sendDirectLowShiftRight();
             break;
         default:
             console.error('Нет такого метода');
@@ -259,6 +277,9 @@ const Math = () => {
                         </MenuItem>
                         <MenuItem value={multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT}>
                             {multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT}
+                        </MenuItem>
+                        <MenuItem value={multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT}>
+                            {multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT}
                         </MenuItem>
                     </Select>
                     <FormHelperText>Выберите способ умножения</FormHelperText>

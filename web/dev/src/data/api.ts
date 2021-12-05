@@ -19,6 +19,7 @@ const api = {
             highLeftShift: host + '/api/v1/calculations/direct_code/high_digits/left_shift',
             highRightShift: host + '/api/v1/calculations/direct_code/high_digits/right_shift',
             lowLeftShift: host + '/api/v1/calculations/direct_code/low_digits/left_shift',
+            lowRightShift: host + '/api/v1/calculations/direct_code/low_digits/right_shift',
         },
     },
 };

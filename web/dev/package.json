@@ -30,6 +30,7 @@
     "start": "PORT=3000 HOST=127.0.0.1 react-app-rewired start",
     "build": "PORT=3000 BUILD_PATH='../dist/app' react-app-rewired build",
     "test": "react-app-rewired test",
+    "lint-fix": "./node_modules/react-scripts/node_modules/.bin/eslint src --fix",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
