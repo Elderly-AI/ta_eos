@@ -133,7 +133,7 @@ const inputs: CustomInputProps[] = [
 
 const Math = () => {
     const classes = useStyles();
-    const [multiply, setMultiply] = useState<string>(multiplyEnum.NONE);
+    const [multiply, setMultiply] = useState<multiplyEnum>(multiplyEnum.NONE);
     const [shiftType, setShiftType] = useState(shiftEnum.NONE);
     const [math, setMath] = useState<IMath>({} as IMath);
     const [res, setRes] = useState<calcDirectCodeHighDigitsResponseStep[]>([]);
@@ -173,7 +173,7 @@ const Math = () => {
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setRes([]);
-        setMultiply(event.target.value as string);
+        setMultiply(event.target.value as multiplyEnum);
         changeShiftType(event.target.value as string);
     };
 
@@ -311,8 +311,8 @@ const Math = () => {
 
             {res.length > 0 ? (
                 shiftType === shiftEnum.sumShift ?
-                    <SumShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/> :
-                    <FactorShift res={res} tmpPoint={tmpPoint} setPoint={setPoint}/>
+                    <SumShift multipleType={multiply} res={res} tmpPoint={tmpPoint} setPoint={setPoint}/> :
+                    <FactorShift multipleType={multiply} res={res} tmpPoint={tmpPoint} setPoint={setPoint}/>
             ) : (
                 ''
             )}

@@ -4,8 +4,10 @@ import Button from '@material-ui/core/Button';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import {blue} from '@material-ui/core/colors';
 import {calcDirectCodeHighDigitsResponseStep} from '@data/Models';
+import {multiplyEnum} from '@Math/Math';
 
 interface SumShiftProps {
+    multipleType: multiplyEnum,
     res: calcDirectCodeHighDigitsResponseStep[],
     tmpPoint: number,
     setPoint: Dispatch<SetStateAction<number>>,
@@ -36,7 +38,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
+const SumShift: React.FC<SumShiftProps> = ({
+    multipleType,
+    res,
+    tmpPoint,
+    setPoint
+}) => {
     const [sumStep, setSumStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
     const [shiftedSumStep, setShiftedSumStep] = useState<string>(''); // тут лежит то, что написано в
     // инпуте текущего шага
@@ -74,10 +81,27 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
         }
     };
 
+    const resultCheck = () => {
+        const trim = (num: string) => {
+            return num.replace(/0+$/, '');
+        };
+
+        switch (multipleType) {
+        case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
+            return +termStep === +res[tmpPoint].value &&
+                +sumStep === +res[tmpPoint + 1].partialSum &&
+                +shiftedSumStep === +(res[tmpPoint].partialSum + '0');
+        case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT:
+            return trim(termStep) === trim(res[tmpPoint].value) &&
+                trim(sumStep) === trim(res[tmpPoint + 1].partialSum) &&
+                trim(shiftedSumStep) === trim('0' + res[tmpPoint].partialSum);
+        default:
+            return false;
+        }
+    };
+
     const checkStepClick = () => {
-        if (+termStep === +res[tmpPoint].value &&
-            +sumStep === +res[tmpPoint + 1].partialSum &&
-            +shiftedSumStep === +(res[tmpPoint].partialSum + '0')) {
+        if (resultCheck()) {
             setSumStep('');
             setShiftedSumStep('');
             setTermStep('');

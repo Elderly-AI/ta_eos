@@ -4,8 +4,10 @@ import Button from '@material-ui/core/Button';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import {blue} from '@material-ui/core/colors';
 import {calcDirectCodeHighDigitsResponseStep} from '@data/Models';
+import {multiplyEnum} from '@Math/Math';
 
 interface SumShiftProps {
+    multipleType: multiplyEnum,
     res: calcDirectCodeHighDigitsResponseStep[],
     tmpPoint: number,
     setPoint: Dispatch<SetStateAction<number>>,
@@ -36,7 +38,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
+const SumShift: React.FC<SumShiftProps> = ({
+    multipleType,
+    res,
+    tmpPoint,
+    setPoint
+}) => {
     const [sumStep, setSumStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
     const [valueStep, setValueStep] = useState<string>(''); // тут лежит то, что написано в инпуте текущего шага
     const [buttonWasClicked, setButtonWasClicked] = useState(false);
@@ -65,12 +72,23 @@ const SumShift: React.FC<SumShiftProps> = ({res, tmpPoint, setPoint}) => {
         }
     };
 
-    const checkStepClick = () => {
+    const resultCheck = () => {
         const trim = (num: string) => {
             return num.replace(/0+$/, '');
         };
 
-        if (trim(sumStep) === trim(res[tmpPoint].partialSum) && trim(valueStep) === trim(res[tmpPoint].value)) {
+        switch (multipleType) {
+        case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
+            return trim(sumStep) === trim(res[tmpPoint].partialSum) && trim(valueStep) === trim(res[tmpPoint].value);
+        case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
+            return +sumStep === +res[tmpPoint].partialSum && +valueStep === +res[tmpPoint].value;
+        default:
+            return false;
+        }
+    };
+
+    const checkStepClick = () => {
+        if (resultCheck()) {
             setSumStep('');
             setValueStep('');
             nextStep();
