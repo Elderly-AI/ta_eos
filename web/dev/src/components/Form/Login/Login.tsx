@@ -4,6 +4,7 @@ import {ChangeEvent, useState} from "react";
 import {useActions} from "../../../hooks/useActions";
 import CustomInput, {CustomInputProps} from "../../CustomInput/CustomInput";
 import {Link} from "react-router-dom";
+import {authLoginRequest} from "../../../data/Models";
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {
@@ -31,19 +32,19 @@ const inputs: CustomInputProps[] = [
         label: "Пароль",
         isPassword: true,
     },
+    {
+        id: 'group',
+        label: 'Группа',
+        isPassword: false
+    }
 ];
-
-export interface ILoginForm {
-    login: string;
-    password: string;
-}
 
 const Login = () => {
     const {authorize, showModal} = useActions();
     const classes = useStyles();
     // TOKEN
     // const token = useTypedSelector((store) => store.auth?.token);
-    const [fd, setFd] = useState<ILoginForm>({} as ILoginForm);
+    const [fd, setFd] = useState<authLoginRequest>({} as authLoginRequest);
 
     const formHandler = (e: any) => {
         // TOKEN
@@ -61,20 +62,11 @@ const Login = () => {
         // }
 
         e.preventDefault();
-        // fetch(api.login, {
-        //     method: "POST",
-        //     // headers,
-        //     body: JSON.stringify(fd),
-        // })
-        //     .then((res) => res.json())
-        //     .then((json) => {
-        //         json.token = document.cookie.split("=")[1];
-        //         json.inside = true;
-        //         authorize(json as IAuth);
-        //     })
-        //     .catch((error) => {
-        //         showModal("Неправильно введен email или пароль");
-        //     });
+        authorize({
+            email: fd.email,
+            password: fd.password,
+            group: fd.group
+        } as authLoginRequest);
     };
 
     const handleChange = (

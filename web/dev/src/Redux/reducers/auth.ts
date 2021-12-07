@@ -1,34 +1,38 @@
-import {authLoginRequest, authSafeUser} from "../../data/Models";
+import {authSafeUser, authUser} from "../../data/Models";
 
 enum authAPI {
     AUTHORIZE = "AUTHORIZE",
     LOG_OUT = "LOG_OUT",
-    INSIDE = "INSIDE",
+    GET_CURRENT_USER = "GET_CURRENT_USER",
     NOT_INSIDE = "NOT_INSIDE",
+    REGISTER = 'REGISTER'
 }
 
 const initialState: null = null;
 
 type authorize = {
     type: authAPI.AUTHORIZE;
-    payload: authLoginRequest;
+    payload: authUser;
 };
 
 type logOut = {
     type: authAPI.LOG_OUT;
 };
 
-type inside = {
-    type: authAPI.INSIDE;
+type getCurrentUser = {
+    type: authAPI.GET_CURRENT_USER;
     payload: authSafeUser;
-    inside: boolean;
 };
 
 type notInside = {
     type: authAPI.NOT_INSIDE;
 };
 
-export type authAction = authorize | logOut | inside | notInside;
+type register = {
+    type: authAPI.REGISTER
+}
+
+export type authAction = authorize | logOut | getCurrentUser | notInside | register;
 
 export default function auth(
     state: authSafeUser | null = initialState,
@@ -39,12 +43,12 @@ export default function auth(
             return action.payload;
         case authAPI.LOG_OUT:
             return null;
-        case authAPI.INSIDE:
-            return {
-                ...action.payload,
-            } as authSafeUser;
+        case authAPI.GET_CURRENT_USER:
+            return action.payload
         case authAPI.NOT_INSIDE:
-            return null;
+            return state;
+        case authAPI.REGISTER:
+            return state;
         default:
             return state;
     }

@@ -12,7 +12,11 @@ import {
 class DataService implements ApiInterface {
     async curUser(): Promise<authSafeUser> {
         return await fetch(api.curUser)
-            .then((res) => res.json())
+            .then((res) => {
+                if (res.ok) {
+                    return res.json()
+                }
+            })
             .catch((err) => console.error(err))
             .then((dat: authSafeUser) => dat)
     }
