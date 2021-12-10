@@ -1,10 +1,10 @@
-import Button from "@material-ui/core/Button";
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {ChangeEvent, useState} from "react";
-import CustomInput from "../../CustomInput";
-import {CustomInputProps} from "../../CustomInput/CustomInput";
-import {useActions} from "../../../hooks/useActions";
-import {authLoginRequest, authRegisterRequest} from "../../../data/Models";
+import Button from '@material-ui/core/Button';
+import React, {ChangeEvent, useState} from 'react';
+import {makeStyles, Theme} from '@material-ui/core/styles';
+import CustomInput from '../../CustomInput';
+import {CustomInputProps} from '@CustomInput';
+import {useActions} from '@hooks/useActions';
+import {authLoginRequest, authRegisterRequest} from '@data/Models';
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {

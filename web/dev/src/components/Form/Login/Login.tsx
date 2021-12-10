@@ -1,10 +1,10 @@
-import Button from "@material-ui/core/Button";
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {ChangeEvent, useState} from "react";
-import {useActions} from "../../../hooks/useActions";
-import CustomInput, {CustomInputProps} from "../../CustomInput/CustomInput";
-import {Link} from "react-router-dom";
-import {authLoginRequest} from "../../../data/Models";
+import Button from '@material-ui/core/Button';
+import React, {ChangeEvent, useState} from 'react';
+import {makeStyles, Theme} from '@material-ui/core/styles';
+import {useActions} from '@hooks/useActions';
+import CustomInput, {CustomInputProps} from '../../CustomInput/CustomInput';
+import {Link} from 'react-router-dom';
+import {authLoginRequest} from '@data/Models';
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {
@@ -47,19 +47,19 @@ const Login = () => {
     const [fd, setFd] = useState<authLoginRequest>({} as authLoginRequest);
 
     const formHandler = (e: any) => {
-    // TOKEN
-    // let headers: HeadersInit | undefined;
-    //
-    // if (document.cookie && token) {
-    //     headers = {
-    //         "Content-Type": "application/json;charset=utf-8",
-    //         "X-CSRFToken": token,
-    //     };
-    // } else {
-    //     headers = {
-    //         "Content-Type": "application/json;charset=utf-8",
-    //     };
-    // }
+        // TOKEN
+        // let headers: HeadersInit | undefined;
+        //
+        // if (document.cookie && token) {
+        //     headers = {
+        //         "Content-Type": "application/json;charset=utf-8",
+        //         "X-CSRFToken": token,
+        //     };
+        // } else {
+        //     headers = {
+        //         "Content-Type": "application/json;charset=utf-8",
+        //     };
+        // }
 
         e.preventDefault();
         authorize({

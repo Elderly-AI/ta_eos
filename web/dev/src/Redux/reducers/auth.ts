@@ -1,10 +1,10 @@
-import {authSafeUser, authUser} from "../../data/Models";
+import {authSafeUser, authUser} from '../../data/Models';
 
 enum authAPI {
-    AUTHORIZE = "AUTHORIZE",
-    LOG_OUT = "LOG_OUT",
-    GET_CURRENT_USER = "GET_CURRENT_USER",
-    NOT_INSIDE = "NOT_INSIDE",
+    AUTHORIZE = 'AUTHORIZE',
+    LOG_OUT = 'LOG_OUT',
+    GET_CURRENT_USER = 'GET_CURRENT_USER',
+    NOT_INSIDE = 'NOT_INSIDE',
     REGISTER = 'REGISTER'
 }
 
@@ -39,18 +39,18 @@ export default function auth(
     action: authAction
 ) {
     switch (action.type) {
-        case authAPI.AUTHORIZE:
-            return action.payload;
-        case authAPI.LOG_OUT:
-            return null;
-        case authAPI.GET_CURRENT_USER:
-            return action.payload
-        case authAPI.NOT_INSIDE:
-            return state;
-        case authAPI.REGISTER:
-            return state;
-        default:
-            return state;
+    case authAPI.AUTHORIZE:
+        return action.payload;
+    case authAPI.LOG_OUT:
+        return null;
+    case authAPI.GET_CURRENT_USER:
+        return action.payload;
+    case authAPI.NOT_INSIDE:
+        return state;
+    case authAPI.REGISTER:
+        return state;
+    default:
+        return state;
     }
 }
 
