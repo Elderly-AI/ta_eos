@@ -19,6 +19,7 @@ export type authSafeUser = {
     name: string,
     email: string,
     group: string
+    role: string
 }
 
 export type calcDirectCodeRequest = {
