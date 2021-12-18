@@ -378,6 +378,9 @@
         },
         "role": {
           "type": "string"
+        },
+        "userId": {
+          "type": "string"
         }
       }
     },

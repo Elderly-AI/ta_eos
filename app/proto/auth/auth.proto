@@ -47,6 +47,7 @@ message SafeUser {
   string email = 2;
   string group = 3;
   string role = 4;
+  string user_id = 5;
 }
 
 message LoginRequest {

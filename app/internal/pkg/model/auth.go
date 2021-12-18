@@ -6,10 +6,11 @@ import (
 )
 
 type SafeUser struct {
-	Name  string `json:"name,omitempty" db:"name"`
-	Email string `json:"email,omitempty" db:"email"`
-	Group string `json:"group,omitempty" db:"study_group"`
-	Role  string `json:"role,omitempty" db:"role"`
+	UserID string `json:"user_id,omitempty" db:"user_id"`
+	Name   string `json:"name,omitempty" db:"name"`
+	Email  string `json:"email,omitempty" db:"email"`
+	Group  string `json:"group,omitempty" db:"study_group"`
+	Role   string `json:"role,omitempty" db:"role"`
 }
 
 type User struct {
@@ -62,10 +63,11 @@ func validatePbUser(user *pb.User) error {
 
 func UserToGRPCSafeUser(usr User) *pb.SafeUser {
 	return &pb.SafeUser{
-		Name:  usr.Name,
-		Email: usr.Email,
-		Group: usr.Group,
-		Role:  usr.Role,
+		Name:   usr.Name,
+		Email:  usr.Email,
+		Group:  usr.Group,
+		Role:   usr.Role,
+		UserId: usr.UserID,
 	}
 }
 
