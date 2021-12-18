@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package metrics;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// Defines the import path that should be used to import the generated package
+// and the package name
+option go_package = "github.com/Elderly-AI/ta_eos/proto/metrics;metrics";
+
+// Here is the overall greeting service definition where we define all our endpoints
+service Metrics {
+  rpc SearchTimestamp (SearchMetricsTimestampRequest) returns (MetricsArray) {
+    option (google.api.http) = {
+      get: "/api/v1/metrics/search_timestamp"
+    };
+  }
+  rpc Search (SearchMetricsRequest) returns (MetricsArray) {
+    option (google.api.http) = {
+      get: "/api/v1/metrics/search"
+    };
+  }
+
+}
+
+message SearchMetricsTimestampRequest {
+  string text = 1;
+  google.protobuf.Timestamp from = 2;
+  google.protobuf.Timestamp to = 3;
+}
+
+message SearchMetricsRequest{
+  string text = 1;
+}
+
+
+message MetricsArray{
+  repeated Metric metrics = 1;
+}
+
+
+message Metric{
+  string method_name = 1;
+  google.protobuf.Timestamp date = 2;
+  google.protobuf.Struct metric_data = 3;
+  int64 user_id = 4;
+}

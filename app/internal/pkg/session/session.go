@@ -3,24 +3,29 @@ package session
 import (
 	"context"
 	"fmt"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/database/metrics"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
 	"github.com/nu7hatch/gouuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 type Store struct {
 	db            *redis.Client
+	metricsRepo   *metrics.Repo
 	cookieTimeout int
 }
 
-func CreateSessionStore(client *redis.Client, cookieTimeout int) *Store {
+func CreateSessionStore(client *redis.Client, cookieTimeout int, repo *metrics.Repo) *Store {
 	return &Store{
 		db:            client,
 		cookieTimeout: cookieTimeout,
+		metricsRepo:   repo,
 	}
 }
 
@@ -30,13 +35,24 @@ func (s *Store) AuthMiddleware(ctx context.Context, request *http.Request) metad
 	if err != nil {
 		return nil
 	}
-	result, err := s.db.Get(ctx, token.Value).Result()
+	rawUserId, err := s.db.Get(ctx, token.Value).Result()
 	if err != nil {
-		glog.Warning("No auth")
-		result = ""
+		rawUserId = ""
 	}
-	meta["user_id"] = result
+	userId, _ := strconv.Atoi(rawUserId)
+	meta["user_id"] = rawUserId
 	md := metadata.New(meta)
+
+	metric := model.Metric{ // TODO add to usecase
+		MethodName: request.RequestURI,
+		Date:       time.Now(),
+		UserId:     int64(userId),
+	}
+	err = s.metricsRepo.AddMetric(metric)
+	if err != nil {
+		glog.Warning("error on metrics %r", err)
+	}
+
 	return md
 }
 

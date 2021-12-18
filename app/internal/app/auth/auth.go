@@ -25,6 +25,10 @@ func (s *Server) LoginHandler(ctx context.Context, request *pb.LoginRequest) (*p
 			err.Error(),
 		)
 	}
+	err = s.sessionRepo.SetCookieGRPC(ctx, usr.UserID)
+	if err != nil {
+		return nil, err
+	}
 	return model.UserToGRPCSafeUser(usr), nil
 }
 
@@ -101,6 +105,5 @@ func (s *Server) RegisterHandler(c context.Context, in *pb.RegisterRequest) (*pb
 	if err != nil {
 		return nil, err
 	}
-	err = s.sessionRepo.SetCookieGRPC(c, userId)
 	return model.UserToGRPCSafeUser(cleanUsr), err
 }

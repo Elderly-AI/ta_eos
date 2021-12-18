@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/Elderly-AI/ta_eos/internal/app/metrics"
+	metricsRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/metrics"
+	pbMetrics "github.com/Elderly-AI/ta_eos/pkg/proto/metrics"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -31,6 +34,10 @@ func registerServices(opts Options, s *grpc.Server) {
 	calculationsFacade := calcFacade.New()
 	calculationsDelivery := calc.NewCalculationsHandler(calculationsFacade)
 	pbCalculations.RegisterCalculationsServer(s, &calculationsDelivery)
+
+	repo := metricsRepo.NewMetricsRepo(opts.PosgtresConnection)
+	metricsDelivery := metrics.NewMetricsHandler(repo)
+	pbMetrics.RegisterMetricsServer(s, &metricsDelivery)
 }
 
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
@@ -39,6 +46,7 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 	for _, f := range []func(ctx context.Context, mux *gwruntime.ServeMux, conn *grpc.ClientConn) error{
 		pbAuth.RegisterAuthHandler,
 		pbCalculations.RegisterCalculationsHandler,
+		pbMetrics.RegisterMetricsHandler,
 	} {
 		if err := f(ctx, mux, conn); err != nil {
 			return nil, err
@@ -70,14 +78,14 @@ func createInitialOptions(conf config.Config) Options {
 	})
 	opts.RedisConnection = redisClient
 
-	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, conf.CookieTimeout)
+	repo := metricsRepo.NewMetricsRepo(opts.PosgtresConnection)
+	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, conf.CookieTimeout, &repo)
 	opts.Addr = "0.0.0.0:8080"
 	return opts
 }
 
 func addGRPCMiddlewares(opts Options) Options {
 	opts.Mux = []gwruntime.ServeMuxOption{
-		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
 		gwruntime.WithOutgoingHeaderMatcher(EmptyHeaderMatcherFunc),
 		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
 	}
@@ -121,10 +129,9 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/", gw)
 
-	m := common.NewPostgresMiddleware(opts.PosgtresConnection)
 	gwServer := &http.Server{
 		Addr:    ":8090",
-		Handler: m.MetricsMiddleware(common.AllowCORS(mux)),
+		Handler: common.AllowCORS(mux), // TODO add panic middleware
 	}
 
 	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")

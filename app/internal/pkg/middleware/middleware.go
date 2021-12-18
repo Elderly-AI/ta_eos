@@ -2,10 +2,8 @@ package middleware
 
 import (
 	"github.com/golang/glog"
-	"github.com/jmoiron/sqlx"
 	"net/http"
 	"strings"
-	"time"
 )
 
 func AllowCORS(h http.Handler) http.Handler {
@@ -30,25 +28,4 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	methods := []string{"GET", "HEAD", "POST", "PUT", "DELETE"}
 	w.Header().Set("Access-Control-Allow-Methods", strings.Join(methods, ","))
 	glog.Infof("preflight request for %s", r.URL.Path)
-}
-
-type PostgresMiddleware struct {
-	conn *sqlx.DB
-}
-
-func NewPostgresMiddleware(conn *sqlx.DB) PostgresMiddleware {
-	return PostgresMiddleware{conn}
-}
-
-func (p *PostgresMiddleware) MetricsMiddleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		name := r.RequestURI
-		date := time.Now()
-		query := "INSERT INTO metrics (method_name,date) VALUES ($1,$2)"
-		_, err := p.conn.Exec(query, name, date)
-		if err != nil {
-			glog.Error(err)
-		}
-		h.ServeHTTP(w, r)
-	})
 }
