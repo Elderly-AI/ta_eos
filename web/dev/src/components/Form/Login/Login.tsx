@@ -77,7 +77,6 @@ const Login = () => {
         setEmailError(errorEmail = Validator.validateEmail(fd.email));
         setPasswordError(errorPassword = Validator.validatePassword(fd.password));
         setGroupError(errorGroup = Validator.validateGroup(fd.group));
-        console.log(errorEmail, errorPassword, errorGroup);
 
         if (!errorEmail && !errorPassword && !errorGroup) {
             authorize({

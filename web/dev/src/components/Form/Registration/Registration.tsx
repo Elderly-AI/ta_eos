@@ -5,6 +5,7 @@ import CustomInput from '../../CustomInput';
 import {CustomInputProps} from '@CustomInput';
 import {useActions} from '@hooks/useActions';
 import {authLoginRequest, authRegisterRequest} from '@data/Models';
+import Validator from '@utils/Validator';
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {
@@ -13,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
+        marginTop: '32px',
     },
     textInputs: {
         display: 'flex',
@@ -21,46 +23,63 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const inputs: CustomInputProps[] = [
-    {
-        id: 'email',
-        label: 'Email',
-        isPassword: false,
-    },
-    {
-        id: 'password',
-        label: 'Пароль',
-        isPassword: true,
-    },
-    {
-        id: 'name',
-        label: 'Имя',
-        isPassword: false,
-    },
-    {
-        id: 'group',
-        label: 'Группа',
-        isPassword: false,
-    },
-];
-
 const Registration = () => {
     const classes = useStyles();
     // TOKEN
     // const token = useTypedSelector((store) => store.auth?.token);
     const {authorize, showModal, register} = useActions();
     const [fd, setFd] = useState<authRegisterRequest>({} as authRegisterRequest);
+    const [emailError, setEmailError] = useState('');
+    const [nameError, setNameError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [groupError, setGroupError] = useState('');
+
+    const inputs: CustomInputProps[] = [
+        {
+            id: 'email',
+            label: 'Email',
+            isPassword: false,
+            errorMessage: emailError,
+        },
+        {
+            id: 'password',
+            label: 'Пароль',
+            isPassword: true,
+            errorMessage: passwordError,
+        },
+        {
+            id: 'name',
+            label: 'Имя',
+            isPassword: false,
+            errorMessage: nameError,
+        },
+        {
+            id: 'group',
+            label: 'Группа',
+            isPassword: false,
+            errorMessage: groupError,
+        },
+    ];
 
     const formHandler = (e: any) => {
-        const datForLogin: authLoginRequest = {
-            email: fd.user.email,
-            group: fd.user.group,
-            password: fd.user.password,
-        };
-        // console.log('for login > ', datForLogin);
         e.preventDefault();
 
-        register(fd);
+        // eslint-disable-next-line
+        let errorEmail, errorPassword, errorGroup, errorName;
+
+        setEmailError(errorEmail = Validator.validateEmail(fd.user?.email));
+        setNameError(errorName = Validator.validateName(fd.user?.name));
+        setPasswordError(errorPassword = Validator.validatePassword(fd.user?.password));
+        setGroupError(errorGroup = Validator.validateGroup(fd.user?.group));
+
+        if (!errorEmail && !errorPassword && !errorGroup && ! errorName) {
+            register(fd);
+        }
+        // const datForLogin: authLoginRequest = {
+        //     email: fd.user.email,
+        //     group: fd.user.group,
+        //     password: fd.user.password,
+        // };
         // authorize(datForLogin);
         // TOKEN
         // let headers: HeadersInit | undefined;

@@ -32,8 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         },
     },
     login: {
-        // height: theme.spacing(38),
-        minHeight: '385px',
+        height: theme.spacing(50),
     },
     reg: {
         height: theme.spacing(64),
