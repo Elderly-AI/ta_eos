@@ -13,7 +13,7 @@ class Validator {
         },
         isGroupName: {
             error: 'Такой группы не существует',
-            validate: (str: string) => (/^(К)|(ЛТ)[0-9]{1,2}-[0-9]{2,3}((Б)|(М)|(А))?$/.test(str)),
+            validate: (str: string) => (/^((К)|(ЛТ))[0-9]{1,2}-[0-9]{2,3}((Б)|(М)|(А))?$/.test(str)),
         },
         nameSymbols: {
             error: 'Имя может состоять только из букв и знака -',

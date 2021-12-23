@@ -70,10 +70,17 @@ const Registration = () => {
         setEmailError(errorEmail = Validator.validateEmail(fd.user?.email));
         setNameError(errorName = Validator.validateName(fd.user?.name));
         setPasswordError(errorPassword = Validator.validatePassword(fd.user?.password));
-        setGroupError(errorGroup = Validator.validateGroup(fd.user?.group));
+        setGroupError(errorGroup = Validator.validateGroup(fd.user?.group.toLocaleUpperCase()));
 
         if (!errorEmail && !errorPassword && !errorGroup && ! errorName) {
-            register(fd);
+            register({
+                user: {
+                    name: fd.user.name,
+                    email: fd.user.email,
+                    group: fd.user.group.toLocaleUpperCase(),
+                    password: fd.user.password,
+                }
+            } as authRegisterRequest);
         }
         // const datForLogin: authLoginRequest = {
         //     email: fd.user.email,

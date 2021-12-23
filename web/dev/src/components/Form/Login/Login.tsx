@@ -76,13 +76,14 @@ const Login = () => {
         let errorEmail, errorPassword, errorGroup;
         setEmailError(errorEmail = Validator.validateEmail(fd.email));
         setPasswordError(errorPassword = Validator.validatePassword(fd.password));
-        setGroupError(errorGroup = Validator.validateGroup(fd.group));
+        // TODO раскоментить это на проде!
+        // setGroupError(errorGroup = Validator.validateGroup(fd.group.toLocaleUpperCase()));
 
         if (!errorEmail && !errorPassword && !errorGroup) {
             authorize({
                 email: fd.email,
                 password: fd.password,
-                group: fd.group
+                group: fd.group.toLocaleUpperCase(),
             } as authLoginRequest);
         }
     };
