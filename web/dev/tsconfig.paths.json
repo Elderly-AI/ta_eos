@@ -11,6 +11,7 @@
       "@Modal": ["src/components/Modal"],
       "@data/*": ["src/data/*"],
       "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"],
       "@Redux/*": ["src/Redux/*"]
     }
   }
