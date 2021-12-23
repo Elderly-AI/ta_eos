@@ -1,6 +1,7 @@
 class Validator {
     private maxLength = 15;
     private minLength = 3;
+    private binaryNumberMaxLength = 8;
     private rules = {
         lengthValid: {
             error: (fieldName = 'поля') =>
@@ -22,6 +23,14 @@ class Validator {
         passwordSymbols: {
             error: 'Пароль может состоять только из латинских букв и цифр',
             validate: (str: string) => (/[A-Za-z0-9]+/.test(str)),
+        },
+        binaryNumber: {
+            error: 'Число должно быть представлено в двоичном виде',
+            validate: (str: string) => (/^[0-1]+$/.test(str)),
+        },
+        binaryNumberLength: {
+            error: `Числа, больше чем 2^${this.binaryNumberMaxLength} не обрабатываются`,
+            validate: (str: string) => (str?.length <= this.binaryNumberMaxLength),
         },
     }
 
@@ -55,6 +64,16 @@ class Validator {
         }
         if (!this.rules.lengthValid.validate(password)) {
             return this.rules.lengthValid.error('пароля');
+        }
+        return '';
+    }
+
+    validateBinaryNumber(binaryNumber: string) {
+        if (!this.rules.binaryNumber.validate(binaryNumber)) {
+            return this.rules.binaryNumber.error;
+        }
+        if (!this.rules.binaryNumberLength.validate(binaryNumber)) {
+            return this.rules.binaryNumberLength.error;
         }
         return '';
     }
