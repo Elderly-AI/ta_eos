@@ -72,11 +72,14 @@ const Login = () => {
 
         e.preventDefault();
 
-        setEmailError(Validator.validateEmail(fd.email));
-        setPasswordError(Validator.validatePassword(fd.password));
-        setGroupError(Validator.validateGroup(fd.group));
+        // eslint-disable-next-line
+        let errorEmail, errorPassword, errorGroup;
+        setEmailError(errorEmail = Validator.validateEmail(fd.email));
+        setPasswordError(errorPassword = Validator.validatePassword(fd.password));
+        setGroupError(errorGroup = Validator.validateGroup(fd.group));
+        console.log(errorEmail, errorPassword, errorGroup);
 
-        if (emailError || passwordError || groupError) {
+        if (!errorEmail && !errorPassword && !errorGroup) {
             authorize({
                 email: fd.email,
                 password: fd.password,
