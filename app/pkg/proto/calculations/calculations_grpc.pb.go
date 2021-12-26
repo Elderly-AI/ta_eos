@@ -22,6 +22,7 @@ type CalculationsClient interface {
 	DirectCodeHighDigitsLeftShiftCalculation(ctx context.Context, in *DirectCodeHighDigitsLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeHighDigitsLeftShiftResponse, error)
 	DirectCodeLowDigitsRightShiftCalculation(ctx context.Context, in *DirectCodeLowDigitsRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeLowDigitsRightShiftResponse, error)
 	DirectCodeHighDigitsRightShiftCalculation(ctx context.Context, in *DirectCodeHighDigitsRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeHighDigitsRightShiftResponse, error)
+	AdditionalCodeWithCorrectiveStepCalculation(ctx context.Context, in *AdditionalCodeWithCorrectiveStepRequest, opts ...grpc.CallOption) (*AdditionalCodeWithCorrectiveStepResponse, error)
 }
 
 type calculationsClient struct {
@@ -68,6 +69,15 @@ func (c *calculationsClient) DirectCodeHighDigitsRightShiftCalculation(ctx conte
 	return out, nil
 }
 
+func (c *calculationsClient) AdditionalCodeWithCorrectiveStepCalculation(ctx context.Context, in *AdditionalCodeWithCorrectiveStepRequest, opts ...grpc.CallOption) (*AdditionalCodeWithCorrectiveStepResponse, error) {
+	out := new(AdditionalCodeWithCorrectiveStepResponse)
+	err := c.cc.Invoke(ctx, "/calculations.Calculations/AdditionalCodeWithCorrectiveStepCalculation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CalculationsServer is the server API for Calculations service.
 // All implementations must embed UnimplementedCalculationsServer
 // for forward compatibility
@@ -76,6 +86,7 @@ type CalculationsServer interface {
 	DirectCodeHighDigitsLeftShiftCalculation(context.Context, *DirectCodeHighDigitsLeftShiftRequest) (*DirectCodeHighDigitsLeftShiftResponse, error)
 	DirectCodeLowDigitsRightShiftCalculation(context.Context, *DirectCodeLowDigitsRightShiftRequest) (*DirectCodeLowDigitsRightShiftResponse, error)
 	DirectCodeHighDigitsRightShiftCalculation(context.Context, *DirectCodeHighDigitsRightShiftRequest) (*DirectCodeHighDigitsRightShiftResponse, error)
+	AdditionalCodeWithCorrectiveStepCalculation(context.Context, *AdditionalCodeWithCorrectiveStepRequest) (*AdditionalCodeWithCorrectiveStepResponse, error)
 	mustEmbedUnimplementedCalculationsServer()
 }
 
@@ -94,6 +105,9 @@ func (UnimplementedCalculationsServer) DirectCodeLowDigitsRightShiftCalculation(
 }
 func (UnimplementedCalculationsServer) DirectCodeHighDigitsRightShiftCalculation(context.Context, *DirectCodeHighDigitsRightShiftRequest) (*DirectCodeHighDigitsRightShiftResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeHighDigitsRightShiftCalculation not implemented")
+}
+func (UnimplementedCalculationsServer) AdditionalCodeWithCorrectiveStepCalculation(context.Context, *AdditionalCodeWithCorrectiveStepRequest) (*AdditionalCodeWithCorrectiveStepResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdditionalCodeWithCorrectiveStepCalculation not implemented")
 }
 func (UnimplementedCalculationsServer) mustEmbedUnimplementedCalculationsServer() {}
 
@@ -180,6 +194,24 @@ func _Calculations_DirectCodeHighDigitsRightShiftCalculation_Handler(srv interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Calculations_AdditionalCodeWithCorrectiveStepCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdditionalCodeWithCorrectiveStepRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculationsServer).AdditionalCodeWithCorrectiveStepCalculation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calculations.Calculations/AdditionalCodeWithCorrectiveStepCalculation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculationsServer).AdditionalCodeWithCorrectiveStepCalculation(ctx, req.(*AdditionalCodeWithCorrectiveStepRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Calculations_ServiceDesc is the grpc.ServiceDesc for Calculations service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -202,6 +234,10 @@ var Calculations_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DirectCodeHighDigitsRightShiftCalculation",
 			Handler:    _Calculations_DirectCodeHighDigitsRightShiftCalculation_Handler,
+		},
+		{
+			MethodName: "AdditionalCodeWithCorrectiveStepCalculation",
+			Handler:    _Calculations_AdditionalCodeWithCorrectiveStepCalculation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

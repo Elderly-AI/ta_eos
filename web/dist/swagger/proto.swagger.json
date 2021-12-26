@@ -138,6 +138,38 @@
         ]
       }
     },
+    "/api/v1/calculations/additional_code/corrective_step": {
+      "post": {
+        "operationId": "Calculations_AdditionalCodeWithCorrectiveStepCalculation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/calculationsAdditionalCodeWithCorrectiveStepResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/calculationsAdditionalCodeWithCorrectiveStepRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Calculations"
+        ]
+      }
+    },
     "/api/v1/calculations/direct_code/high_digits/left_shift": {
       "post": {
         "operationId": "Calculations_DirectCodeHighDigitsLeftShiftCalculation",
@@ -408,6 +440,50 @@
           "type": "string"
         },
         "password": {
+          "type": "string"
+        }
+      }
+    },
+    "calculationsAdditionalCodeWithCorrectiveStepRequest": {
+      "type": "object",
+      "properties": {
+        "multiplier": {
+          "type": "string"
+        },
+        "factor": {
+          "type": "string"
+        },
+        "gridSize": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "calculationsAdditionalCodeWithCorrectiveStepResponse": {
+      "type": "object",
+      "properties": {
+        "Sequence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/calculationsAdditionalCodeWithCorrectiveStepResponseStep"
+          }
+        }
+      }
+    },
+    "calculationsAdditionalCodeWithCorrectiveStepResponseStep": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "binDec": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "partialSum": {
           "type": "string"
         }
       }

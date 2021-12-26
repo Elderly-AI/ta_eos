@@ -31,6 +31,12 @@ service Calculations {
       body: "*"
     };
   }
+  rpc AdditionalCodeWithCorrectiveStepCalculation(AdditionalCodeWithCorrectiveStepRequest) returns (AdditionalCodeWithCorrectiveStepResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/calculations/additional_code/corrective_step"
+      body: "*"
+    };
+  }
 }
 
 message DirectCodeLowDigitsLeftShiftRequest {
@@ -96,3 +102,21 @@ message DirectCodeHighDigitsRightShiftResponse {
   }
   repeated Step Sequence = 1;
 }
+
+message AdditionalCodeWithCorrectiveStepRequest {
+  string multiplier = 1;
+  string factor = 2;
+  uint32 grid_size = 3;
+}
+
+message AdditionalCodeWithCorrectiveStepResponse {
+  message Step {
+    uint64 index = 1;
+    string bin_dec = 2;
+    string value = 3;
+    string partial_sum = 4;
+  }
+  repeated Step Sequence = 1;
+}
+
+
