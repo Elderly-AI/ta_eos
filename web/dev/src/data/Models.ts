@@ -1,14 +1,15 @@
 export type authUser = {
     name: string,
     email: string,
-    group: string
+    group: string,
     password: string,
+    role: string,
 }
 
 export type authLoginRequest = {
     email: string,
     password: string,
-    group: string
+    group: string,
 }
 
 export type authRegisterRequest = {
@@ -18,8 +19,8 @@ export type authRegisterRequest = {
 export type authSafeUser = {
     name: string,
     email: string,
-    group: string
-    role: string
+    group: string,
+    role: string,
 }
 
 export type calcDirectCodeRequest = {

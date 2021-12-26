@@ -8,18 +8,21 @@ import {
 } from './Models';
 
 const host = 'http://188.35.161.40';
+const apiPrefix = '/api/v1';
+const apiHost = host + apiPrefix;
 
 const api = {
-    inside: host + '/api/v1/users', // ???
-    curUser: host + '/api/v1/auth/get_current_user',
-    register: host + '/api/v1/auth/register',
-    login: host + '/api/v1/auth/login',
+    inside: apiHost + '/users', // ???
+    user: apiHost + '/auth/get_current_user',
+    register: apiHost + '/auth/register',
+    login: apiHost + '/auth/login',
+    searchUsers: apiHost + '/auth/search',
     math: { // Добавляем сюда новые ручки
         directCode: {
-            highLeftShift: host + '/api/v1/calculations/direct_code/high_digits/left_shift',
-            highRightShift: host + '/api/v1/calculations/direct_code/high_digits/right_shift',
-            lowLeftShift: host + '/api/v1/calculations/direct_code/low_digits/left_shift',
-            lowRightShift: host + '/api/v1/calculations/direct_code/low_digits/right_shift',
+            highLeftShift: apiHost + '/calculations/direct_code/high_digits/left_shift',
+            highRightShift: apiHost + '/calculations/direct_code/high_digits/right_shift',
+            lowLeftShift: apiHost + '/calculations/direct_code/low_digits/left_shift',
+            lowRightShift: apiHost + '/calculations/direct_code/low_digits/right_shift',
         },
     },
 };

@@ -11,7 +11,7 @@ import {
 
 class DataService implements ApiInterface {
     async curUser(): Promise<authSafeUser> {
-        return await fetch(api.curUser)
+        return await fetch(api.user)
             .then((res) => {
                 if (res.ok) {
                     return res.json();
