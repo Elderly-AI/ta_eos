@@ -14,7 +14,7 @@ export function authorize(user: authLoginRequest) {
 export function register(user: authRegisterRequest) {
     return (dispatch: Dispatch<authAction>) => {
         DataService.register(user)
-            .then((ok) => dispatch({type: authAPI.REGISTER}))
+            .then((ok) => dispatch({type: authAPI.REGISTER, payload: ok}))
             .catch((err) => console.error(err));
     };
 }

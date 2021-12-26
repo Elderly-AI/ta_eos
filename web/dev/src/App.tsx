@@ -27,7 +27,7 @@ const App: React.FC = () => {
             <Switch>
                 <Route exact path="/auth" component={Form}/>
                 <Route path="/home" component={Home}/>
-                {auth ? history.push('/home') : history.push('/auth')}
+                {auth?.name ? history.push('/home') : history.push('/auth')}
             </Switch>
             {modal.show ? <Modal/> : ''}
         </div>

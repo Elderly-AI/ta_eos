@@ -29,7 +29,7 @@ const api = {
 
 export interface ApiInterface {
   curUser: () => Promise<authSafeUser>,
-  login: (data: authLoginRequest) => Promise<authUser>,
+  login: (data: authLoginRequest) => Promise<authSafeUser>,
   register: (data: authRegisterRequest) => Promise<authSafeUser>,
   directCodeHighLeftShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>,
   directCodeHighRightShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>

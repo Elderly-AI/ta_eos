@@ -12,7 +12,7 @@ const initialState = null;
 
 type authorize = {
     type: authAPI.AUTHORIZE;
-    payload: authUser;
+    payload: authSafeUser;
 };
 
 type logOut = {
@@ -29,7 +29,8 @@ type notInside = {
 };
 
 type register = {
-    type: authAPI.REGISTER
+    type: authAPI.REGISTER,
+    payload: authSafeUser;
 }
 
 export type authAction = authorize | logOut | getCurrentUser | notInside | register;
@@ -48,7 +49,7 @@ export default function auth(
     case authAPI.NOT_INSIDE:
         return state;
     case authAPI.REGISTER:
-        return state;
+        return action.payload;
     default:
         return state;
     }

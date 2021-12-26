@@ -61,14 +61,14 @@ class DataService implements ApiInterface {
             .then((dat: calcDirectCodeResponse) => dat);
     }
 
-    async login(data: authLoginRequest): Promise<authUser> {
+    async login(data: authLoginRequest): Promise<authSafeUser> {
         return await fetch(api.login, {
             method: 'POST',
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: authUser) => dat);
+            .then((dat: authSafeUser) => dat);
     }
 
     async register(data: authRegisterRequest): Promise<authSafeUser> {

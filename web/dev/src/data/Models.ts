@@ -25,7 +25,7 @@ export type authSafeUser = {
 
 export type calcDirectCodeRequest = {
     multiplier: string,
-    factor: string
+    factor: string,
     gridSize: number,
 }
 
@@ -41,11 +41,11 @@ export type calcDirectCodeResponse = {
 }
 
 export type protobufAny = {
-    type: string
+    type: string,
 }
 
 export type rpcStatus = {
     code: number,
     message: string,
-    details: protobufAny
+    details: protobufAny,
 }
