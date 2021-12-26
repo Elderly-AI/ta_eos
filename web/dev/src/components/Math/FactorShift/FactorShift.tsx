@@ -3,12 +3,12 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import {blue} from '@material-ui/core/colors';
-import {calcDirectCodeHighDigitsResponseStep} from '@data/Models';
+import {calcMultipleResponseStep} from '@data/Models';
 import {multiplyEnum} from '@Math/Math';
 
 interface SumShiftProps {
     multipleType: multiplyEnum,
-    res: calcDirectCodeHighDigitsResponseStep[],
+    res: calcMultipleResponseStep[],
     tmpPoint: number,
     setPoint: Dispatch<SetStateAction<number>>,
 }
@@ -79,6 +79,7 @@ const SumShift: React.FC<SumShiftProps> = ({
 
         switch (multipleType) {
         case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
+        case multiplyEnum.ADDITIONAL_CORRECTIVE_STEP:
             return trim(sumStep) === trim(res[tmpPoint].partialSum) && trim(valueStep) === trim(res[tmpPoint].value);
         case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
             return +sumStep === +res[tmpPoint].partialSum && +valueStep === +res[tmpPoint].value;

@@ -3,8 +3,8 @@ import {
     authRegisterRequest,
     authSafeUser,
     authUser,
-    calcDirectCodeRequest,
-    calcDirectCodeResponse,
+    calcMultipleRequest,
+    calcMultipleResponse,
 } from './Models';
 
 const host = 'http://188.35.161.40';
@@ -24,6 +24,9 @@ const api = {
             lowLeftShift: apiHost + '/calculations/direct_code/low_digits/left_shift',
             lowRightShift: apiHost + '/calculations/direct_code/low_digits/right_shift',
         },
+        additionalCode: {
+            correctiveStep: apiHost + '/calculations/additional_code/corrective_step',
+        },
     },
 };
 
@@ -31,8 +34,8 @@ export interface ApiInterface {
   curUser: () => Promise<authSafeUser>,
   login: (data: authLoginRequest) => Promise<authSafeUser>,
   register: (data: authRegisterRequest) => Promise<authSafeUser>,
-  directCodeHighLeftShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>,
-  directCodeHighRightShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>
+  directCodeHighLeftShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>,
+  directCodeHighRightShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>
 }
 
 export default api;

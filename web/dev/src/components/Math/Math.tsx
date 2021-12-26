@@ -13,8 +13,9 @@ import HighDigitsLeftShift from './HighDigitsLeftShift';
 import LowDigitsLeftShift from './LowDigitsLeftShift';
 import HighDigitsRightShift from './HighDigitsRightShift';
 import LowDigitsRightShift from './LowDigitsRightShift';
+import AdditionalCorrectiveStep from './AitionalCorrectiveStep';
 import DataService from '@data/DataService';
-import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from '@data/Models';
+import {calcMultipleResponse, calcMultipleResponseStep} from '@data/Models';
 import SumShift from './SumShift';
 import FactorShift from './FactorShift';
 import Validator from '@utils/Validator';
@@ -102,6 +103,7 @@ export enum multiplyEnum {
   DIRECT_HIGH_DIGITS_SHIFT_LEFT = 'Прямой код со со старших разрядов сдвигом влево',
   DIRECT_LOW_DIGITS_SHIFT_LEFT = 'Прямой код с младших разрядов сдвигом влево',
   DIRECT_LOW_DIGITS_SHIFT_RIGHT = 'Прямой код с младших разрядов сдвигом вправо',
+  ADDITIONAL_CORRECTIVE_STEP = 'Дополнительный код с корректирующим шагом',
 }
 
 export enum shiftEnum {
@@ -123,7 +125,7 @@ const Math = () => {
     const [multiply, setMultiply] = useState<multiplyEnum>(multiplyEnum.NONE);
     const [shiftType, setShiftType] = useState(shiftEnum.NONE);
     const [math, setMath] = useState<IMath>({} as IMath);
-    const [res, setRes] = useState<calcDirectCodeHighDigitsResponseStep[]>([]);
+    const [res, setRes] = useState<calcMultipleResponseStep[]>([]);
     const [tmpPoint, setPoint] = useState<number>(-1);
     const [val1Error, setVal1Error] = useState('');
     const [val2Error, setVal2Error] = useState('');
@@ -158,6 +160,9 @@ const Math = () => {
     case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT:
         MultipleTypeSelector = <LowDigitsRightShift input={math} stepsRes={res} tmpRow={tmpPoint}/>;
         break;
+    case multiplyEnum.ADDITIONAL_CORRECTIVE_STEP:
+        MultipleTypeSelector = <AdditionalCorrectiveStep input={math} stepsRes={res} tmpRow={tmpPoint}/>;
+        break;
     default:
         MultipleTypeSelector = null;
         break;
@@ -167,6 +172,7 @@ const Math = () => {
         switch (multiple as multiplyEnum) {
         case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_RIGHT:
         case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_LEFT:
+        case multiplyEnum.ADDITIONAL_CORRECTIVE_STEP:
             setShiftType(shiftEnum.factorShift);
             break;
         case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT:
@@ -188,7 +194,7 @@ const Math = () => {
         setMath({...math, [e?.target?.id]: e.target.value});
     };
 
-    const setDirectCodeResult = ({Sequence}: calcDirectCodeResponse) => {
+    const setDirectCodeResult = ({Sequence}: calcMultipleResponse) => {
         setPoint(0);
         setPoint(0);
         setRes(Sequence);
@@ -230,6 +236,15 @@ const Math = () => {
             .then((data) => setDirectCodeResult(data));
     };
 
+    const sendAdditionalCorrectiveStep = () => {
+        const {firstVal, secondVal} = math;
+
+        const grid = firstVal.length > secondVal.length ? firstVal.length - 1 : secondVal.length - 1;
+
+        DataService.additionalCodeCorrectiveStep({multiplier: firstVal, factor: secondVal, gridSize: grid})
+            .then((data) => setDirectCodeResult(data));
+    };
+
     /**
      * Сюда закидываем новые методы
      * Пишем их в кейсы, не забывая объявить в перечислениях
@@ -255,6 +270,9 @@ const Math = () => {
             break;
         case multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT:
             sendDirectLowShiftRight();
+            break;
+        case multiplyEnum.ADDITIONAL_CORRECTIVE_STEP:
+            sendAdditionalCorrectiveStep();
             break;
         default:
             console.error('Нет такого метода');
@@ -293,6 +311,9 @@ const Math = () => {
                         </MenuItem>
                         <MenuItem value={multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT}>
                             {multiplyEnum.DIRECT_LOW_DIGITS_SHIFT_RIGHT}
+                        </MenuItem>
+                        <MenuItem value={multiplyEnum.ADDITIONAL_CORRECTIVE_STEP}>
+                            {multiplyEnum.ADDITIONAL_CORRECTIVE_STEP}
                         </MenuItem>
                     </Select>
                     <FormHelperText>Выберите способ умножения</FormHelperText>

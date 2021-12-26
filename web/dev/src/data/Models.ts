@@ -2,8 +2,8 @@ export type authUser = {
     name: string,
     email: string,
     group: string,
-    password: string,
     role: string,
+    password: string,
 }
 
 export type authLoginRequest = {
@@ -23,21 +23,21 @@ export type authSafeUser = {
     role: string,
 }
 
-export type calcDirectCodeRequest = {
+export type calcMultipleRequest = {
     multiplier: string,
     factor: string,
     gridSize: number,
 }
 
-export type calcDirectCodeHighDigitsResponseStep = {
+export type calcMultipleResponseStep = {
     index: string,
     binDec: string,
     value: string,
     partialSum: string,
 }
 
-export type calcDirectCodeResponse = {
-    Sequence: calcDirectCodeHighDigitsResponseStep[]
+export type calcMultipleResponse = {
+    Sequence: calcMultipleResponseStep[]
 }
 
 export type protobufAny = {

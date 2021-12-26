@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import {Fade} from '@material-ui/core';
 import {IMath} from '@Math';
-import {calcDirectCodeHighDigitsResponseStep} from '@data/Models';
+import {calcMultipleResponseStep} from '@data/Models';
 import classNames from 'classnames';
 
 // Забивка пустого места при сдвиге
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export interface ShiftResProps {
     input: IMath;
-    stepsRes: calcDirectCodeHighDigitsResponseStep[];
+    stepsRes: calcMultipleResponseStep[];
     tmpRow: number;
 }
 
@@ -132,7 +132,7 @@ const LowDigitsRightShift = ({stepsRes, input, tmpRow}: ShiftResProps) => {
         return <Fade in={tmpRow > count} timeout={{enter: 1500, exit: 0}}><span className={styles}>{res}</span></Fade>;
     };
 
-    const getShowBit = (row: calcDirectCodeHighDigitsResponseStep, num: number) => {
+    const getShowBit = (row: calcMultipleResponseStep, num: number) => {
         if (row.binDec) {
             return (
                 <Fade in={tmpRow > num} timeout={{enter: 1500, exit: 0}}>

@@ -4,8 +4,8 @@ import {
     authRegisterRequest,
     authSafeUser,
     authUser,
-    calcDirectCodeRequest,
-    calcDirectCodeResponse,
+    calcMultipleRequest,
+    calcMultipleResponse,
 } from './Models';
 
 
@@ -21,44 +21,54 @@ class DataService implements ApiInterface {
             .then((dat: authSafeUser) => dat);
     }
 
-    async directCodeHighLeftShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
+    async directCodeHighLeftShift(data: calcMultipleRequest): Promise<calcMultipleResponse> {
         return await fetch(api.math.directCode.highLeftShift, {
             method: 'POST',
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: calcDirectCodeResponse) => dat);
+            .then((dat: calcMultipleResponse) => dat);
     }
 
-    async directCodeHighRightShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
+    async directCodeHighRightShift(data: calcMultipleRequest): Promise<calcMultipleResponse> {
         return await fetch(api.math.directCode.highRightShift, {
             method: 'POST',
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: calcDirectCodeResponse) => dat);
+            .then((dat: calcMultipleResponse) => dat);
     }
 
-    async directCodeLowLeftShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
+    async directCodeLowLeftShift(data: calcMultipleRequest): Promise<calcMultipleResponse> {
         return await fetch(api.math.directCode.lowLeftShift, {
             method: 'POST',
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: calcDirectCodeResponse) => dat);
+            .then((dat: calcMultipleResponse) => dat);
     }
 
-    async directCodeLowRightShift(data: calcDirectCodeRequest): Promise<calcDirectCodeResponse> {
+    async directCodeLowRightShift(data: calcMultipleRequest): Promise<calcMultipleResponse> {
         return await fetch(api.math.directCode.lowRightShift, {
             method: 'POST',
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: calcDirectCodeResponse) => dat);
+            .then((dat: calcMultipleResponse) => dat);
+    }
+
+    async additionalCodeCorrectiveStep(data: calcMultipleRequest): Promise<calcMultipleResponse> {
+        return await fetch(api.math.additionalCode.correctiveStep, {
+            method: 'POST',
+            body: JSON.stringify(data),
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: calcMultipleResponse) => dat);
     }
 
     async login(data: authLoginRequest): Promise<authSafeUser> {
