@@ -17,6 +17,7 @@ import DataService from '@data/DataService';
 import {calcDirectCodeResponse, calcDirectCodeHighDigitsResponseStep} from '@data/Models';
 import SumShift from './SumShift';
 import FactorShift from './FactorShift';
+import Validator from '@utils/Validator';
 
 const useStyles = makeStyles((theme: Theme) => ({
     header: {
@@ -117,20 +118,6 @@ export interface IMath {
     secondVal: string;
 }
 
-/**
- * Перечисляем инпуты чтобы их потом отриосвать
- */
-const inputs: CustomInputProps[] = [
-    {
-        id: 'firstVal',
-        label: 'Число A',
-    },
-    {
-        id: 'secondVal',
-        label: 'Число B',
-    },
-];
-
 const Math = () => {
     const classes = useStyles();
     const [multiply, setMultiply] = useState<multiplyEnum>(multiplyEnum.NONE);
@@ -138,6 +125,24 @@ const Math = () => {
     const [math, setMath] = useState<IMath>({} as IMath);
     const [res, setRes] = useState<calcDirectCodeHighDigitsResponseStep[]>([]);
     const [tmpPoint, setPoint] = useState<number>(-1);
+    const [val1Error, setVal1Error] = useState('');
+    const [val2Error, setVal2Error] = useState('');
+    /**
+     * Перечисляем инпуты чтобы их потом отрисовать
+     */
+    const inputs: CustomInputProps[] = [
+        {
+            id: 'firstVal',
+            label: 'Число A',
+            errorMessage: val1Error,
+        },
+        {
+            id: 'secondVal',
+            label: 'Число B',
+            errorMessage: val2Error,
+        },
+    ];
+
     let MultipleTypeSelector: JSX.Element | null;
 
     switch (multiply) {
@@ -230,6 +235,14 @@ const Math = () => {
      * Пишем их в кейсы, не забывая объявить в перечислениях
      */
     const sendMath = () => {
+        // eslint-disable-next-line
+        let errorVal1, errorVal2;
+        setVal1Error(errorVal1 = Validator.validateBinaryNumber(math.firstVal));
+        setVal2Error(errorVal2 = Validator.validateBinaryNumber(math.secondVal));
+        if (errorVal1 || errorVal2) {
+            return;
+        }
+
         switch (multiply) {
         case multiplyEnum.DIRECT_HIGH_DIGITS_SHIFT_LEFT:
             sendDirectHighShiftLeft();

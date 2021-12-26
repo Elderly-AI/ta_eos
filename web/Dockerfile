@@ -3,9 +3,10 @@ FROM node:14.18.1-alpine as frontend_builder
 WORKDIR /code
 
 COPY dist/swagger /dist/swagger
-COPY dev .
+COPY dev/package.json dev/yarn.lock ./
 RUN yarn install
-RUN yarn build
+COPY dev .
+RUN yarn build && rm -rf node_modules
 
 
 FROM nginx:alpine

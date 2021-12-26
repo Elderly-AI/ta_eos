@@ -5,6 +5,7 @@ import {useActions} from '@hooks/useActions';
 import CustomInput, {CustomInputProps} from '../../CustomInput/CustomInput';
 import {Link} from 'react-router-dom';
 import {authLoginRequest} from '@data/Models';
+import Validator from '@utils/Validator';
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {
@@ -13,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         flexWrap: 'wrap',
+        marginTop: '32px',
     },
     textInputs: {
         display: 'flex',
@@ -21,30 +23,37 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-const inputs: CustomInputProps[] = [
-    {
-        id: 'email',
-        label: 'Email',
-        isPassword: false,
-    },
-    {
-        id: 'password',
-        label: 'Пароль',
-        isPassword: true,
-    },
-    {
-        id: 'group',
-        label: 'Группа',
-        isPassword: false
-    }
-];
-
 const Login = () => {
     const {authorize, showModal} = useActions();
     const classes = useStyles();
     // TOKEN
     // const token = useTypedSelector((store) => store.auth?.token);
     const [fd, setFd] = useState<authLoginRequest>({} as authLoginRequest);
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [groupError, setGroupError] = useState('');
+
+    const inputs: CustomInputProps[] = [
+        {
+            id: 'email',
+            label: 'Email',
+            isPassword: false,
+            errorMessage: emailError,
+        },
+        {
+            id: 'password',
+            label: 'Пароль',
+            isPassword: true,
+            errorMessage: passwordError,
+        },
+        {
+            id: 'group',
+            label: 'Группа',
+            isPassword: false,
+            errorMessage: groupError,
+        }
+    ];
+
 
     const formHandler = (e: any) => {
         // TOKEN
@@ -62,16 +71,24 @@ const Login = () => {
         // }
 
         e.preventDefault();
-        authorize({
-            email: fd.email,
-            password: fd.password,
-            group: fd.group
-        } as authLoginRequest);
+
+        // eslint-disable-next-line
+        let errorEmail, errorPassword, errorGroup;
+        setEmailError(errorEmail = Validator.validateEmail(fd.email));
+        setPasswordError(errorPassword = Validator.validatePassword(fd.password));
+        // TODO раскоментить это на проде!
+        // setGroupError(errorGroup = Validator.validateGroup(fd.group.toLocaleUpperCase()));
+
+        if (!errorEmail && !errorPassword && !errorGroup) {
+            authorize({
+                email: fd.email,
+                password: fd.password,
+                group: fd.group.toLocaleUpperCase(),
+            } as authLoginRequest);
+        }
     };
 
-    const handleChange = (
-        e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ): void => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         setFd({...fd, [e?.target?.id]: e.target.value});
     };
 
