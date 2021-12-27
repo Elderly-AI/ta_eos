@@ -6,8 +6,8 @@ import {
     authUser,
     calcMultipleRequest,
     calcMultipleResponse,
+    SearchUser,
 } from './Models';
-
 
 class DataService implements ApiInterface {
     async curUser(): Promise<authSafeUser> {
@@ -89,6 +89,15 @@ class DataService implements ApiInterface {
             .then((res) => res.json())
             .catch((err) => console.error(err))
             .then((dat: authSafeUser) => dat);
+    }
+
+    async search(text: string): Promise<Array<SearchUser>> {
+        return await fetch(api.searchUsers + '?text=' + text, {
+            method: 'GET'
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: Array<SearchUser>) => dat);
     }
 }
 

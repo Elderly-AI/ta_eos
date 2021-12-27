@@ -23,6 +23,14 @@ export type authSafeUser = {
     role: string,
 }
 
+export type SearchUser = {
+    name: string,
+    email: string,
+    group: string,
+    role: string,
+    userId: string,
+}
+
 export type calcMultipleRequest = {
     multiplier: string,
     factor: string,

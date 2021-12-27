@@ -3,6 +3,7 @@ import {
     authRegisterRequest,
     authSafeUser,
     authUser,
+    SearchUser,
     calcMultipleRequest,
     calcMultipleResponse,
 } from './Models';
@@ -35,7 +36,8 @@ export interface ApiInterface {
   login: (data: authLoginRequest) => Promise<authSafeUser>,
   register: (data: authRegisterRequest) => Promise<authSafeUser>,
   directCodeHighLeftShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>,
-  directCodeHighRightShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>
+  directCodeHighRightShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>,
+  search: (text: string) => Promise<Array<SearchUser>>,
 }
 
 export default api;
