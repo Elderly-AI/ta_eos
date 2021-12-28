@@ -1,59 +1,70 @@
 export type authUser = {
-    name: string,
-    email: string,
-    group: string,
-    role: string,
-    password: string,
+  name: string,
+  email: string,
+  group: string,
+  role: string,
+  password: string,
 }
 
 export type authLoginRequest = {
-    email: string,
-    password: string,
-    group: string,
+  email: string,
+  password: string,
+  group: string,
 }
 
 export type authRegisterRequest = {
-    user: authUser
+  user: authUser
 }
 
 export type authSafeUser = {
-    name: string,
-    email: string,
-    group: string,
-    role: string,
+  name: string,
+  email: string,
+  group: string,
+  role: string,
 }
 
 export type SearchUser = {
-    name: string,
-    email: string,
-    group: string,
-    role: string,
-    userId: string,
+  name: string,
+  email: string,
+  group: string,
+  role: string,
+  userId: string,
 }
 
 export type calcMultipleRequest = {
-    multiplier: string,
-    factor: string,
-    gridSize: number,
+  multiplier: string,
+  factor: string,
+  gridSize: number,
 }
 
 export type calcMultipleResponseStep = {
-    index: string,
-    binDec: string,
-    value: string,
-    partialSum: string,
+  index: string,
+  binDec: string,
+  value: string,
+  partialSum: string,
 }
 
 export type calcMultipleResponse = {
-    Sequence: calcMultipleResponseStep[]
+  Sequence: calcMultipleResponseStep[]
 }
 
 export type protobufAny = {
-    type: string,
+  type: string,
 }
 
 export type rpcStatus = {
-    code: number,
-    message: string,
-    details: protobufAny,
+  code: number,
+  message: string,
+  details: protobufAny,
+}
+
+export type metricsMetric = {
+  methodName: string,
+  date: string,
+  metricData?: any,
+  userId: string
+}
+
+export type metricsMetricsArray = {
+  metrics: metricsMetric[]
 }

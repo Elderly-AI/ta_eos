@@ -1,8 +1,9 @@
 import Header from '@Header';
 import React, {useState} from 'react';
-import {makeStyles, TextField, Button} from '@material-ui/core';
+import {Button, makeStyles, TextField} from '@material-ui/core';
 import DataService from '@data/DataService';
 import {SearchUser} from '@data/Models';
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
     textField: {
@@ -27,7 +28,7 @@ export default function Search() {
     const classes = useStyles();
 
     const [users, setUsers] = useState<Array<SearchUser>>([]);
-    let searchWord = '';
+    const [searchWord, setSearchWord] = useState<string>('');
 
     const buttonClicked = () => {
         console.log('kek');
@@ -39,20 +40,22 @@ export default function Search() {
     };
 
     const textChanged = (event: any) => {
-        searchWord = event.target.value;
+        setSearchWord(event.target.value);
         console.log(searchWord);
     };
 
     return (
         <div>
-            <Header />
+            <Header/>
             <div className={classes.searchComponent}>
                 <TextField
                     id="outlined-basic"
                     variant="outlined"
+                    value={searchWord}
                     className={classes.textField}
-                    onChange={(event) => textChanged(event) }/>
+                    onChange={(event) => textChanged(event)}/>
                 <Button variant="contained" onClick={() => buttonClicked()}>Поиск</Button>
+                <Link to={`/admin/${searchWord}`}>go</Link>
             </div>
         </div>
     );
