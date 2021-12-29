@@ -46,7 +46,7 @@ func (s *Store) AuthMiddleware(ctx context.Context, request *http.Request) metad
 	metric := model.Metric{ // TODO add to usecase
 		MethodName: request.RequestURI,
 		Date:       time.Now(),
-		UserId:     int64(userId),
+		UserId:     uint64(userId),
 	}
 	err = s.metricsRepo.AddMetric(metric)
 	if err != nil {
