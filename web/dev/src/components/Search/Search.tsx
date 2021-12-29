@@ -22,6 +22,7 @@ const useStyles = makeStyles(() => ({
     },
     searchButton: {
         display: 'flex',
+        marginLeft: '2vh',
     },
     searchComponent: {
         display: 'flex',
@@ -74,7 +75,9 @@ export default function Search() {
                 <Button
                     variant="contained"
                     onClick={() => buttonClicked()}
-                    disabled={searchWord === ''}>
+                    disabled={searchWord === ''}
+                    className={classes.searchButton}
+                >
                     Поиск
                 </Button>
             </div>
