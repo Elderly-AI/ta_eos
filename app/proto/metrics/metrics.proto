@@ -42,8 +42,9 @@ message MetricsArray{
 
 
 message Metric{
-  string method_name = 1;
-  google.protobuf.Timestamp date = 2;
-  google.protobuf.Struct metric_data = 3;
-  int64 user_id = 4;
+  uint64 id = 1;
+  string method_name = 2;
+  google.protobuf.Timestamp date = 3;
+  google.protobuf.Struct metric_data = 4;
+  uint64 user_id = 5;
 }

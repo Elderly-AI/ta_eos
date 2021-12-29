@@ -9,9 +9,10 @@ import (
 )
 
 type Metric struct {
-	MethodName string `json:"method_name" db:"method_name"`
-	Date       time.Time
-	UserId     int64                   `json:"user_id" db:"user_id"`
+	ID         uint64                  `json:"id" db:"id"`
+	MethodName string                  `json:"method_name" db:"method_name"`
+	Date       time.Time               `json:"date" db:"date"`
+	UserId     uint64                  `json:"user_id" db:"user_id"`
 	Data       *map[string]interface{} `json:"metric_data" db:"metric_data"`
 }
 
@@ -27,6 +28,7 @@ func MetricToGRPCMetric(m Metric) *pb.Metric {
 		glog.Warning("error when conver struct %r", err)
 	}
 	return &pb.Metric{
+		Id:         m.ID,
 		MethodName: m.MethodName,
 		Date:       timestamppb.New(m.Date),
 		MetricData: data,
