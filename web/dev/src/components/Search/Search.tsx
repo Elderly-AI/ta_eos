@@ -86,7 +86,7 @@ export default function Search() {
                     <TableHead>
                         <TableRow>
                             <TableCell>Имя</TableCell>
-                            <TableCell align="right">Группа</TableCell>
+                            <TableCell align="center">Группа</TableCell>
                             <TableCell align="right">Почта</TableCell>
                         </TableRow>
                     </TableHead>
@@ -96,7 +96,7 @@ export default function Search() {
                                 <TableCell component="th" scope="row">
                                     {user.name}
                                 </TableCell>
-                                <TableCell align="right">{user.group}</TableCell>
+                                <TableCell align="center">{user.group}</TableCell>
                                 <TableCell align="right">{user.email}</TableCell>
                             </TableRow>
                         ))}
