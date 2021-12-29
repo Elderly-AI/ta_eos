@@ -667,6 +667,10 @@
     "metricsMetric": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
         "methodName": {
           "type": "string"
         },
@@ -679,7 +683,7 @@
         },
         "userId": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         }
       }
     },
