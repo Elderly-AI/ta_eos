@@ -23,6 +23,10 @@ export type authSafeUser = {
     role: string,
 }
 
+export type SearchResult = {
+    users: Array<SearchUser>,
+}
+
 export type SearchUser = {
     name: string,
     email: string,

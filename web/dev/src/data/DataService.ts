@@ -5,7 +5,7 @@ import {
     authSafeUser,
     authUser,
     calcMultipleRequest,
-    calcMultipleResponse,
+    calcMultipleResponse, SearchResult,
     SearchUser,
 } from './Models';
 
@@ -97,7 +97,7 @@ class DataService implements ApiInterface {
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((dat: Array<SearchUser>) => dat);
+            .then((dat: SearchResult) => dat.users);
     }
 }
 
