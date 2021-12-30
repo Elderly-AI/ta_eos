@@ -3,9 +3,10 @@ import {
     authLoginRequest,
     authRegisterRequest,
     authSafeUser,
-    authUser,
     calcMultipleRequest,
-    calcMultipleResponse, SearchResult,
+    calcMultipleResponse,
+    SearchResult,
+    metricsMetricsArray,
     SearchUser,
 } from './Models';
 
@@ -98,6 +99,34 @@ class DataService implements ApiInterface {
             .then((res) => res.json())
             .catch((err) => console.error(err))
             .then((dat: SearchResult) => dat.users);
+    }
+
+    async searchTimestamp(text: string, from: string, to: string): Promise<metricsMetricsArray> {
+        const url = new URL(api.admin.metrics);
+        const params = {
+            text: text,
+            from: from,
+            to: to
+        };
+        url.search = new URLSearchParams(params).toString();
+
+        return await fetch(url.href)
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: metricsMetricsArray) => dat);
+    }
+
+    async searchMetric(text: string): Promise<metricsMetricsArray> {
+        const url = new URL(api.admin.search);
+        const params = {
+            text: text,
+        };
+        url.search = new URLSearchParams(params).toString();
+
+        return await fetch(url.href)
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((dat: metricsMetricsArray) => dat);
     }
 }
 

@@ -7,6 +7,7 @@ import {Route, Switch, useHistory} from 'react-router-dom';
 import Home from './components/Home';
 import Search from './components/Search';
 import {useActions} from '@hooks/useActions';
+import Admin from './components/Admin';
 
 const App: React.FC = () => {
     const auth = useTypedSelector((state) => state.auth);
@@ -28,7 +29,8 @@ const App: React.FC = () => {
             <Switch>
                 <Route exact path="/auth" component={Form}/>
                 <Route path="/home" component={Home}/>
-                <Route path="/admin" component={Search}/>
+                <Route exact path="/admin" component={Search}/>
+                <Route path='/admin/:userId' component={Admin}/>
                 {auth?.name ? history.push('/home') : history.push('/auth')}
             </Switch>
             {modal.show ? <Modal/> : ''}

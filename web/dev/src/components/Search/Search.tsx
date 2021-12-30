@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import DataService from '@data/DataService';
 import {SearchUser} from '@data/Models';
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
     textField: {
@@ -65,13 +66,14 @@ export default function Search() {
 
     return (
         <div className={classes.adminComponent}>
-            <Header />
+            <Header/>
             <div className={classes.searchComponent}>
                 <TextField
                     id="outlined-basic"
                     variant="outlined"
+                    value={searchWord}
                     className={classes.textField}
-                    onChange={(event) => textChanged(event) }/>
+                    onChange={(event) => textChanged(event)}/>
                 <Button
                     variant="contained"
                     onClick={() => buttonClicked()}
@@ -80,6 +82,7 @@ export default function Search() {
                 >
                     Поиск
                 </Button>
+                <Link to={`/admin/${searchWord}`}>go</Link>
             </div>
             <TableContainer component={Paper} className={classes.tableView}>
                 <Table aria-label="simple table">

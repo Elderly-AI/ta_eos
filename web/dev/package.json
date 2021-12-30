@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@amcharts/amcharts5": "^5.0.19",
     "@material-ui/core": "^4.11.4",
     "classnames": "^2.3.1",
     "react": "^17.0.2",
@@ -15,8 +16,6 @@
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
-    "react-app-rewire-alias": "^1.1.5",
-    "react-app-rewired": "^2.1.8",
     "@types/classnames": "^2.3.1",
     "@types/jest": "^26.0.15",
     "@types/node": "^12.0.0",
@@ -24,6 +23,8 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "eslint-config-google": "^0.14.0",
+    "react-app-rewire-alias": "^1.1.5",
+    "react-app-rewired": "^2.1.8",
     "react-scripts": "4.0.3"
   },
   "scripts": {
@@ -41,18 +42,40 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-      "indent": ["error", 4],
-      "quotes": ["error", "single"],
-      "semi": ["error", "always"],
-      "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
+      "indent": [
+        "error",
+        4
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-mixed-spaces-and-tabs": [
+        "error",
+        "smart-tabs"
+      ],
       "no-duplicate-imports": "error",
       "no-var": "error",
       "no-redeclare": "error",
       "no-unused-vars": "off",
       "require-jsdoc": "off",
       "no-multi-spaces": "off",
-      "key-spacing": ["error", { "beforeColon": false, "afterColon": true, "mode": "minimum" }],
-      "max-len": ["error", 120],
+      "key-spacing": [
+        "error",
+        {
+          "beforeColon": false,
+          "afterColon": true,
+          "mode": "minimum"
+        }
+      ],
+      "max-len": [
+        "error",
+        120
+      ],
       "no-undef": "off",
       "new-cap": "off",
       "@typescript-eslint/no-explicit-any": "off",
@@ -62,7 +85,7 @@
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "comma-dangle": "off",
-      "react/prop-types":"off",
+      "react/prop-types": "off",
       "react/no-children-prop": "off",
       "no-invalid-this": "off"
     }

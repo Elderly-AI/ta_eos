@@ -2,10 +2,10 @@ import {
     authLoginRequest,
     authRegisterRequest,
     authSafeUser,
-    authUser,
-    SearchUser,
     calcMultipleRequest,
     calcMultipleResponse,
+    metricsMetricsArray,
+    SearchUser,
 } from './Models';
 
 const host = 'http://188.35.161.40';
@@ -29,6 +29,10 @@ const api = {
             correctiveStep: apiHost + '/calculations/additional_code/corrective_step',
         },
     },
+    admin: {
+        search: apiHost + '/metrics/search',
+        metrics: apiHost + '/api/v1/metrics/search_timestamp',
+    }
 };
 
 export interface ApiInterface {
@@ -38,6 +42,8 @@ export interface ApiInterface {
   directCodeHighLeftShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>,
   directCodeHighRightShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>,
   search: (text: string) => Promise<Array<SearchUser>>,
+  searchMetric: (text: string) => Promise<metricsMetricsArray>,
+  searchTimestamp: (text: string, from: string, to: string) => Promise<metricsMetricsArray>
 }
 
 export default api;

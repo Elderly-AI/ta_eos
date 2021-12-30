@@ -9,7 +9,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '100%',
         backgroundColor: blue[800],
     },
 
@@ -20,8 +19,8 @@ const Home = () => {
     console.log('dir');
     return (
         <div className={classes.container}>
-            <Header />
-            <Math />
+            <Header/>
+            <Math/>
         </div>
     );
 };
