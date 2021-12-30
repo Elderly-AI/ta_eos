@@ -19,11 +19,6 @@ const App: React.FC = () => {
         getCurrentUser();
     }, []);
 
-    useEffect(() => {
-        console.log('auth', auth);
-    }, [auth]);
-
-    console.log(auth);
     return (
         <div className="App">
             <Switch>

@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: 'relative',
     },
     lastRow: {
-        // borderBottom: "1px solid black",
+    // borderBottom: "1px solid black",
     },
     space: {
         margin: 0,
@@ -82,9 +82,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export interface CorrectiveStepResProps {
-    input: IMath;
-    stepsRes: calcMultipleResponseStep[];
-    tmpRow: number;
+  input: IMath;
+  stepsRes: calcMultipleResponseStep[];
+  tmpRow: number;
 }
 
 const AdditionalCorrectiveStep = ({stepsRes, input, tmpRow}: CorrectiveStepResProps) => {
@@ -96,7 +96,6 @@ const AdditionalCorrectiveStep = ({stepsRes, input, tmpRow}: CorrectiveStepResPr
     }, [stepsRes]);
 
     const getValueRow = (num: number, val: string, count: number) => {
-        console.log(num, Math.ceil(val.length / 2));
         if (num === Math.ceil(val.length / 2)) {
             return '';
         }
@@ -131,7 +130,7 @@ const AdditionalCorrectiveStep = ({stepsRes, input, tmpRow}: CorrectiveStepResPr
         } else {
             val.split('').map((bit, index) => {
                 if ((index !== 0 || +bit === 1 || num !== stepsRes.length - 1) &&
-                    index < val.length - val.length / 2 + num) {
+          index < val.length - val.length / 2 + num) {
                     return res.push(<div className={classes.bit}>{bit}</div>);
                 } else {
                     return res.push(<div className={classes.space}>{placeholder}</div>);
@@ -150,10 +149,10 @@ const AdditionalCorrectiveStep = ({stepsRes, input, tmpRow}: CorrectiveStepResPr
                     <p>
                         <p className={classes.row}/>
                         <p className={classes.row}>
-                            b<sub className={classes.down}>
+              b<sub className={classes.down}>
                                 {row.index == '0' ? row.index : `-${row.index}`}
                             </sub>
-                            ={row.binDec}
+              ={row.binDec}
                         </p>
                     </p>
                 </Fade>
@@ -181,7 +180,8 @@ const AdditionalCorrectiveStep = ({stepsRes, input, tmpRow}: CorrectiveStepResPr
                             {getValueRow(Number(row.index), row.value, index)}
                             {index !== stepsRes.length - 1 ?
                                 <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
-                                    <div className={classes.regularPlus}>+</div></Fade> :
+                                    <div className={classes.regularPlus}>+</div>
+                                </Fade> :
                                 ''
                             }
                         </p>
@@ -196,11 +196,11 @@ const AdditionalCorrectiveStep = ({stepsRes, input, tmpRow}: CorrectiveStepResPr
                         <Fade in={tmpRow > index} timeout={{enter: 1500, exit: 0}}>
                             <div>
                                 <p className={classes.row}>
-                                    S<sub className={classes.down}>{`${row.index}`}</sub>
+                  S<sub className={classes.down}>{`${row.index}`}</sub>
                                 </p>
                                 <p className={classes.row}>
-                                    {row.index === '0' && row.value[0] === '1' ? '-': ''}
-                                    |A|·2<sup className={classes.up}>{`-${+row.index}`}</sup>
+                                    {row.index === '0' && row.value[0] === '1' ? '-' : ''}
+                  |A|·2<sup className={classes.up}>{`-${+row.index}`}</sup>
                                 </p>
                             </div>
                         </Fade>

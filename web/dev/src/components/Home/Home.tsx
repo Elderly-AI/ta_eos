@@ -10,13 +10,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: blue[800],
+        height: '100%',
     },
 
 }));
 
 const Home = () => {
     const classes = useStyles();
-    console.log('dir');
     return (
         <div className={classes.container}>
             <Header/>

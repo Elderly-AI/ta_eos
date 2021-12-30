@@ -31,7 +31,6 @@ const Metric: React.FC<MetricProps> = ({
 
         chartsData.forEach((item, key) => {
             const temp: Record<string, any> = {};
-            console.log('item', item);
 
             item.forEach((curMetric) => {
                 const key = curMetric.date;
@@ -43,7 +42,6 @@ const Metric: React.FC<MetricProps> = ({
                 }
             });
 
-            console.log('temp', temp, key);
             const chart: HistogramDataType[] = [];
             Object.keys(temp).forEach((preparedData) => {
                 chart.push({
@@ -59,7 +57,6 @@ const Metric: React.FC<MetricProps> = ({
             });
         });
 
-        console.log('completed data', data);
         return data;
     }, [chartsData]);
 

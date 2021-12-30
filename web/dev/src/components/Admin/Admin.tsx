@@ -7,6 +7,7 @@ import Metric from './Metric/Metric';
 import {useParams} from 'react-router-dom';
 import DataService from '@data/DataService';
 import {metricsMetric} from '@data/Models';
+import metricName from './metricName';
 
 const useStyles = makeStyles((theme: Theme) => ({
     container: {
@@ -36,7 +37,6 @@ const Admin: React.FC = () => {
   }>();
     const classes = useStyles();
     const [metrics, setMetrics] = useState<metricsMetric[]>();
-    console.log(metrics);
 
     useEffect(() => {
         DataService.searchMetric(userId)
@@ -45,18 +45,21 @@ const Admin: React.FC = () => {
     }, []);
 
     const normalizedMetrics: NormalizedMetricsType | undefined = useMemo(() => metrics?.reduce((acc, cur) => {
-        const splited = cur.methodName.split('/');
-        const name: string = splited[splited.length - 1];
+        const name: string = cur.methodName;
+        // @ts-ignore
+        const translated: string = metricName[name];
+        if (!translated) {
+            return acc;
+        }
+
         const val: NormalizedMetricsItem = {
             date: new Date(cur.date).toLocaleDateString('ru-RU'),
             metricData: cur.metricData
         };
 
-        acc.has(name) ? acc?.get(name)?.push(val) : acc.set(name, [val]);
+        acc.has(translated) ? acc?.get(translated)?.push(val) : acc.set(translated, [val]);
         return acc;
     }, new Map() as NormalizedMetricsType), [metrics]);
-
-    console.log('normalized', normalizedMetrics);
 
     return (
         <div className={classes.container}>

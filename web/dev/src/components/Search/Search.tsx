@@ -1,20 +1,20 @@
 import Header from '@Header';
 import React, {useState} from 'react';
 import {
-    makeStyles,
-    TextField,
     Button,
-    Table,
-    TableContainer,
+    makeStyles,
     Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
     TableHead,
     TableRow,
-    TableCell,
-    TableBody
+    TextField
 } from '@material-ui/core';
 import DataService from '@data/DataService';
 import {SearchUser} from '@data/Models';
-import {Link} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
     textField: {
@@ -44,12 +44,15 @@ const useStyles = makeStyles(() => ({
         maxWidth: '70vw',
         marginLeft: '5vw',
         marginRight: '5vw',
+    },
+    pointer: {
+        cursor: 'pointer'
     }
 }));
 
 export default function Search() {
     const classes = useStyles();
-
+    const history = useHistory();
     const [users, setUsers] = useState<Array<SearchUser>>([]);
     const [searchWord, setSearchWord] = useState('');
 
@@ -62,6 +65,10 @@ export default function Search() {
 
     const textChanged = (event: any) => {
         setSearchWord(event.target.value);
+    };
+
+    const handleClick = (userId: string) => {
+        history.push(`/admin/${userId}`);
     };
 
     return (
@@ -80,9 +87,8 @@ export default function Search() {
                     disabled={searchWord === ''}
                     className={classes.searchButton}
                 >
-                    Поиск
+                  Поиск
                 </Button>
-                <Link to={`/admin/${searchWord}`}>go</Link>
             </div>
             <TableContainer component={Paper} className={classes.tableView}>
                 <Table aria-label="simple table">
@@ -95,7 +101,11 @@ export default function Search() {
                     </TableHead>
                     <TableBody>
                         {users.map((user) => (
-                            <TableRow key={user.userId}>
+                            <TableRow
+                                className={classes.pointer}
+                                onClick={() => handleClick(user.userId)}
+                                key={user.userId}
+                            >
                                 <TableCell component="th" scope="row">
                                     {user.name}
                                 </TableCell>
