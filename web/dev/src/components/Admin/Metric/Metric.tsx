@@ -1,6 +1,6 @@
 import React, {useMemo, useRef} from 'react';
 import {NormalizedMetricsType} from '../Admin';
-import Histogram, {HistogramDataType} from './Histogram/Histogram';
+import Histogram, {HistogramDataType, HistogramProps} from './Histogram/Histogram';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 // eslint-disable-next-line camelcase
 
@@ -26,10 +26,10 @@ const Metric: React.FC<MetricProps> = ({
 }) => {
     const metricId = useRef(`metric_${Date.now()}`);
     const styles = useStyles();
-    const histogramData: HistogramDataType[][] = useMemo(() => {
-        const data: HistogramDataType[][] = [];
+    const histogramData: HistogramProps[] = useMemo(() => {
+        const data: HistogramProps[] = [];
 
-        chartsData.forEach((item) => {
+        chartsData.forEach((item, key) => {
             const temp: Record<string, any> = {};
             console.log('item', item);
 
@@ -43,7 +43,7 @@ const Metric: React.FC<MetricProps> = ({
                 }
             });
 
-            console.log('temp', temp);
+            console.log('temp', temp, key);
             const chart: HistogramDataType[] = [];
             Object.keys(temp).forEach((preparedData) => {
                 chart.push({
@@ -52,7 +52,11 @@ const Metric: React.FC<MetricProps> = ({
                 });
             });
 
-            data.push(chart);
+            data.push({
+                histogramId: `histo_key_${key}`,
+                data: chart,
+                name: key
+            });
         });
 
         console.log('completed data', data);
@@ -62,8 +66,7 @@ const Metric: React.FC<MetricProps> = ({
     if (metric === 'Histogram' && histogramData) {
         return <div className={styles.histograms}>
             {
-                histogramData.map((histogram, index) => <Histogram key={`${metricId}_${index}`} data={histogram}
-                    histogramId={`${metricId}_${index}`}/>)
+                histogramData.map((histogram, index) => <Histogram key={`${metricId}_${index}`} {...histogram}/>)
             }
         </div>;
     }

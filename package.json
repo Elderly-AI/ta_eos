@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@amcharts/amcharts5": "^5.0.19"
+  }
+}

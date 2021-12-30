@@ -3,19 +3,30 @@ import * as am5 from '@amcharts/amcharts5';
 // eslint-disable-next-line camelcase
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import * as am5xy from '@amcharts/amcharts5/xy';
+import {makeStyles, Theme} from '@material-ui/core/styles';
 
 export type HistogramDataType = {
-  date: string,
-  value1: number,
+    date: string,
+    value1: number,
 }
 
 export interface HistogramProps {
-  histogramId: string,
-  data: HistogramDataType[]
+    histogramId: string,
+    data: HistogramDataType[],
+    name: string,
 }
 
+const useStyles = makeStyles((theme: Theme) => ({
+    wrapper: {
+        display: 'grid',
+        placeItems: 'center',
+        gridAutoFlow: 'row'
+    }
+}));
 
-const Histogram: React.FC<HistogramProps> = ({histogramId, data}) => {
+const Histogram: React.FC<HistogramProps> = ({histogramId, data, name}) => {
+    const styles = useStyles();
+
     useLayoutEffect(() => {
         const root = am5.Root.new(histogramId);
 
@@ -125,7 +136,10 @@ const Histogram: React.FC<HistogramProps> = ({histogramId, data}) => {
     }, []);
 
     return (
-        <div id={histogramId} style={{width: '100%', height: '500px'}}/>
+        <div className={styles.wrapper}>
+            <h3>{name}</h3>
+            <div id={histogramId} style={{width: '100%', height: '500px'}}/>
+        </div>
     );
 };
 
