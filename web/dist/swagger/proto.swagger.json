@@ -375,7 +375,7 @@
         ]
       }
     },
-    "/api/v1/templates/approve_kr": {
+    "/api/v1/template/approve_kr": {
       "post": {
         "operationId": "Template_ApproveKrHandler",
         "responses": {
@@ -407,7 +407,7 @@
         ]
       }
     },
-    "/api/v1/templates/get_kr": {
+    "/api/v1/template/get_kr": {
       "post": {
         "operationId": "Template_GetKrHandler",
         "responses": {
@@ -829,6 +829,9 @@
       "properties": {
         "ok": {
           "type": "boolean"
+        },
+        "error": {
+          "type": "string"
         }
       }
     }

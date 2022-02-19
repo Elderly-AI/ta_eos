@@ -37,6 +37,7 @@ message GetKrRequest {
 
 message OkMessage {
   bool ok = 1;
+  string error = 2;
 }
 
 
