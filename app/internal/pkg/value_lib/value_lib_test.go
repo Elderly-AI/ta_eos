@@ -244,7 +244,7 @@ func TestValueLib_ConvertType(t *testing.T) {
 			grid:      defaultGridSize,
 			valueType: ValueTypeDirectCode,
 		}
-		for v := uint64(0); v <= 255; v++ {
+		for v := uint64(0); v <= 0b11111111; v++ {
 			value.value = v
 			updated := value.ConvertType(ValueTypeDirectCode)
 			require.Equal(t, value.valueType, updated.valueType)
@@ -258,7 +258,7 @@ func TestValueLib_ConvertType(t *testing.T) {
 			grid:      defaultGridSize,
 			valueType: ValueTypeAdditionalCode,
 		}
-		for v := uint64(0); v <= 255; v++ {
+		for v := uint64(0); v <= 0b11111111; v++ {
 			value.value = v
 			updated := value.ConvertType(ValueTypeAdditionalCode)
 			require.Equal(t, value.valueType, updated.valueType)
