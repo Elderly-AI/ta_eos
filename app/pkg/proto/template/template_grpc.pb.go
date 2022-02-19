@@ -18,8 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TemplateClient interface {
-	GetKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error)
-	ApproveKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error)
+	GetKrHandler(ctx context.Context, in *KrRequest, opts ...grpc.CallOption) (*OkMessage, error)
+	ApproveKrHandler(ctx context.Context, in *KrRequest, opts ...grpc.CallOption) (*OkMessage, error)
 }
 
 type templateClient struct {
@@ -30,7 +30,7 @@ func NewTemplateClient(cc grpc.ClientConnInterface) TemplateClient {
 	return &templateClient{cc}
 }
 
-func (c *templateClient) GetKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
+func (c *templateClient) GetKrHandler(ctx context.Context, in *KrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
 	out := new(OkMessage)
 	err := c.cc.Invoke(ctx, "/template.Template/GetKrHandler", in, out, opts...)
 	if err != nil {
@@ -39,7 +39,7 @@ func (c *templateClient) GetKrHandler(ctx context.Context, in *GetKrRequest, opt
 	return out, nil
 }
 
-func (c *templateClient) ApproveKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
+func (c *templateClient) ApproveKrHandler(ctx context.Context, in *KrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
 	out := new(OkMessage)
 	err := c.cc.Invoke(ctx, "/template.Template/ApproveKrHandler", in, out, opts...)
 	if err != nil {
@@ -52,8 +52,8 @@ func (c *templateClient) ApproveKrHandler(ctx context.Context, in *GetKrRequest,
 // All implementations must embed UnimplementedTemplateServer
 // for forward compatibility
 type TemplateServer interface {
-	GetKrHandler(context.Context, *GetKrRequest) (*OkMessage, error)
-	ApproveKrHandler(context.Context, *GetKrRequest) (*OkMessage, error)
+	GetKrHandler(context.Context, *KrRequest) (*OkMessage, error)
+	ApproveKrHandler(context.Context, *KrRequest) (*OkMessage, error)
 	mustEmbedUnimplementedTemplateServer()
 }
 
@@ -61,10 +61,10 @@ type TemplateServer interface {
 type UnimplementedTemplateServer struct {
 }
 
-func (UnimplementedTemplateServer) GetKrHandler(context.Context, *GetKrRequest) (*OkMessage, error) {
+func (UnimplementedTemplateServer) GetKrHandler(context.Context, *KrRequest) (*OkMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetKrHandler not implemented")
 }
-func (UnimplementedTemplateServer) ApproveKrHandler(context.Context, *GetKrRequest) (*OkMessage, error) {
+func (UnimplementedTemplateServer) ApproveKrHandler(context.Context, *KrRequest) (*OkMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveKrHandler not implemented")
 }
 func (UnimplementedTemplateServer) mustEmbedUnimplementedTemplateServer() {}
@@ -81,7 +81,7 @@ func RegisterTemplateServer(s grpc.ServiceRegistrar, srv TemplateServer) {
 }
 
 func _Template_GetKrHandler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetKrRequest)
+	in := new(KrRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -93,13 +93,13 @@ func _Template_GetKrHandler_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/template.Template/GetKrHandler",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TemplateServer).GetKrHandler(ctx, req.(*GetKrRequest))
+		return srv.(TemplateServer).GetKrHandler(ctx, req.(*KrRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Template_ApproveKrHandler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetKrRequest)
+	in := new(KrRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,7 +111,7 @@ func _Template_ApproveKrHandler_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/template.Template/ApproveKrHandler",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TemplateServer).ApproveKrHandler(ctx, req.(*GetKrRequest))
+		return srv.(TemplateServer).ApproveKrHandler(ctx, req.(*KrRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

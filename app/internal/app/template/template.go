@@ -13,10 +13,10 @@ type Server struct {
 	pb.UnimplementedTemplateServer
 }
 
-func (s Server) GetKrHandler(context.Context, *pb.GetKrRequest) (*pb.OkMessage, error) {
+func (s Server) GetKrHandler(ctx context.Context, request *pb.KrRequest) (*pb.OkMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetKrHandler not implemented")
 }
-func (s Server) ApproveKrHandler(context.Context, *pb.GetKrRequest) (*pb.OkMessage, error) {
+func (s Server) ApproveKrHandler(context.Context, *pb.KrRequest) (*pb.OkMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveKrHandler not implemented")
 }
 

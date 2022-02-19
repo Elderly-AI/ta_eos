@@ -398,7 +398,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/templateGetKrRequest"
+              "$ref": "#/definitions/templateKrRequest"
             }
           }
         ],
@@ -430,7 +430,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/templateGetKrRequest"
+              "$ref": "#/definitions/templateKrRequest"
             }
           }
         ],
@@ -802,7 +802,7 @@
         }
       }
     },
-    "templateGetKrRequest": {
+    "templateKrRequest": {
       "type": "object",
       "properties": {
         "krName": {
