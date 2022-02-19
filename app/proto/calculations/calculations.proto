@@ -7,44 +7,116 @@ import "google/api/annotations.proto";
 option go_package = "github.com/Elderly-AI/ta_eos/proto/calculations;calculations";
 
 service Calculations {
-  rpc DirectCodeLeftShiftCalculation (DirectCodeLeftShiftRequest) returns (DirectCodeLeftShiftResponse) {
+  rpc DirectCodeLowDigitsLeftShiftCalculation (DirectCodeLowDigitsLeftShiftRequest) returns (DirectCodeLowDigitsLeftShiftResponse) {
     option (google.api.http) = {
-      post: "/api/v1/calculations/direct_code/left_shift"
+      post: "/api/v1/calculations/direct_code/low_digits/left_shift"
       body: "*"
     };
   }
-  rpc DirectCodeRightShiftCalculation (DirectCodeRightShiftRequest) returns (DirectCodeRightShiftResponse) {
+  rpc DirectCodeHighDigitsLeftShiftCalculation (DirectCodeHighDigitsLeftShiftRequest) returns (DirectCodeHighDigitsLeftShiftResponse) {
     option (google.api.http) = {
-      post: "/api/v1/calculations/direct_code/right_shift"
+      post: "/api/v1/calculations/direct_code/high_digits/left_shift"
+      body: "*"
+    };
+  }
+  rpc DirectCodeLowDigitsRightShiftCalculation (DirectCodeLowDigitsRightShiftRequest) returns (DirectCodeLowDigitsRightShiftResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/calculations/direct_code/low_digits/right_shift"
+      body: "*"
+    };
+  }
+  rpc DirectCodeHighDigitsRightShiftCalculation (DirectCodeHighDigitsRightShiftRequest) returns (DirectCodeHighDigitsRightShiftResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/calculations/direct_code/high_digits/right_shift"
+      body: "*"
+    };
+  }
+  rpc AdditionalCodeWithCorrectiveStepCalculation(AdditionalCodeWithCorrectiveStepRequest) returns (AdditionalCodeWithCorrectiveStepResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/calculations/additional_code/corrective_step"
       body: "*"
     };
   }
 }
 
-message DirectCodeLeftShiftRequest {
+message DirectCodeLowDigitsLeftShiftRequest {
   string multiplier = 1;
   string factor = 2;
+  uint32 grid_size = 3;
 }
 
-message DirectCodeLeftShiftResponse {
+message DirectCodeLowDigitsLeftShiftResponse {
   message Step {
     uint64 index = 1;
     string bin_dec = 2;
     string value = 3;
+    string partial_sum = 4;
   }
   repeated Step Sequence = 1;
 }
 
-message DirectCodeRightShiftRequest {
+message DirectCodeHighDigitsLeftShiftRequest {
   string multiplier = 1;
   string factor = 2;
+  uint32 grid_size = 3;
 }
 
-message DirectCodeRightShiftResponse {
+message DirectCodeHighDigitsLeftShiftResponse {
   message Step {
     uint64 index = 1;
     string bin_dec = 2;
     string value = 3;
+    string partial_sum = 4;
   }
   repeated Step Sequence = 1;
 }
+
+message DirectCodeLowDigitsRightShiftRequest {
+  string multiplier = 1;
+  string factor = 2;
+  uint32 grid_size = 3;
+}
+
+message DirectCodeLowDigitsRightShiftResponse {
+  message Step {
+    uint64 index = 1;
+    string bin_dec = 2;
+    string value = 3;
+    string partial_sum = 4;
+  }
+  repeated Step Sequence = 1;
+}
+
+message DirectCodeHighDigitsRightShiftRequest {
+  string multiplier = 1;
+  string factor = 2;
+  uint32 grid_size = 3;
+}
+
+message DirectCodeHighDigitsRightShiftResponse {
+  message Step {
+    uint64 index = 1;
+    string bin_dec = 2;
+    string value = 3;
+    string partial_sum = 4;
+  }
+  repeated Step Sequence = 1;
+}
+
+message AdditionalCodeWithCorrectiveStepRequest {
+  string multiplier = 1;
+  string factor = 2;
+  uint32 grid_size = 3;
+}
+
+message AdditionalCodeWithCorrectiveStepResponse {
+  message Step {
+    uint64 index = 1;
+    string bin_dec = 2;
+    string value = 3;
+    string partial_sum = 4;
+  }
+  repeated Step Sequence = 1;
+}
+
+

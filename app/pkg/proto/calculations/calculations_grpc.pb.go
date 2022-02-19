@@ -18,8 +18,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CalculationsClient interface {
-	DirectCodeLeftShiftCalculation(ctx context.Context, in *DirectCodeLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeLeftShiftResponse, error)
-	DirectCodeRightShiftCalculation(ctx context.Context, in *DirectCodeRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeRightShiftResponse, error)
+	DirectCodeLowDigitsLeftShiftCalculation(ctx context.Context, in *DirectCodeLowDigitsLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeLowDigitsLeftShiftResponse, error)
+	DirectCodeHighDigitsLeftShiftCalculation(ctx context.Context, in *DirectCodeHighDigitsLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeHighDigitsLeftShiftResponse, error)
+	DirectCodeLowDigitsRightShiftCalculation(ctx context.Context, in *DirectCodeLowDigitsRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeLowDigitsRightShiftResponse, error)
+	DirectCodeHighDigitsRightShiftCalculation(ctx context.Context, in *DirectCodeHighDigitsRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeHighDigitsRightShiftResponse, error)
+	AdditionalCodeWithCorrectiveStepCalculation(ctx context.Context, in *AdditionalCodeWithCorrectiveStepRequest, opts ...grpc.CallOption) (*AdditionalCodeWithCorrectiveStepResponse, error)
 }
 
 type calculationsClient struct {
@@ -30,18 +33,45 @@ func NewCalculationsClient(cc grpc.ClientConnInterface) CalculationsClient {
 	return &calculationsClient{cc}
 }
 
-func (c *calculationsClient) DirectCodeLeftShiftCalculation(ctx context.Context, in *DirectCodeLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeLeftShiftResponse, error) {
-	out := new(DirectCodeLeftShiftResponse)
-	err := c.cc.Invoke(ctx, "/calculations.Calculations/DirectCodeLeftShiftCalculation", in, out, opts...)
+func (c *calculationsClient) DirectCodeLowDigitsLeftShiftCalculation(ctx context.Context, in *DirectCodeLowDigitsLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeLowDigitsLeftShiftResponse, error) {
+	out := new(DirectCodeLowDigitsLeftShiftResponse)
+	err := c.cc.Invoke(ctx, "/calculations.Calculations/DirectCodeLowDigitsLeftShiftCalculation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *calculationsClient) DirectCodeRightShiftCalculation(ctx context.Context, in *DirectCodeRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeRightShiftResponse, error) {
-	out := new(DirectCodeRightShiftResponse)
-	err := c.cc.Invoke(ctx, "/calculations.Calculations/DirectCodeRightShiftCalculation", in, out, opts...)
+func (c *calculationsClient) DirectCodeHighDigitsLeftShiftCalculation(ctx context.Context, in *DirectCodeHighDigitsLeftShiftRequest, opts ...grpc.CallOption) (*DirectCodeHighDigitsLeftShiftResponse, error) {
+	out := new(DirectCodeHighDigitsLeftShiftResponse)
+	err := c.cc.Invoke(ctx, "/calculations.Calculations/DirectCodeHighDigitsLeftShiftCalculation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *calculationsClient) DirectCodeLowDigitsRightShiftCalculation(ctx context.Context, in *DirectCodeLowDigitsRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeLowDigitsRightShiftResponse, error) {
+	out := new(DirectCodeLowDigitsRightShiftResponse)
+	err := c.cc.Invoke(ctx, "/calculations.Calculations/DirectCodeLowDigitsRightShiftCalculation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *calculationsClient) DirectCodeHighDigitsRightShiftCalculation(ctx context.Context, in *DirectCodeHighDigitsRightShiftRequest, opts ...grpc.CallOption) (*DirectCodeHighDigitsRightShiftResponse, error) {
+	out := new(DirectCodeHighDigitsRightShiftResponse)
+	err := c.cc.Invoke(ctx, "/calculations.Calculations/DirectCodeHighDigitsRightShiftCalculation", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *calculationsClient) AdditionalCodeWithCorrectiveStepCalculation(ctx context.Context, in *AdditionalCodeWithCorrectiveStepRequest, opts ...grpc.CallOption) (*AdditionalCodeWithCorrectiveStepResponse, error) {
+	out := new(AdditionalCodeWithCorrectiveStepResponse)
+	err := c.cc.Invoke(ctx, "/calculations.Calculations/AdditionalCodeWithCorrectiveStepCalculation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +82,11 @@ func (c *calculationsClient) DirectCodeRightShiftCalculation(ctx context.Context
 // All implementations must embed UnimplementedCalculationsServer
 // for forward compatibility
 type CalculationsServer interface {
-	DirectCodeLeftShiftCalculation(context.Context, *DirectCodeLeftShiftRequest) (*DirectCodeLeftShiftResponse, error)
-	DirectCodeRightShiftCalculation(context.Context, *DirectCodeRightShiftRequest) (*DirectCodeRightShiftResponse, error)
+	DirectCodeLowDigitsLeftShiftCalculation(context.Context, *DirectCodeLowDigitsLeftShiftRequest) (*DirectCodeLowDigitsLeftShiftResponse, error)
+	DirectCodeHighDigitsLeftShiftCalculation(context.Context, *DirectCodeHighDigitsLeftShiftRequest) (*DirectCodeHighDigitsLeftShiftResponse, error)
+	DirectCodeLowDigitsRightShiftCalculation(context.Context, *DirectCodeLowDigitsRightShiftRequest) (*DirectCodeLowDigitsRightShiftResponse, error)
+	DirectCodeHighDigitsRightShiftCalculation(context.Context, *DirectCodeHighDigitsRightShiftRequest) (*DirectCodeHighDigitsRightShiftResponse, error)
+	AdditionalCodeWithCorrectiveStepCalculation(context.Context, *AdditionalCodeWithCorrectiveStepRequest) (*AdditionalCodeWithCorrectiveStepResponse, error)
 	mustEmbedUnimplementedCalculationsServer()
 }
 
@@ -61,11 +94,20 @@ type CalculationsServer interface {
 type UnimplementedCalculationsServer struct {
 }
 
-func (UnimplementedCalculationsServer) DirectCodeLeftShiftCalculation(context.Context, *DirectCodeLeftShiftRequest) (*DirectCodeLeftShiftResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeLeftShiftCalculation not implemented")
+func (UnimplementedCalculationsServer) DirectCodeLowDigitsLeftShiftCalculation(context.Context, *DirectCodeLowDigitsLeftShiftRequest) (*DirectCodeLowDigitsLeftShiftResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeLowDigitsLeftShiftCalculation not implemented")
 }
-func (UnimplementedCalculationsServer) DirectCodeRightShiftCalculation(context.Context, *DirectCodeRightShiftRequest) (*DirectCodeRightShiftResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeRightShiftCalculation not implemented")
+func (UnimplementedCalculationsServer) DirectCodeHighDigitsLeftShiftCalculation(context.Context, *DirectCodeHighDigitsLeftShiftRequest) (*DirectCodeHighDigitsLeftShiftResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeHighDigitsLeftShiftCalculation not implemented")
+}
+func (UnimplementedCalculationsServer) DirectCodeLowDigitsRightShiftCalculation(context.Context, *DirectCodeLowDigitsRightShiftRequest) (*DirectCodeLowDigitsRightShiftResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeLowDigitsRightShiftCalculation not implemented")
+}
+func (UnimplementedCalculationsServer) DirectCodeHighDigitsRightShiftCalculation(context.Context, *DirectCodeHighDigitsRightShiftRequest) (*DirectCodeHighDigitsRightShiftResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectCodeHighDigitsRightShiftCalculation not implemented")
+}
+func (UnimplementedCalculationsServer) AdditionalCodeWithCorrectiveStepCalculation(context.Context, *AdditionalCodeWithCorrectiveStepRequest) (*AdditionalCodeWithCorrectiveStepResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdditionalCodeWithCorrectiveStepCalculation not implemented")
 }
 func (UnimplementedCalculationsServer) mustEmbedUnimplementedCalculationsServer() {}
 
@@ -80,38 +122,92 @@ func RegisterCalculationsServer(s grpc.ServiceRegistrar, srv CalculationsServer)
 	s.RegisterService(&Calculations_ServiceDesc, srv)
 }
 
-func _Calculations_DirectCodeLeftShiftCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DirectCodeLeftShiftRequest)
+func _Calculations_DirectCodeLowDigitsLeftShiftCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectCodeLowDigitsLeftShiftRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CalculationsServer).DirectCodeLeftShiftCalculation(ctx, in)
+		return srv.(CalculationsServer).DirectCodeLowDigitsLeftShiftCalculation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/calculations.Calculations/DirectCodeLeftShiftCalculation",
+		FullMethod: "/calculations.Calculations/DirectCodeLowDigitsLeftShiftCalculation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CalculationsServer).DirectCodeLeftShiftCalculation(ctx, req.(*DirectCodeLeftShiftRequest))
+		return srv.(CalculationsServer).DirectCodeLowDigitsLeftShiftCalculation(ctx, req.(*DirectCodeLowDigitsLeftShiftRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Calculations_DirectCodeRightShiftCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DirectCodeRightShiftRequest)
+func _Calculations_DirectCodeHighDigitsLeftShiftCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectCodeHighDigitsLeftShiftRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CalculationsServer).DirectCodeRightShiftCalculation(ctx, in)
+		return srv.(CalculationsServer).DirectCodeHighDigitsLeftShiftCalculation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/calculations.Calculations/DirectCodeRightShiftCalculation",
+		FullMethod: "/calculations.Calculations/DirectCodeHighDigitsLeftShiftCalculation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CalculationsServer).DirectCodeRightShiftCalculation(ctx, req.(*DirectCodeRightShiftRequest))
+		return srv.(CalculationsServer).DirectCodeHighDigitsLeftShiftCalculation(ctx, req.(*DirectCodeHighDigitsLeftShiftRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Calculations_DirectCodeLowDigitsRightShiftCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectCodeLowDigitsRightShiftRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculationsServer).DirectCodeLowDigitsRightShiftCalculation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calculations.Calculations/DirectCodeLowDigitsRightShiftCalculation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculationsServer).DirectCodeLowDigitsRightShiftCalculation(ctx, req.(*DirectCodeLowDigitsRightShiftRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Calculations_DirectCodeHighDigitsRightShiftCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectCodeHighDigitsRightShiftRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculationsServer).DirectCodeHighDigitsRightShiftCalculation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calculations.Calculations/DirectCodeHighDigitsRightShiftCalculation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculationsServer).DirectCodeHighDigitsRightShiftCalculation(ctx, req.(*DirectCodeHighDigitsRightShiftRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Calculations_AdditionalCodeWithCorrectiveStepCalculation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdditionalCodeWithCorrectiveStepRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CalculationsServer).AdditionalCodeWithCorrectiveStepCalculation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/calculations.Calculations/AdditionalCodeWithCorrectiveStepCalculation",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CalculationsServer).AdditionalCodeWithCorrectiveStepCalculation(ctx, req.(*AdditionalCodeWithCorrectiveStepRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -124,12 +220,24 @@ var Calculations_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CalculationsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DirectCodeLeftShiftCalculation",
-			Handler:    _Calculations_DirectCodeLeftShiftCalculation_Handler,
+			MethodName: "DirectCodeLowDigitsLeftShiftCalculation",
+			Handler:    _Calculations_DirectCodeLowDigitsLeftShiftCalculation_Handler,
 		},
 		{
-			MethodName: "DirectCodeRightShiftCalculation",
-			Handler:    _Calculations_DirectCodeRightShiftCalculation_Handler,
+			MethodName: "DirectCodeHighDigitsLeftShiftCalculation",
+			Handler:    _Calculations_DirectCodeHighDigitsLeftShiftCalculation_Handler,
+		},
+		{
+			MethodName: "DirectCodeLowDigitsRightShiftCalculation",
+			Handler:    _Calculations_DirectCodeLowDigitsRightShiftCalculation_Handler,
+		},
+		{
+			MethodName: "DirectCodeHighDigitsRightShiftCalculation",
+			Handler:    _Calculations_DirectCodeHighDigitsRightShiftCalculation_Handler,
+		},
+		{
+			MethodName: "AdditionalCodeWithCorrectiveStepCalculation",
+			Handler:    _Calculations_AdditionalCodeWithCorrectiveStepCalculation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

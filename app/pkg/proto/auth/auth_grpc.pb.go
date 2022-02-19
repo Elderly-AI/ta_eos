@@ -18,9 +18,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
-	LoginHandler(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*User, error)
+	LoginHandler(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*SafeUser, error)
 	RegisterHandler(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*SafeUser, error)
 	GetCurrentUser(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*SafeUser, error)
+	SearchUsers(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SafeUsers, error)
 }
 
 type authClient struct {
@@ -31,8 +32,8 @@ func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
 }
 
-func (c *authClient) LoginHandler(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*User, error) {
-	out := new(User)
+func (c *authClient) LoginHandler(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*SafeUser, error) {
+	out := new(SafeUser)
 	err := c.cc.Invoke(ctx, "/auth.Auth/LoginHandler", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -58,13 +59,23 @@ func (c *authClient) GetCurrentUser(ctx context.Context, in *EmptyRequest, opts 
 	return out, nil
 }
 
+func (c *authClient) SearchUsers(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*SafeUsers, error) {
+	out := new(SafeUsers)
+	err := c.cc.Invoke(ctx, "/auth.Auth/SearchUsers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServer is the server API for Auth service.
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
 type AuthServer interface {
-	LoginHandler(context.Context, *LoginRequest) (*User, error)
+	LoginHandler(context.Context, *LoginRequest) (*SafeUser, error)
 	RegisterHandler(context.Context, *RegisterRequest) (*SafeUser, error)
 	GetCurrentUser(context.Context, *EmptyRequest) (*SafeUser, error)
+	SearchUsers(context.Context, *SearchRequest) (*SafeUsers, error)
 	mustEmbedUnimplementedAuthServer()
 }
 
@@ -72,7 +83,7 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
-func (UnimplementedAuthServer) LoginHandler(context.Context, *LoginRequest) (*User, error) {
+func (UnimplementedAuthServer) LoginHandler(context.Context, *LoginRequest) (*SafeUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginHandler not implemented")
 }
 func (UnimplementedAuthServer) RegisterHandler(context.Context, *RegisterRequest) (*SafeUser, error) {
@@ -80,6 +91,9 @@ func (UnimplementedAuthServer) RegisterHandler(context.Context, *RegisterRequest
 }
 func (UnimplementedAuthServer) GetCurrentUser(context.Context, *EmptyRequest) (*SafeUser, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCurrentUser not implemented")
+}
+func (UnimplementedAuthServer) SearchUsers(context.Context, *SearchRequest) (*SafeUsers, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchUsers not implemented")
 }
 func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
 
@@ -148,6 +162,24 @@ func _Auth_GetCurrentUser_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Auth_SearchUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).SearchUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.Auth/SearchUsers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).SearchUsers(ctx, req.(*SearchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -166,6 +198,10 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCurrentUser",
 			Handler:    _Auth_GetCurrentUser_Handler,
+		},
+		{
+			MethodName: "SearchUsers",
+			Handler:    _Auth_SearchUsers_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

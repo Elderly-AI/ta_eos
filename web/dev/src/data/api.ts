@@ -1,33 +1,49 @@
 import {
-  authLoginRequest,
-  authRegisterRequest,
-  authSafeUser,
-  authUser,
-  calcDirectCodeRequest,
-  calcDirectCodeResponse,
-} from "./Models";
+    authLoginRequest,
+    authRegisterRequest,
+    authSafeUser,
+    calcMultipleRequest,
+    calcMultipleResponse,
+    metricsMetricsArray,
+    SearchUser,
+} from './Models';
 
-const host: string = "http://188.35.161.40";
+const host = 'http://188.35.161.40';
+const apiPrefix = '/api/v1';
+const apiHost = host + apiPrefix;
 
 const api = {
-    inside: host + "/api/v1/users/", // ???
-    curUser: host + "/api/v1/auth/get_current_user",
-    register: host + `/api/v1/auth/register`,
-    login: host + `/api/v1/auth/login/`,
+    inside: apiHost + '/users', // ???
+    user: apiHost + '/auth/get_current_user',
+    register: apiHost + '/auth/register',
+    login: apiHost + '/auth/login',
+    searchUsers: apiHost + '/auth/search',
     math: { // Добавляем сюда новые ручки
         directCode: {
-            leftShift: host + '/api/v1/calculations/direct_code/left_shift',
-            rightShift: host + '/api/v1/calculations/direct_code/right_shift',
+            highLeftShift: apiHost + '/calculations/direct_code/high_digits/left_shift',
+            highRightShift: apiHost + '/calculations/direct_code/high_digits/right_shift',
+            lowLeftShift: apiHost + '/calculations/direct_code/low_digits/left_shift',
+            lowRightShift: apiHost + '/calculations/direct_code/low_digits/right_shift',
+        },
+        additionalCode: {
+            correctiveStep: apiHost + '/calculations/additional_code/corrective_step',
         },
     },
+    admin: {
+        search: apiHost + '/metrics/search',
+        metrics: apiHost + '/api/v1/metrics/search_timestamp',
+    }
 };
 
 export interface ApiInterface {
   curUser: () => Promise<authSafeUser>,
-  login: (data: authLoginRequest) => Promise<authUser>,
+  login: (data: authLoginRequest) => Promise<authSafeUser>,
   register: (data: authRegisterRequest) => Promise<authSafeUser>,
-  directCodeLeftShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>,
-  directCodeRightShift: (data: calcDirectCodeRequest) => Promise<calcDirectCodeResponse>
+  directCodeHighLeftShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>,
+  directCodeHighRightShift: (data: calcMultipleRequest) => Promise<calcMultipleResponse>,
+  search: (text: string) => Promise<Array<SearchUser>>,
+  searchMetric: (text: string) => Promise<metricsMetricsArray>,
+  searchTimestamp: (text: string, from: string, to: string) => Promise<metricsMetricsArray>
 }
 
 export default api;

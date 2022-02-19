@@ -1,10 +1,9 @@
 package middleware
 
 import (
+	"github.com/golang/glog"
 	"net/http"
 	"strings"
-
-	"github.com/golang/glog"
 )
 
 func AllowCORS(h http.Handler) http.Handler {

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@CustomInput": ["src/components/CustomInput"],
+      "@Form": ["src/components/Form"],
+      "@Form/*": ["src/components/Form/*"],
+      "@Header": ["src/components/Header"],
+      "@Header/*": ["src/components/Header/*"],
+      "@Home": ["src/components/Home"],
+      "@Math": ["src/components/Math"],
+      "@Math/*": ["src/components/Math/*"],
+      "@Modal": ["src/components/Modal"],
+      "@data/*": ["src/data/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@utils/*": ["src/utils/*"],
+      "@Redux/*": ["src/Redux/*"]
+    }
+  }
+}

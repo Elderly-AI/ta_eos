@@ -31,8 +31,8 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_Calculations_DirectCodeLeftShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, client CalculationsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DirectCodeLeftShiftRequest
+func request_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, client CalculationsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeLowDigitsLeftShiftRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -43,13 +43,13 @@ func request_Calculations_DirectCodeLeftShiftCalculation_0(ctx context.Context, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.DirectCodeLeftShiftCalculation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DirectCodeLowDigitsLeftShiftCalculation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Calculations_DirectCodeLeftShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, server CalculationsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DirectCodeLeftShiftRequest
+func local_request_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, server CalculationsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeLowDigitsLeftShiftRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -60,13 +60,13 @@ func local_request_Calculations_DirectCodeLeftShiftCalculation_0(ctx context.Con
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.DirectCodeLeftShiftCalculation(ctx, &protoReq)
+	msg, err := server.DirectCodeLowDigitsLeftShiftCalculation(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_Calculations_DirectCodeRightShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, client CalculationsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DirectCodeRightShiftRequest
+func request_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, client CalculationsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeHighDigitsLeftShiftRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -77,13 +77,13 @@ func request_Calculations_DirectCodeRightShiftCalculation_0(ctx context.Context,
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.DirectCodeRightShiftCalculation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.DirectCodeHighDigitsLeftShiftCalculation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Calculations_DirectCodeRightShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, server CalculationsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq DirectCodeRightShiftRequest
+func local_request_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, server CalculationsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeHighDigitsLeftShiftRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -94,7 +94,109 @@ func local_request_Calculations_DirectCodeRightShiftCalculation_0(ctx context.Co
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.DirectCodeRightShiftCalculation(ctx, &protoReq)
+	msg, err := server.DirectCodeHighDigitsLeftShiftCalculation(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_Calculations_DirectCodeLowDigitsRightShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, client CalculationsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeLowDigitsRightShiftRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.DirectCodeLowDigitsRightShiftCalculation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_Calculations_DirectCodeLowDigitsRightShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, server CalculationsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeLowDigitsRightShiftRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.DirectCodeLowDigitsRightShiftCalculation(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_Calculations_DirectCodeHighDigitsRightShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, client CalculationsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeHighDigitsRightShiftRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.DirectCodeHighDigitsRightShiftCalculation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_Calculations_DirectCodeHighDigitsRightShiftCalculation_0(ctx context.Context, marshaler runtime.Marshaler, server CalculationsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq DirectCodeHighDigitsRightShiftRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.DirectCodeHighDigitsRightShiftCalculation(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0(ctx context.Context, marshaler runtime.Marshaler, client CalculationsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdditionalCodeWithCorrectiveStepRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.AdditionalCodeWithCorrectiveStepCalculation(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0(ctx context.Context, marshaler runtime.Marshaler, server CalculationsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AdditionalCodeWithCorrectiveStepRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.AdditionalCodeWithCorrectiveStepCalculation(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -105,18 +207,18 @@ func local_request_Calculations_DirectCodeRightShiftCalculation_0(ctx context.Co
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterCalculationsHandlerFromEndpoint instead.
 func RegisterCalculationsHandlerServer(ctx context.Context, mux *runtime.ServeMux, server CalculationsServer) error {
 
-	mux.Handle("POST", pattern_Calculations_DirectCodeLeftShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculations.Calculations/DirectCodeLeftShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/left_shift"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculations.Calculations/DirectCodeLowDigitsLeftShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/low_digits/left_shift"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Calculations_DirectCodeLeftShiftCalculation_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -124,22 +226,22 @@ func RegisterCalculationsHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_Calculations_DirectCodeLeftShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Calculations_DirectCodeRightShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculations.Calculations/DirectCodeRightShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/right_shift"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculations.Calculations/DirectCodeHighDigitsLeftShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/high_digits/left_shift"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Calculations_DirectCodeRightShiftCalculation_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -147,7 +249,76 @@ func RegisterCalculationsHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_Calculations_DirectCodeRightShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_Calculations_DirectCodeLowDigitsRightShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculations.Calculations/DirectCodeLowDigitsRightShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/low_digits/right_shift"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_Calculations_DirectCodeLowDigitsRightShiftCalculation_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Calculations_DirectCodeLowDigitsRightShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_Calculations_DirectCodeHighDigitsRightShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculations.Calculations/DirectCodeHighDigitsRightShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/high_digits/right_shift"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_Calculations_DirectCodeHighDigitsRightShiftCalculation_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Calculations_DirectCodeHighDigitsRightShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/calculations.Calculations/AdditionalCodeWithCorrectiveStepCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/additional_code/corrective_step"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -192,43 +363,103 @@ func RegisterCalculationsHandler(ctx context.Context, mux *runtime.ServeMux, con
 // "CalculationsClient" to call the correct interceptors.
 func RegisterCalculationsHandlerClient(ctx context.Context, mux *runtime.ServeMux, client CalculationsClient) error {
 
-	mux.Handle("POST", pattern_Calculations_DirectCodeLeftShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculations.Calculations/DirectCodeLeftShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/left_shift"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculations.Calculations/DirectCodeLowDigitsLeftShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/low_digits/left_shift"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Calculations_DirectCodeLeftShiftCalculation_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Calculations_DirectCodeLeftShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Calculations_DirectCodeRightShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculations.Calculations/DirectCodeRightShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/right_shift"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculations.Calculations/DirectCodeHighDigitsLeftShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/high_digits/left_shift"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Calculations_DirectCodeRightShiftCalculation_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Calculations_DirectCodeRightShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_Calculations_DirectCodeLowDigitsRightShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculations.Calculations/DirectCodeLowDigitsRightShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/low_digits/right_shift"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_Calculations_DirectCodeLowDigitsRightShiftCalculation_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Calculations_DirectCodeLowDigitsRightShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_Calculations_DirectCodeHighDigitsRightShiftCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculations.Calculations/DirectCodeHighDigitsRightShiftCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/direct_code/high_digits/right_shift"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_Calculations_DirectCodeHighDigitsRightShiftCalculation_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Calculations_DirectCodeHighDigitsRightShiftCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/calculations.Calculations/AdditionalCodeWithCorrectiveStepCalculation", runtime.WithHTTPPathPattern("/api/v1/calculations/additional_code/corrective_step"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -236,13 +467,25 @@ func RegisterCalculationsHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_Calculations_DirectCodeLeftShiftCalculation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "v1", "calculations", "direct_code", "left_shift"}, ""))
+	pattern_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 2, 5}, []string{"api", "v1", "calculations", "direct_code", "low_digits", "left_shift"}, ""))
 
-	pattern_Calculations_DirectCodeRightShiftCalculation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "v1", "calculations", "direct_code", "right_shift"}, ""))
+	pattern_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 2, 5}, []string{"api", "v1", "calculations", "direct_code", "high_digits", "left_shift"}, ""))
+
+	pattern_Calculations_DirectCodeLowDigitsRightShiftCalculation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 2, 5}, []string{"api", "v1", "calculations", "direct_code", "low_digits", "right_shift"}, ""))
+
+	pattern_Calculations_DirectCodeHighDigitsRightShiftCalculation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4, 2, 5}, []string{"api", "v1", "calculations", "direct_code", "high_digits", "right_shift"}, ""))
+
+	pattern_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"api", "v1", "calculations", "additional_code", "corrective_step"}, ""))
 )
 
 var (
-	forward_Calculations_DirectCodeLeftShiftCalculation_0 = runtime.ForwardResponseMessage
+	forward_Calculations_DirectCodeLowDigitsLeftShiftCalculation_0 = runtime.ForwardResponseMessage
 
-	forward_Calculations_DirectCodeRightShiftCalculation_0 = runtime.ForwardResponseMessage
+	forward_Calculations_DirectCodeHighDigitsLeftShiftCalculation_0 = runtime.ForwardResponseMessage
+
+	forward_Calculations_DirectCodeLowDigitsRightShiftCalculation_0 = runtime.ForwardResponseMessage
+
+	forward_Calculations_DirectCodeHighDigitsRightShiftCalculation_0 = runtime.ForwardResponseMessage
+
+	forward_Calculations_AdditionalCodeWithCorrectiveStepCalculation_0 = runtime.ForwardResponseMessage
 )

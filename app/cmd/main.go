@@ -3,19 +3,22 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
-	"net"
-	"net/http"
-
+	"github.com/Elderly-AI/ta_eos/internal/app/metrics"
+	metricsRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/metrics"
+	pbMetrics "github.com/Elderly-AI/ta_eos/pkg/proto/metrics"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jmoiron/sqlx"
 	"google.golang.org/grpc"
+	"log"
+	"net"
+	"net/http"
 
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
 	calc "github.com/Elderly-AI/ta_eos/internal/app/calculations"
 	calcFacade "github.com/Elderly-AI/ta_eos/internal/pkg/calculations"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/config"
 	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
@@ -31,6 +34,10 @@ func registerServices(opts Options, s *grpc.Server) {
 	calculationsFacade := calcFacade.New()
 	calculationsDelivery := calc.NewCalculationsHandler(calculationsFacade)
 	pbCalculations.RegisterCalculationsServer(s, &calculationsDelivery)
+
+	repo := metricsRepo.NewMetricsRepo(opts.PosgtresConnection)
+	metricsDelivery := metrics.NewMetricsHandler(repo)
+	pbMetrics.RegisterMetricsServer(s, &metricsDelivery)
 }
 
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
@@ -39,6 +46,7 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 	for _, f := range []func(ctx context.Context, mux *gwruntime.ServeMux, conn *grpc.ClientConn) error{
 		pbAuth.RegisterAuthHandler,
 		pbCalculations.RegisterCalculationsHandler,
+		pbMetrics.RegisterMetricsHandler,
 	} {
 		if err := f(ctx, mux, conn); err != nil {
 			return nil, err
@@ -55,36 +63,39 @@ type Options struct {
 	SessionStore       *session.Store
 }
 
-func createInitialOptions() Options {
+func createInitialOptions(conf config.Config) Options {
 	opts := Options{}
-	database, err := sqlx.Connect("postgres", "host=postgres user=postgres password=postgres dbname=postgres sslmode=disable")
+	database, err := sqlx.Connect("postgres", fmt.Sprintf("host=%s user=postgres password=postgres dbname=postgres sslmode=disable", conf.PostgresHost))
 	if err != nil {
 		glog.Fatal(err)
 	}
 	opts.PosgtresConnection = database
 
-	opts.RedisConnection = redis.NewClient(&redis.Options{
-		Addr:     "redis:6379",
+	redisClient := redis.NewClient(&redis.Options{
+		Addr:     conf.RedisAddr,
 		Password: "",
 		DB:       0,
 	})
+	opts.RedisConnection = redisClient
 
-	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, 2_678_400)
+	repo := metricsRepo.NewMetricsRepo(opts.PosgtresConnection)
+	opts.SessionStore = session.CreateSessionStore(opts.RedisConnection, conf.CookieTimeout, &repo)
 	opts.Addr = "0.0.0.0:8080"
 	return opts
 }
 
-func addMiddlewares(opts Options) Options {
+func addGRPCMiddlewares(opts Options) Options {
 	opts.Mux = []gwruntime.ServeMuxOption{
-		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
 		gwruntime.WithOutgoingHeaderMatcher(EmptyHeaderMatcherFunc),
+		gwruntime.WithMetadata(opts.SessionStore.AuthMiddleware),
 	}
 	return opts
 }
 
 func main() {
-	opts := createInitialOptions()
-	opts = addMiddlewares(opts)
+	conf := config.GetConfig()
+	opts := createInitialOptions(conf)
+	opts = addGRPCMiddlewares(opts)
 
 	lis, err := net.Listen("tcp", ":8080")
 	if err != nil {
@@ -92,12 +103,11 @@ func main() {
 	}
 
 	s := grpc.NewServer()
+	registerServices(opts, s)
 	log.Println("Serving gRPC on 0.0.0.0:8080")
 	go func() {
 		log.Fatalln(s.Serve(lis))
 	}()
-
-	registerServices(opts, s)
 	// register services
 
 	// Create a client connection to the gRPC server we just started
@@ -116,14 +126,12 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	mux := http.NewServeMux()
-
 	mux.Handle("/", gw)
 
 	gwServer := &http.Server{
 		Addr:    ":8090",
-		Handler: common.AllowCORS(mux),
+		Handler: common.AllowCORS(mux), // TODO add panic middleware
 	}
 
 	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8090")

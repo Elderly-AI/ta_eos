@@ -10,7 +10,7 @@ option go_package = "github.com/Elderly-AI/ta_eos/proto/auth;auth";
 
 // Here is the overall greeting service definition where we define all our endpoints
 service Auth {
-  rpc LoginHandler (LoginRequest) returns (User) {
+  rpc LoginHandler (LoginRequest) returns (SafeUser) {
     option (google.api.http) = {
       post: "/api/v1/auth/login"
       body: "*"
@@ -27,6 +27,11 @@ service Auth {
       get: "/api/v1/auth/get_current_user"
     };
   }
+  rpc SearchUsers (SearchRequest) returns (SafeUsers) {
+    option (google.api.http) = {
+      get: "/api/v1/auth/search"
+    };
+  }
 
 }
 
@@ -41,6 +46,8 @@ message SafeUser {
   string name = 1;
   string email = 2;
   string group = 3;
+  string role = 4;
+  string user_id = 5;
 }
 
 message LoginRequest {
@@ -56,4 +63,12 @@ message RegisterRequest {
 
 message EmptyRequest{
 
+}
+
+message SafeUsers{
+  repeated SafeUser users = 1;
+}
+
+message SearchRequest{
+  string text = 1;
 }
