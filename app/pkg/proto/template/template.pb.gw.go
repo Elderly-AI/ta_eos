@@ -31,7 +31,7 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_Auth_GetKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, client AuthClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Template_GetKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, client TemplateClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetKrRequest
 	var metadata runtime.ServerMetadata
 
@@ -48,7 +48,7 @@ func request_Auth_GetKrHandler_0(ctx context.Context, marshaler runtime.Marshale
 
 }
 
-func local_request_Auth_GetKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Template_GetKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, server TemplateServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetKrRequest
 	var metadata runtime.ServerMetadata
 
@@ -65,7 +65,7 @@ func local_request_Auth_GetKrHandler_0(ctx context.Context, marshaler runtime.Ma
 
 }
 
-func request_Auth_ApproveKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, client AuthClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_Template_ApproveKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, client TemplateClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetKrRequest
 	var metadata runtime.ServerMetadata
 
@@ -82,7 +82,7 @@ func request_Auth_ApproveKrHandler_0(ctx context.Context, marshaler runtime.Mars
 
 }
 
-func local_request_Auth_ApproveKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, server AuthServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_Template_ApproveKrHandler_0(ctx context.Context, marshaler runtime.Marshaler, server TemplateServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetKrRequest
 	var metadata runtime.ServerMetadata
 
@@ -99,24 +99,24 @@ func local_request_Auth_ApproveKrHandler_0(ctx context.Context, marshaler runtim
 
 }
 
-// RegisterAuthHandlerServer registers the http handlers for service Auth to "mux".
-// UnaryRPC     :call AuthServer directly.
+// RegisterTemplateHandlerServer registers the http handlers for service Template to "mux".
+// UnaryRPC     :call TemplateServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
-// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterAuthHandlerFromEndpoint instead.
-func RegisterAuthHandlerServer(ctx context.Context, mux *runtime.ServeMux, server AuthServer) error {
+// Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterTemplateHandlerFromEndpoint instead.
+func RegisterTemplateHandlerServer(ctx context.Context, mux *runtime.ServeMux, server TemplateServer) error {
 
-	mux.Handle("POST", pattern_Auth_GetKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Template_GetKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/template.Auth/GetKrHandler", runtime.WithHTTPPathPattern("/api/v1/templates/get_kr"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/template.Template/GetKrHandler", runtime.WithHTTPPathPattern("/api/v1/template/get_kr"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Auth_GetKrHandler_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Template_GetKrHandler_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -124,22 +124,22 @@ func RegisterAuthHandlerServer(ctx context.Context, mux *runtime.ServeMux, serve
 			return
 		}
 
-		forward_Auth_GetKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Template_GetKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Auth_ApproveKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Template_ApproveKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/template.Auth/ApproveKrHandler", runtime.WithHTTPPathPattern("/api/v1/templates/approve_kr"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/template.Template/ApproveKrHandler", runtime.WithHTTPPathPattern("/api/v1/template/approve_kr"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Auth_ApproveKrHandler_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Template_ApproveKrHandler_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -147,16 +147,16 @@ func RegisterAuthHandlerServer(ctx context.Context, mux *runtime.ServeMux, serve
 			return
 		}
 
-		forward_Auth_ApproveKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Template_ApproveKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
 	return nil
 }
 
-// RegisterAuthHandlerFromEndpoint is same as RegisterAuthHandler but
+// RegisterTemplateHandlerFromEndpoint is same as RegisterTemplateHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
-func RegisterAuthHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
+func RegisterTemplateHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
 	conn, err := grpc.Dial(endpoint, opts...)
 	if err != nil {
 		return err
@@ -176,59 +176,59 @@ func RegisterAuthHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux,
 		}()
 	}()
 
-	return RegisterAuthHandler(ctx, mux, conn)
+	return RegisterTemplateHandler(ctx, mux, conn)
 }
 
-// RegisterAuthHandler registers the http handlers for service Auth to "mux".
+// RegisterTemplateHandler registers the http handlers for service Template to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterAuthHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
-	return RegisterAuthHandlerClient(ctx, mux, NewAuthClient(conn))
+func RegisterTemplateHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+	return RegisterTemplateHandlerClient(ctx, mux, NewTemplateClient(conn))
 }
 
-// RegisterAuthHandlerClient registers the http handlers for service Auth
-// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "AuthClient".
-// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "AuthClient"
+// RegisterTemplateHandlerClient registers the http handlers for service Template
+// to "mux". The handlers forward requests to the grpc endpoint over the given implementation of "TemplateClient".
+// Note: the gRPC framework executes interceptors within the gRPC handler. If the passed in "TemplateClient"
 // doesn't go through the normal gRPC flow (creating a gRPC client etc.) then it will be up to the passed in
-// "AuthClient" to call the correct interceptors.
-func RegisterAuthHandlerClient(ctx context.Context, mux *runtime.ServeMux, client AuthClient) error {
+// "TemplateClient" to call the correct interceptors.
+func RegisterTemplateHandlerClient(ctx context.Context, mux *runtime.ServeMux, client TemplateClient) error {
 
-	mux.Handle("POST", pattern_Auth_GetKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Template_GetKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/template.Auth/GetKrHandler", runtime.WithHTTPPathPattern("/api/v1/templates/get_kr"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/template.Template/GetKrHandler", runtime.WithHTTPPathPattern("/api/v1/template/get_kr"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Auth_GetKrHandler_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Template_GetKrHandler_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Auth_GetKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Template_GetKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Auth_ApproveKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Template_ApproveKrHandler_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/template.Auth/ApproveKrHandler", runtime.WithHTTPPathPattern("/api/v1/templates/approve_kr"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/template.Template/ApproveKrHandler", runtime.WithHTTPPathPattern("/api/v1/template/approve_kr"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Auth_ApproveKrHandler_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Template_ApproveKrHandler_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Auth_ApproveKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Template_ApproveKrHandler_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -236,13 +236,13 @@ func RegisterAuthHandlerClient(ctx context.Context, mux *runtime.ServeMux, clien
 }
 
 var (
-	pattern_Auth_GetKrHandler_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "templates", "get_kr"}, ""))
+	pattern_Template_GetKrHandler_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "template", "get_kr"}, ""))
 
-	pattern_Auth_ApproveKrHandler_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "templates", "approve_kr"}, ""))
+	pattern_Template_ApproveKrHandler_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "template", "approve_kr"}, ""))
 )
 
 var (
-	forward_Auth_GetKrHandler_0 = runtime.ForwardResponseMessage
+	forward_Template_GetKrHandler_0 = runtime.ForwardResponseMessage
 
-	forward_Auth_ApproveKrHandler_0 = runtime.ForwardResponseMessage
+	forward_Template_ApproveKrHandler_0 = runtime.ForwardResponseMessage
 )

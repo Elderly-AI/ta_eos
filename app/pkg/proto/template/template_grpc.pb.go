@@ -14,122 +14,122 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// AuthClient is the client API for Auth service.
+// TemplateClient is the client API for Template service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AuthClient interface {
+type TemplateClient interface {
 	GetKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error)
 	ApproveKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error)
 }
 
-type authClient struct {
+type templateClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
-	return &authClient{cc}
+func NewTemplateClient(cc grpc.ClientConnInterface) TemplateClient {
+	return &templateClient{cc}
 }
 
-func (c *authClient) GetKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
+func (c *templateClient) GetKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
 	out := new(OkMessage)
-	err := c.cc.Invoke(ctx, "/template.Auth/GetKrHandler", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/template.Template/GetKrHandler", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *authClient) ApproveKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
+func (c *templateClient) ApproveKrHandler(ctx context.Context, in *GetKrRequest, opts ...grpc.CallOption) (*OkMessage, error) {
 	out := new(OkMessage)
-	err := c.cc.Invoke(ctx, "/template.Auth/ApproveKrHandler", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/template.Template/ApproveKrHandler", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// AuthServer is the server API for Auth service.
-// All implementations must embed UnimplementedAuthServer
+// TemplateServer is the server API for Template service.
+// All implementations must embed UnimplementedTemplateServer
 // for forward compatibility
-type AuthServer interface {
+type TemplateServer interface {
 	GetKrHandler(context.Context, *GetKrRequest) (*OkMessage, error)
 	ApproveKrHandler(context.Context, *GetKrRequest) (*OkMessage, error)
-	mustEmbedUnimplementedAuthServer()
+	mustEmbedUnimplementedTemplateServer()
 }
 
-// UnimplementedAuthServer must be embedded to have forward compatible implementations.
-type UnimplementedAuthServer struct {
+// UnimplementedTemplateServer must be embedded to have forward compatible implementations.
+type UnimplementedTemplateServer struct {
 }
 
-func (UnimplementedAuthServer) GetKrHandler(context.Context, *GetKrRequest) (*OkMessage, error) {
+func (UnimplementedTemplateServer) GetKrHandler(context.Context, *GetKrRequest) (*OkMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetKrHandler not implemented")
 }
-func (UnimplementedAuthServer) ApproveKrHandler(context.Context, *GetKrRequest) (*OkMessage, error) {
+func (UnimplementedTemplateServer) ApproveKrHandler(context.Context, *GetKrRequest) (*OkMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveKrHandler not implemented")
 }
-func (UnimplementedAuthServer) mustEmbedUnimplementedAuthServer() {}
+func (UnimplementedTemplateServer) mustEmbedUnimplementedTemplateServer() {}
 
-// UnsafeAuthServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AuthServer will
+// UnsafeTemplateServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to TemplateServer will
 // result in compilation errors.
-type UnsafeAuthServer interface {
-	mustEmbedUnimplementedAuthServer()
+type UnsafeTemplateServer interface {
+	mustEmbedUnimplementedTemplateServer()
 }
 
-func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
-	s.RegisterService(&Auth_ServiceDesc, srv)
+func RegisterTemplateServer(s grpc.ServiceRegistrar, srv TemplateServer) {
+	s.RegisterService(&Template_ServiceDesc, srv)
 }
 
-func _Auth_GetKrHandler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Template_GetKrHandler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetKrRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).GetKrHandler(ctx, in)
+		return srv.(TemplateServer).GetKrHandler(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/template.Auth/GetKrHandler",
+		FullMethod: "/template.Template/GetKrHandler",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).GetKrHandler(ctx, req.(*GetKrRequest))
+		return srv.(TemplateServer).GetKrHandler(ctx, req.(*GetKrRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Auth_ApproveKrHandler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Template_ApproveKrHandler_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetKrRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AuthServer).ApproveKrHandler(ctx, in)
+		return srv.(TemplateServer).ApproveKrHandler(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/template.Auth/ApproveKrHandler",
+		FullMethod: "/template.Template/ApproveKrHandler",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServer).ApproveKrHandler(ctx, req.(*GetKrRequest))
+		return srv.(TemplateServer).ApproveKrHandler(ctx, req.(*GetKrRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// Auth_ServiceDesc is the grpc.ServiceDesc for Auth service.
+// Template_ServiceDesc is the grpc.ServiceDesc for Template service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var Auth_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "template.Auth",
-	HandlerType: (*AuthServer)(nil),
+var Template_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "template.Template",
+	HandlerType: (*TemplateServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetKrHandler",
-			Handler:    _Auth_GetKrHandler_Handler,
+			Handler:    _Template_GetKrHandler_Handler,
 		},
 		{
 			MethodName: "ApproveKrHandler",
-			Handler:    _Auth_ApproveKrHandler_Handler,
+			Handler:    _Template_ApproveKrHandler_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

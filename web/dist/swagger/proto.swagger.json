@@ -15,7 +15,7 @@
       "name": "Metrics"
     },
     {
-      "name": "Auth"
+      "name": "Template"
     }
   ],
   "consumes": [
@@ -377,7 +377,7 @@
     },
     "/api/v1/templates/approve_kr": {
       "post": {
-        "operationId": "Auth_ApproveKrHandler",
+        "operationId": "Template_ApproveKrHandler",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -403,13 +403,13 @@
           }
         ],
         "tags": [
-          "Auth"
+          "Template"
         ]
       }
     },
     "/api/v1/templates/get_kr": {
       "post": {
-        "operationId": "Auth_GetKrHandler",
+        "operationId": "Template_GetKrHandler",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -435,7 +435,7 @@
           }
         ],
         "tags": [
-          "Auth"
+          "Template"
         ]
       }
     }

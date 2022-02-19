@@ -10,16 +10,16 @@ import "google/protobuf/any.proto";
 option go_package = "github.com/Elderly-AI/ta_eos/proto/template;template";
 
 
-service Auth {
+service Template {
   rpc GetKrHandler (GetKrRequest) returns (OkMessage) {
     option (google.api.http) = {
-      post: "/api/v1/templates/get_kr"
+      post: "/api/v1/template/get_kr"
       body: "*"
     };
   }
   rpc ApproveKrHandler (GetKrRequest) returns (OkMessage) {
     option (google.api.http) = {
-      post: "/api/v1/templates/approve_kr"
+      post: "/api/v1/template/approve_kr"
       body: "*"
     };
   }
