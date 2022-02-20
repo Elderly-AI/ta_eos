@@ -46,7 +46,7 @@ func TemplateFromProto(proto *pb.TemplateRequest) (*KrTemplate, error) {
 	return &template, nil
 }
 
-func TemplateToProtoStructure(template *KrTemplate) (*structpb.Struct, error) {
+func ConvertToProtoJSON(template interface{}) (*structpb.Struct, error) {
 	b, err := json.Marshal(template)
 	if err != nil {
 		return nil, err
