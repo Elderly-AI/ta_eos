@@ -3,6 +3,8 @@ package model
 import (
 	"encoding/json"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/structpb"
 )
 
 type KrTemplate struct {
@@ -33,6 +35,12 @@ func TemplateFromProto(proto *pb.TemplateRequest) (*KrTemplate, error) {
 	return &template, nil
 }
 
-func TemplateToProto(template *KrTemplate, krName string) *pb.TemplateRequest {
-	return nil // TODO implement
+func TemplateToProtoStructure(template *KrTemplate) (*structpb.Struct, error) {
+	b, err := json.Marshal(template)
+	if err != nil {
+		return nil, err
+	}
+	s := &structpb.Struct{}
+	err = protojson.Unmarshal(b, s)
+	return s, err
 }

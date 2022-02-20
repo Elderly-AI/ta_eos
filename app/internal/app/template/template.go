@@ -22,10 +22,12 @@ func GetTemplate() model.KrTemplate {
 }
 
 func (s Server) GetKrHandler(context.Context, *pb.TemplateRequest) (*pb.TemplateRequest, error) {
+	template := GetTemplate()
+	res, err := model.TemplateToProtoStructure(&template)
 	return &pb.TemplateRequest{
 		KrName: "asd",
-		Data:   nil,
-	}, nil
+		Data:   res,
+	}, err
 }
 
 func (s Server) ApproveKrHandler(ctx context.Context, request *pb.TemplateRequest) (*pb.OkMessage, error) {
