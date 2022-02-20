@@ -398,7 +398,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/templateKrRequest"
+              "$ref": "#/definitions/templateTemplateRequest"
             }
           }
         ],
@@ -414,7 +414,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/templateOkMessage"
+              "$ref": "#/definitions/templateTemplateRequest"
             }
           },
           "default": {
@@ -430,7 +430,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/templateKrRequest"
+              "$ref": "#/definitions/templateTemplateRequest"
             }
           }
         ],
@@ -800,17 +800,6 @@
         }
       }
     },
-    "templateKrRequest": {
-      "type": "object",
-      "properties": {
-        "krName": {
-          "type": "string"
-        },
-        "data": {
-          "type": "object"
-        }
-      }
-    },
     "templateOkMessage": {
       "type": "object",
       "properties": {
@@ -819,6 +808,17 @@
         },
         "error": {
           "type": "string"
+        }
+      }
+    },
+    "templateTemplateRequest": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
         }
       }
     }

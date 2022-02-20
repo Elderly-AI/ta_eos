@@ -4,9 +4,8 @@ import (
 	"context"
 	"fmt"
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Server struct {
@@ -14,15 +13,31 @@ type Server struct {
 	pb.UnimplementedTemplateServer
 }
 
-func (s Server) GetKrHandler(ctx context.Context, request *pb.KrRequest) (*pb.OkMessage, error) {
-	fmt.Println(request.Data)
+func GetTemplate() model.KrTemplate {
+	return model.KrTemplate{
+		WhatToDo:     "",
+		TemplateName: "",
+		UI:           nil,
+	}
+}
+
+func (s Server) GetKrHandler(context.Context, *pb.TemplateRequest) (*pb.TemplateRequest, error) {
+	return &pb.TemplateRequest{
+		KrName: "asd",
+		Data:   nil,
+	}, nil
+}
+
+func (s Server) ApproveKrHandler(ctx context.Context, request *pb.TemplateRequest) (*pb.OkMessage, error) {
+	template, err := model.TemplateFromProto(request)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(template)
 	return &pb.OkMessage{
 		Ok:    true,
 		Error: "",
 	}, nil
-}
-func (s Server) ApproveKrHandler(context.Context, *pb.KrRequest) (*pb.OkMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApproveKrHandler not implemented")
 }
 
 func NewTemplateHandler(repo templateRepo.Repo) Server {
