@@ -7,19 +7,21 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-type KrTemplate struct {
-	WhatToDo     string `json:"what_to_do"`
-	TemplateName string `json:"template_name"`
-	UI           []struct {
+type TableStruct struct {
+	Name string `json:"name"`
+	Data []struct {
 		Name string `json:"name"`
 		Data []struct {
-			Name string `json:"name"`
-			Data []struct {
-				Name  string `json:"name"`
-				Value string `json:"value"`
-			} `json:"data"`
+			Name  string `json:"name"`
+			Value string `json:"value"`
 		} `json:"data"`
-	} `json:"UI"`
+	} `json:"data"`
+}
+
+type KrTemplate struct {
+	WhatToDo     string        `json:"what_to_do"`
+	TemplateName string        `json:"template_name"`
+	UI           []interface{} `json:"UI"`
 }
 
 func TemplateFromProto(proto *pb.TemplateRequest) (*KrTemplate, error) {
@@ -32,6 +34,15 @@ func TemplateFromProto(proto *pb.TemplateRequest) (*KrTemplate, error) {
 	if err != nil {
 		return nil, err
 	}
+	//if template.TemplateName == "table" {
+	//	var tableStruct []TableStruct
+	//	b, _ := json.Marshal(template.UI)
+	//	err = json.Unmarshal(b, &tableStruct)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//	template.UI = tableStruct
+	//}
 	return &template, nil
 }
 
