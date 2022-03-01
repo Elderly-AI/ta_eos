@@ -8,6 +8,7 @@ import Home from './components/Home';
 import Search from './components/Search';
 import {useActions} from '@hooks/useActions';
 import Admin from './components/Admin';
+import Works from './components/Works';
 
 const App: React.FC = () => {
     const auth = useTypedSelector((state) => state.auth);
@@ -26,6 +27,7 @@ const App: React.FC = () => {
                 <Route path="/home" component={Home}/>
                 <Route exact path="/admin" component={Search}/>
                 <Route path='/admin/:userId' component={Admin}/>
+                <Route exact path="/works" component={Works}/>
                 {auth?.name ? history.push('/home') : history.push('/auth')}
             </Switch>
             {modal.show ? <Modal/> : ''}
