@@ -3,7 +3,7 @@ syntax = "proto3";
 package template;
 
 import "google/api/annotations.proto";
-import "google/protobuf/any.proto";
+import "google/protobuf/struct.proto";
 
 // Defines the import path that should be used to import the generated package
 // and the package name
@@ -11,13 +11,13 @@ option go_package = "github.com/Elderly-AI/ta_eos/proto/template;template";
 
 
 service Template {
-  rpc GetKrHandler (KrRequest) returns (OkMessage) {
+  rpc GetKrHandler (TemplateRequest) returns (TemplateRequest) {
     option (google.api.http) = {
       post: "/api/v1/template/get_kr"
       body: "*"
     };
   }
-  rpc ApproveKrHandler (KrRequest) returns (OkMessage) {
+  rpc ApproveKrHandler (TemplateRequest) returns (OkMessage) {
     option (google.api.http) = {
       post: "/api/v1/template/approve_kr"
       body: "*"
@@ -26,13 +26,13 @@ service Template {
 }
 
 
-message MapMessage{
-  map<string, google.protobuf.Any> data = 1;
+message GetKrRequest {
+  string kr_name = 1;
 }
 
-message KrRequest {
+message TemplateRequest {
   string kr_name = 1;
-  MapMessage data = 2;
+  google.protobuf.Struct data = 2;
 }
 
 message OkMessage {

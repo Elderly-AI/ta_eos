@@ -24,7 +24,7 @@ import (
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
-	templateF "github.com/Elderly-AI/ta_eos/internal/pkg/template"
+	templateFacade "github.com/Elderly-AI/ta_eos/internal/pkg/template"
 	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 	pbCalculations "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
 	pbMetrics "github.com/Elderly-AI/ta_eos/pkg/proto/metrics"
@@ -44,9 +44,9 @@ func registerServices(opts Options, s *grpc.Server) {
 	metricsDelivery := metrics.NewMetricsHandler(repo)
 	pbMetrics.RegisterMetricsServer(s, &metricsDelivery)
 
-	templateFacade := templateF.New()
+	templateF := templateFacade.New()
 	templateRepository := templateRepo.CreateRepo(opts.PosgtresConnection)
-	templateDelivery := template.NewTemplateHandler(templateRepository, templateFacade)
+	templateDelivery := template.NewTemplateHandler(*templateRepository, templateF)
 	pbTemplate.RegisterTemplateServer(s, &templateDelivery)
 }
 
