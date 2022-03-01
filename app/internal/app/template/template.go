@@ -6,6 +6,8 @@ import (
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
+	"math/rand"
+	"strconv"
 )
 
 type Server struct {
@@ -13,9 +15,23 @@ type Server struct {
 	pb.UnimplementedTemplateServer
 }
 
-func GetTemplate() map[string]interface{} {
+func ConvertInt(number int, base int, toBase int) (string, error) {
+	val := strconv.Itoa(number)
+	i, err := strconv.ParseInt(val, base, 64)
+	if err != nil {
+		return "", err
+	}
+	return strconv.FormatInt(i, toBase), nil
+}
+
+func GetFirstTemplate() map[string]interface{} {
+	A := rand.Intn(40-10) + 10
+	B := rand.Intn(40-10) + 10
+	bitA, _ := ConvertInt(A, 10, 2)
+	bitB, _ := ConvertInt(B, 10, 2)
+
 	res := map[string]interface{}{
-		"what_to_do":    "Решите плиз кр",
+		"what_to_do":    "Первая контрольная работа",
 		"template_name": "first",
 		"UI": []interface{}{
 			map[string]interface{}{
@@ -36,6 +52,10 @@ func GetTemplate() map[string]interface{} {
 								"name":  "-A",
 								"value": "-A",
 							},
+							map[string]interface{}{
+								"name":  "-B",
+								"value": "-B",
+							},
 						},
 					},
 					map[string]interface{}{
@@ -43,11 +63,19 @@ func GetTemplate() map[string]interface{} {
 						"data": []interface{}{
 							map[string]interface{}{
 								"name":  "valueA",
-								"value": "01101010",
+								"value": bitA,
 							},
 							map[string]interface{}{
 								"name":  "valueB",
-								"value": "01101111",
+								"value": bitB,
+							},
+							map[string]interface{}{
+								"name":  "-valueA",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "-valueB",
+								"value": nil,
 							},
 						},
 					},
@@ -62,15 +90,58 @@ func GetTemplate() map[string]interface{} {
 								"name":  "prB",
 								"value": nil,
 							},
+							map[string]interface{}{
+								"name":  "-prA",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "-prB",
+								"value": nil,
+							},
 						},
 					},
-				},
-			},
-			map[string]interface{}{
-				"name": "input_field",
-				"data": map[string]interface{}{
-					"name":        "mom_name",
-					"placeholder": "Введите имя мамы",
+					map[string]interface{}{
+						"name": "Обратный код",
+						"data": []interface{}{
+							map[string]interface{}{
+								"name":  "obrA",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "obrB",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "-obrA",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "-obrB",
+								"value": nil,
+							},
+						},
+					},
+					map[string]interface{}{
+						"name": "Дополнительный код",
+						"data": []interface{}{
+							map[string]interface{}{
+								"name":  "dopA",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "dopB",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "-dopA",
+								"value": nil,
+							},
+							map[string]interface{}{
+								"name":  "-dopB",
+								"value": nil,
+							},
+						},
+					},
 				},
 			},
 		},
@@ -78,11 +149,18 @@ func GetTemplate() map[string]interface{} {
 	return res
 }
 
-func (s Server) GetKrHandler(context.Context, *pb.TemplateRequest) (*pb.TemplateRequest, error) {
-	template := GetTemplate()
+func GetTemplate(templateName string) map[string]interface{} {
+	if templateName == "first" {
+		return GetFirstTemplate()
+	}
+	return make(map[string]interface{})
+}
+
+func (s Server) GetKrHandler(ctx context.Context, req *pb.TemplateRequest) (*pb.TemplateRequest, error) {
+	template := GetTemplate(req.KrName)
 	res, err := model.ConvertToProtoJSON(template)
 	return &pb.TemplateRequest{
-		KrName: "asd",
+		KrName: req.KrName,
 		Data:   res,
 	}, err
 }
