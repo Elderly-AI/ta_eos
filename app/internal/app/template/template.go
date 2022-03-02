@@ -17,20 +17,9 @@ type Server struct {
 	pb.UnimplementedTemplateServer
 }
 
-func ConvertInt(number int, base int, toBase int) (string, error) {
-	val := strconv.Itoa(number)
-	i, err := strconv.ParseInt(val, base, 64)
-	if err != nil {
-		return "", err
-	}
-	return strconv.FormatInt(i, toBase), nil
-}
-
 func GetFirstTemplate() map[string]interface{} {
-	A := rand.Intn(40-10) + 10
-	B := rand.Intn(40-10) + 10
-	bitA, _ := ConvertInt(A, 10, 2)
-	bitB, _ := ConvertInt(B, 10, 2)
+	A := strconv.Itoa(rand.Intn(40-10) + 10)
+	B := strconv.Itoa(rand.Intn(40-10) + 10)
 
 	res := map[string]interface{}{
 		"what_to_do":    "Первая контрольная работа",
@@ -64,19 +53,19 @@ func GetFirstTemplate() map[string]interface{} {
 						"name": "Значения",
 						"data": []interface{}{
 							map[string]interface{}{
-								"name":  "valueA",
-								"value": bitA,
+								"name":  "A",
+								"value": A,
 							},
 							map[string]interface{}{
-								"name":  "valueB",
-								"value": bitB,
+								"name":  "B",
+								"value": B,
 							},
 							map[string]interface{}{
-								"name":  "-valueA",
+								"name":  "-A",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "-valueB",
+								"name":  "-B",
 								"value": nil,
 							},
 						},
@@ -85,19 +74,19 @@ func GetFirstTemplate() map[string]interface{} {
 						"name": "Прямой код",
 						"data": []interface{}{
 							map[string]interface{}{
-								"name":  "prA",
+								"name":  "A",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "prB",
+								"name":  "B",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "-prA",
+								"name":  "-A",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "-prB",
+								"name":  "-B",
 								"value": nil,
 							},
 						},
@@ -106,19 +95,19 @@ func GetFirstTemplate() map[string]interface{} {
 						"name": "Обратный код",
 						"data": []interface{}{
 							map[string]interface{}{
-								"name":  "obrA",
+								"name":  "A",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "obrB",
+								"name":  "B",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "-obrA",
+								"name":  "-A",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "-obrB",
+								"name":  "-B",
 								"value": nil,
 							},
 						},
@@ -127,19 +116,19 @@ func GetFirstTemplate() map[string]interface{} {
 						"name": "Дополнительный код",
 						"data": []interface{}{
 							map[string]interface{}{
-								"name":  "dopA",
+								"name":  "A",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "dopB",
+								"name":  "B",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "-dopA",
+								"name":  "-A",
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":  "-dopB",
+								"name":  "-B",
 								"value": nil,
 							},
 						},

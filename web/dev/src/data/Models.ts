@@ -24,7 +24,7 @@ export type authSafeUser = {
 }
 
 export type SearchResult = {
-    users: Array<SearchUser>,
+  users: Array<SearchUser>,
 }
 
 export type SearchUser = {
@@ -72,3 +72,12 @@ export type metricsMetric = {
 export type metricsMetricsArray = {
   metrics: metricsMetric[]
 }
+
+
+// mocks
+
+export type WorkItem = {
+  name: string;
+  estimation?: string;
+  possibility: boolean;
+};

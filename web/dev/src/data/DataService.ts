@@ -5,10 +5,27 @@ import {
     authSafeUser,
     calcMultipleRequest,
     calcMultipleResponse,
-    SearchResult,
     metricsMetricsArray,
+    SearchResult,
     SearchUser,
+    WorkItem,
 } from './Models';
+
+const MOCK_KP_LIST: WorkItem[] = [
+    {
+        name: 'Если не справился, ты идиот',
+        possibility: false,
+        estimation: 'отл'
+    },
+    {
+        name: 'Если не справился, ты идиот',
+        possibility: true,
+    },
+    {
+        name: 'Если не справился, ты идиот',
+        possibility: false,
+    }
+] as WorkItem[];
 
 class DataService implements ApiInterface {
     async curUser(): Promise<authSafeUser> {
@@ -127,6 +144,18 @@ class DataService implements ApiInterface {
             .then((res) => res.json())
             .catch((err) => console.error(err))
             .then((dat: metricsMetricsArray) => dat);
+    }
+
+    async getWork(id: number): Promise<WorkItem[]> {
+        const prom = new Promise((resolve, reject) => {
+            try {
+                resolve(MOCK_KP_LIST);
+            } catch (e) {
+                reject(e);
+            }
+        });
+
+        return prom.then((res) => res as WorkItem[]);
     }
 }
 
