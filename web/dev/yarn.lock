@@ -10137,6 +10137,11 @@ react-app-rewired@^2.1.8:
   dependencies:
     semver "^5.6.0"
 
+react-countdown-circle-timer@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/react-countdown-circle-timer/-/react-countdown-circle-timer-3.0.8.tgz#18992440c2cc39be3bfe08a6802ae522b9852a77"
+  integrity sha512-4aPcgQyInHcmrZ/8j5lPhV+wTp1e/Kqy6YcGex3sFxMjugNTVkTT9TlM+HQqYna786ZCbu9eiUU/QIjYME0VxA==
+
 react-dev-utils@^11.0.3:
   version "11.0.4"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-11.0.4.tgz#a7ccb60257a1ca2e0efe7a83e38e6700d17aa37a"
