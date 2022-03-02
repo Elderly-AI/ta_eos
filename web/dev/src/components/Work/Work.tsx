@@ -3,6 +3,8 @@ import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
 import {Button, Typography} from '@material-ui/core';
 import classNames from 'classnames';
+import CustomInput from '@CustomInput';
+import CustomTable from './CustomTable';
 
 const useStyles = makeStyles(() => ({
     mainContainer: {
@@ -122,7 +124,7 @@ const Work = () => {
                             {name: 'B', value: 1101},
                         ]}
                     />
-                    <div className={styles.table}/>{/* TODO это мок таблицы */}
+                    <CustomTable/>
                     <Button
                         variant="contained"
                         color="primary"
