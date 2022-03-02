@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
     mainContainer: {
         display: 'grid',
         gridTemplateAreas: '"timer content"',
-        gridTemplateColumns: 'minmax(200px, 1fr) 4fr', // TODO тут можно поиграться в зависимости от размеров таймера
+        gridTemplateColumns: 'minmax(200px, 1fr) 4fr',
         marginTop: '64px',
         height: '100%',
     },
@@ -132,6 +132,7 @@ const Work = () => {
     const styles = useStyles();
     const [taskArray, setTaskArray] = useState<TableState[]>([]);
     const [template, setTemplate] = useState<TemplateTemplateRequest | null>(null);
+    const [disableButton, setDisable] = useState(false);
     useEffect(() => {
         DataService.getKR('first')
             .then((res) => {
@@ -165,6 +166,7 @@ const Work = () => {
     }, [taskArray]);
 
     const clickHandle = () => {
+        setDisable(true);
         console.log(taskArray);
         if (!template) {
             return alert('Упс! У нас тут ошибка, повторите попытку позже');
@@ -188,7 +190,7 @@ const Work = () => {
         console.log('debug task', taskArray);
     }, [taskArray]);
 
-    const time = 10;
+    const time = 900;
     const renderTime = (remainingTime: number) => {
         if (remainingTime === time) {
             return <div className="timer">Время истекло</div>;
@@ -214,7 +216,10 @@ const Work = () => {
                         colors={['#00A318', '#F7B801', '#A30000']}
                         size={160}
                         colorsTime={[time, Math.floor(time / 2), 0]}
-                        onComplete={() => ({shouldRepeat: false})}
+                        onComplete={() => {
+                            clickHandle();
+                            return {shouldRepeat: false};
+                        }}
                     >
                         {({elapsedTime, color}) => (
                             <span style={{color}}>
@@ -236,6 +241,7 @@ const Work = () => {
                         color="primary"
                         className={styles.button}
                         onClick={clickHandle}
+                        disabled={disableButton}
                     >
             Отправить
                     </Button>
