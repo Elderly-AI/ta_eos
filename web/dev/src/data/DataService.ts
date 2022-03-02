@@ -8,6 +8,7 @@ import {
     metricsMetricsArray,
     SearchResult,
     SearchUser,
+    TemplateTemplateRequest,
     WorkItem,
 } from './Models';
 
@@ -146,7 +147,7 @@ class DataService implements ApiInterface {
             .then((dat: metricsMetricsArray) => dat);
     }
 
-    async getWork(id: number): Promise<WorkItem[]> {
+    async getWork(id: string): Promise<WorkItem[]> {
         const prom = new Promise((resolve, reject) => {
             try {
                 resolve(MOCK_KP_LIST);
@@ -156,6 +157,34 @@ class DataService implements ApiInterface {
         });
 
         return prom.then((res) => res as WorkItem[]);
+    }
+
+    async getKR(name: string): Promise<TemplateTemplateRequest> {
+        const body = JSON.stringify({
+            krName: name
+        });
+        return await fetch(api.kr.getKR, {
+            body,
+            method: 'POST'
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((res: TemplateTemplateRequest) => res);
+    }
+
+    async approveKR(name: string, data: TemplateTemplateRequest): Promise<TemplateTemplateRequest> {
+        const body = JSON.stringify({
+            krName: name,
+            data: data
+        });
+
+        return await fetch(api.kr.approveKR, {
+            body,
+            method: 'POST'
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((res) => res);
     }
 }
 

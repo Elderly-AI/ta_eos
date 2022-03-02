@@ -36,10 +36,14 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
     const cellClickHandler = (evt: any) => {
         const id = +evt.currentTarget.id.split('_')[1];
         if (id !== inputNumber) {
-            setState(array[id%3+1].data[~~(id/3)].value?.toString() || '');
+            setState(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
             setInputNumber(id);
         }
     };
+
+    if (array.length === 0) {
+        return <></>;
+    }
 
     return (
         <TableContainer component={Paper}>
