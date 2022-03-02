@@ -13,6 +13,9 @@
     },
     {
       "name": "Metrics"
+    },
+    {
+      "name": "Template"
     }
   ],
   "consumes": [
@@ -369,6 +372,70 @@
         ],
         "tags": [
           "Metrics"
+        ]
+      }
+    },
+    "/api/v1/template/approve_kr": {
+      "post": {
+        "operationId": "Template_ApproveKrHandler",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/templateOkMessage"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/templateTemplateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Template"
+        ]
+      }
+    },
+    "/api/v1/template/get_kr": {
+      "post": {
+        "operationId": "Template_GetKrHandler",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/templateTemplateRequest"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/templateTemplateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Template"
         ]
       }
     }
@@ -730,6 +797,28 @@
           "items": {
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "templateOkMessage": {
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "templateTemplateRequest": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
         }
       }
     }

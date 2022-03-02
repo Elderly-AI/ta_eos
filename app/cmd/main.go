@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/Elderly-AI/ta_eos/internal/app/metrics"
+	"github.com/Elderly-AI/ta_eos/internal/app/template"
 	metricsRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/metrics"
+	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	pbMetrics "github.com/Elderly-AI/ta_eos/pkg/proto/metrics"
+	pbTemplate "github.com/Elderly-AI/ta_eos/pkg/proto/template"
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -38,6 +41,10 @@ func registerServices(opts Options, s *grpc.Server) {
 	repo := metricsRepo.NewMetricsRepo(opts.PosgtresConnection)
 	metricsDelivery := metrics.NewMetricsHandler(repo)
 	pbMetrics.RegisterMetricsServer(s, &metricsDelivery)
+
+	templateRepository := templateRepo.CreateRepo(opts.PosgtresConnection)
+	templateDelivery := template.NewTemplateHandler(templateRepository)
+	pbTemplate.RegisterTemplateServer(s, &templateDelivery)
 }
 
 func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.ServeMuxOption) (http.Handler, error) {
@@ -47,6 +54,7 @@ func newGateway(ctx context.Context, conn *grpc.ClientConn, opts []gwruntime.Ser
 		pbAuth.RegisterAuthHandler,
 		pbCalculations.RegisterCalculationsHandler,
 		pbMetrics.RegisterMetricsHandler,
+		pbTemplate.RegisterTemplateHandler,
 	} {
 		if err := f(ctx, mux, conn); err != nil {
 			return nil, err
