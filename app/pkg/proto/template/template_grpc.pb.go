@@ -19,7 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TemplateClient interface {
 	GetKrHandler(ctx context.Context, in *TemplateRequest, opts ...grpc.CallOption) (*TemplateRequest, error)
-	ApproveKrHandler(ctx context.Context, in *TemplateRequest, opts ...grpc.CallOption) (*OkMessage, error)
+	ApproveKrHandler(ctx context.Context, in *TemplateRequest, opts ...grpc.CallOption) (*TemplateRequest, error)
 }
 
 type templateClient struct {
@@ -39,8 +39,8 @@ func (c *templateClient) GetKrHandler(ctx context.Context, in *TemplateRequest, 
 	return out, nil
 }
 
-func (c *templateClient) ApproveKrHandler(ctx context.Context, in *TemplateRequest, opts ...grpc.CallOption) (*OkMessage, error) {
-	out := new(OkMessage)
+func (c *templateClient) ApproveKrHandler(ctx context.Context, in *TemplateRequest, opts ...grpc.CallOption) (*TemplateRequest, error) {
+	out := new(TemplateRequest)
 	err := c.cc.Invoke(ctx, "/template.Template/ApproveKrHandler", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (c *templateClient) ApproveKrHandler(ctx context.Context, in *TemplateReque
 // for forward compatibility
 type TemplateServer interface {
 	GetKrHandler(context.Context, *TemplateRequest) (*TemplateRequest, error)
-	ApproveKrHandler(context.Context, *TemplateRequest) (*OkMessage, error)
+	ApproveKrHandler(context.Context, *TemplateRequest) (*TemplateRequest, error)
 	mustEmbedUnimplementedTemplateServer()
 }
 
@@ -64,7 +64,7 @@ type UnimplementedTemplateServer struct {
 func (UnimplementedTemplateServer) GetKrHandler(context.Context, *TemplateRequest) (*TemplateRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetKrHandler not implemented")
 }
-func (UnimplementedTemplateServer) ApproveKrHandler(context.Context, *TemplateRequest) (*OkMessage, error) {
+func (UnimplementedTemplateServer) ApproveKrHandler(context.Context, *TemplateRequest) (*TemplateRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveKrHandler not implemented")
 }
 func (UnimplementedTemplateServer) mustEmbedUnimplementedTemplateServer() {}

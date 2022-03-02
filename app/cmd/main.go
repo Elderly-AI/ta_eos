@@ -3,30 +3,32 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/Elderly-AI/ta_eos/internal/app/metrics"
-	"github.com/Elderly-AI/ta_eos/internal/app/template"
-	metricsRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/metrics"
-	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
-	pbMetrics "github.com/Elderly-AI/ta_eos/pkg/proto/metrics"
-	pbTemplate "github.com/Elderly-AI/ta_eos/pkg/proto/template"
+	"log"
+	"net"
+	"net/http"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/golang/glog"
 	gwruntime "github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/jmoiron/sqlx"
 	"google.golang.org/grpc"
-	"log"
-	"net"
-	"net/http"
 
 	"github.com/Elderly-AI/ta_eos/internal/app/auth"
 	calc "github.com/Elderly-AI/ta_eos/internal/app/calculations"
+	"github.com/Elderly-AI/ta_eos/internal/app/metrics"
+	"github.com/Elderly-AI/ta_eos/internal/app/template"
 	calcFacade "github.com/Elderly-AI/ta_eos/internal/pkg/calculations"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/config"
 	db "github.com/Elderly-AI/ta_eos/internal/pkg/database/auth"
+	metricsRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/metrics"
+	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	common "github.com/Elderly-AI/ta_eos/internal/pkg/middleware"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
+	templateFacade "github.com/Elderly-AI/ta_eos/internal/pkg/template"
 	pbAuth "github.com/Elderly-AI/ta_eos/pkg/proto/auth"
 	pbCalculations "github.com/Elderly-AI/ta_eos/pkg/proto/calculations"
+	pbMetrics "github.com/Elderly-AI/ta_eos/pkg/proto/metrics"
+	pbTemplate "github.com/Elderly-AI/ta_eos/pkg/proto/template"
 )
 
 func registerServices(opts Options, s *grpc.Server) {
@@ -42,8 +44,9 @@ func registerServices(opts Options, s *grpc.Server) {
 	metricsDelivery := metrics.NewMetricsHandler(repo)
 	pbMetrics.RegisterMetricsServer(s, &metricsDelivery)
 
+	templateF := templateFacade.New()
 	templateRepository := templateRepo.CreateRepo(opts.PosgtresConnection)
-	templateDelivery := template.NewTemplateHandler(templateRepository)
+	templateDelivery := template.NewTemplateHandler(*templateRepository, templateF)
 	pbTemplate.RegisterTemplateServer(s, &templateDelivery)
 }
 

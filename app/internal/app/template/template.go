@@ -5,19 +5,21 @@ import (
 	"fmt"
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
+	templateFacade "github.com/Elderly-AI/ta_eos/internal/pkg/template"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
 	"math/rand"
 	"strconv"
 )
 
 type Server struct {
-	repo templateRepo.Repo
+	repo   templateRepo.Repo
+	facade *templateFacade.Facade
 	pb.UnimplementedTemplateServer
 }
 
 func GetFirstTemplate() map[string]interface{} {
-	A := strconv.Itoa(rand.Intn(40-10) + 10)
-	B := strconv.Itoa(rand.Intn(40-10) + 10)
+	A := rand.Intn(40-10) + 10
+	B := rand.Intn(40-10) + 10
 
 	res := map[string]interface{}{
 		"what_to_do":    "Первая контрольная работа",
@@ -52,19 +54,19 @@ func GetFirstTemplate() map[string]interface{} {
 						"data": []interface{}{
 							map[string]interface{}{
 								"name":  "A",
-								"value": A,
+								"value": strconv.Itoa(A),
 							},
 							map[string]interface{}{
 								"name":  "B",
-								"value": B,
+								"value": strconv.Itoa(B),
 							},
 							map[string]interface{}{
 								"name":  "-A",
-								"value": nil,
+								"value": strconv.Itoa(-A),
 							},
 							map[string]interface{}{
 								"name":  "-B",
-								"value": nil,
+								"value": strconv.Itoa(-B),
 							},
 						},
 					},
@@ -154,20 +156,22 @@ func (s Server) GetKrHandler(ctx context.Context, req *pb.TemplateRequest) (*pb.
 	}, err
 }
 
-func (s Server) ApproveKrHandler(ctx context.Context, request *pb.TemplateRequest) (*pb.OkMessage, error) {
+func (s Server) ApproveKrHandler(ctx context.Context, request *pb.TemplateRequest) (*pb.TemplateRequest, error) {
 	template, err := model.TemplateFromProto(request)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(template)
-	return &pb.OkMessage{
-		Ok:    true,
-		Error: "",
+	res, err := model.ConvertToProtoJSON(GetFirstTemplate())
+	return &pb.TemplateRequest{
+		KrName: "first",
+		Data:   res,
 	}, nil
 }
 
-func NewTemplateHandler(repo templateRepo.Repo) Server {
+func NewTemplateHandler(repo templateRepo.Repo, facade *templateFacade.Facade) Server {
 	return Server{
-		repo: repo,
+		repo:   repo,
+		facade: facade,
 	}
 }
