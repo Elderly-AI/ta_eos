@@ -1,20 +1,10 @@
 import Header from '@Header';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, makeStyles, Step, StepContent, StepLabel, Stepper, Typography} from '@material-ui/core';
 import {useHistory} from 'react-router-dom';
 import CustomBadge from '../CustomBadge';
-
-class Work {
-  name: string;
-  estimation?: string;
-  possibility: boolean;
-
-  constructor(name: string, possibility: boolean, estimation?: string,) {
-      this.name = name;
-      this.estimation = estimation;
-      this.possibility = possibility;
-  }
-}
+import DataService from '@data/DataService';
+import {WorkItem} from '@data/Models';
 
 const useStyles = makeStyles(() => ({
     worksComponent: {
@@ -32,10 +22,6 @@ const useStyles = makeStyles(() => ({
         marginLeft: '5vw',
         marginRight: '5vw',
     },
-    labelWrapper: {
-        display: 'flex',
-        gap: '8px',
-    },
     tableComponent: {
         marginTop: '5vh',
         marginBottom: '10vh',
@@ -51,14 +37,16 @@ const useStyles = makeStyles(() => ({
 export default function Works() {
     const history = useHistory();
     const classes = useStyles();
+    const [works, setWorks] = useState<WorkItem[]>([]);
+    const [activeStep, setActiveStep] = useState<number>(0);
 
-    const works: Work[] = [
-        new Work('Если не справился, ты идиот', false, 'отл',),
-        new Work('Если не справился, ты лестеховец', true),
-        new Work('Если не справился, ты норм пацан', false),
-    ];
-
-    const activeStep = 1;
+    useEffect(() => {
+        DataService.getWork(1).then((res) => {
+            const firstActive = res.findIndex((item) => item.possibility) ?? 0;
+            setActiveStep(firstActive);
+            setWorks(res);
+        });
+    }, []);
 
     const startWork = () => {
         history.push('work/1');
@@ -74,33 +62,34 @@ export default function Works() {
                 </Typography>
             </div>
             <div className={classes.tableComponent}>
-                <Stepper activeStep={activeStep} orientation="vertical">
-                    {works.map((work, index) => (
-                        <Step key={index}>
-                            <div className={classes.labelWrapper}>
-                                <StepLabel>
-                                    {'КР №' + (index + 1) + ' ' + work.name}
-                                </StepLabel>
-                                {
-                                    work.estimation && (
-                                        <CustomBadge>
-                                            <Typography className={classes.text}>
-                                                {work.estimation}
-                                            </Typography>
+                {
+                    works.length && (
+                        <Stepper activeStep={activeStep} orientation="vertical">
+                            {works.map((work: WorkItem, index: number) => (
+                                <Step key={index}>
+                                    <StepLabel>
+
+                                        <CustomBadge text={'КР №' + (index + 1) + ' ' + work.name}>
+                                            {work.estimation && (
+                                                <Typography className={classes.text}>
+                                                    {work.estimation}
+                                                </Typography>
+                                            )}
                                         </CustomBadge>
-                                    )
-                                }
-                            </div>
-                            <StepContent>
-                                <div>
-                                    <Button variant='contained' onClick={startWork}>
-                    Начать
-                                    </Button>
-                                </div>
-                            </StepContent>
-                        </Step>
-                    ))}
-                </Stepper>
+
+                                    </StepLabel>
+                                    <StepContent>
+                                        <div>
+                                            <Button variant='contained' onClick={startWork}>
+                        Начать
+                                            </Button>
+                                        </div>
+                                    </StepContent>
+                                </Step>
+                            ))}
+                        </Stepper>
+                    )
+                }
             </div>
         </div>
     );
