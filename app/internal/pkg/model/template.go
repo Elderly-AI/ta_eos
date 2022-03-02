@@ -19,10 +19,26 @@ type TableStruct struct {
 }
 
 type KrTemplate struct {
-	WhatToDo     string        `json:"what_to_do"`
-	TemplateName string        `json:"template_name"`
-	UI           []interface{} `json:"UI"`
+	WhatToDo     string         `json:"what_to_do"`
+	TemplateName KrTemplateName `json:"template_name"`
+	UI           []interface{}  `json:"UI"`
 }
+
+type KrTemplateName string
+
+const (
+	FirstKrTemplateName = "first"
+)
+
+type KrTemplateUIBlockName string
+
+const (
+	KrTemplateUIBlockNameVariables      = "Переменные"
+	KrTemplateUIBlockNameValues         = "Значения"
+	KrTemplateUIBlockNameDirectCode     = "Прямой код"
+	KrTemplateUIBlockNameReturnCode     = "Обратный код"
+	KrTemplateUIBlockNameAdditionalCode = "Дополнительный код"
+)
 
 func TemplateFromProto(proto *pb.TemplateRequest) (*KrTemplate, error) {
 	var template KrTemplate

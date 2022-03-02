@@ -382,7 +382,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/templateOkMessage"
+              "$ref": "#/definitions/templateTemplateRequest"
             }
           },
           "default": {
@@ -797,17 +797,6 @@
           "items": {
             "$ref": "#/definitions/protobufAny"
           }
-        }
-      }
-    },
-    "templateOkMessage": {
-      "type": "object",
-      "properties": {
-        "ok": {
-          "type": "boolean"
-        },
-        "error": {
-          "type": "string"
         }
       }
     },

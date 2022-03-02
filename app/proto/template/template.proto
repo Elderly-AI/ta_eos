@@ -17,7 +17,7 @@ service Template {
       body: "*"
     };
   }
-  rpc ApproveKrHandler (TemplateRequest) returns (OkMessage) {
+  rpc ApproveKrHandler (TemplateRequest) returns (TemplateRequest) {
     option (google.api.http) = {
       post: "/api/v1/template/approve_kr"
       body: "*"
@@ -33,11 +33,6 @@ message GetKrRequest {
 message TemplateRequest {
   string kr_name = 1;
   google.protobuf.Struct data = 2;
-}
-
-message OkMessage {
-  bool ok = 1;
-  string error = 2;
 }
 
 
