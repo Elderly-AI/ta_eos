@@ -49,6 +49,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export default function Works() {
+    const history = useHistory();
     const classes = useStyles();
 
     const works: Work[] = [
@@ -60,6 +61,7 @@ export default function Works() {
     const activeStep = 1;
 
     const startWork = () => {
+        history.push('work/1');
         // TODO: Дима Овденко, тут делай
     };
 
