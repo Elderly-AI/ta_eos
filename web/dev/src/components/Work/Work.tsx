@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
-import {Button, Typography} from '@material-ui/core';
+import {Button, ColorFormat, Typography} from '@material-ui/core';
 import classNames from 'classnames';
 import CustomTable from './CustomTable';
 import mockTable from './tableMock';
+import {CountdownCircleTimer} from 'react-countdown-circle-timer';
 
 const useStyles = makeStyles(() => ({
     mainContainer: {
@@ -42,6 +43,10 @@ const useStyles = makeStyles(() => ({
         color: 'white',
         textAlign: 'center',
         lineHeight: '150px',
+    },
+
+    time: {
+        fontSize: '40px',
     },
 
     table: {
@@ -118,12 +123,40 @@ const Work = () => {
         // TODO тут надо отправить результат работы на бэк
     };
 
+    const time = 10;
+    const renderTime = (remainingTime: number) => {
+        if (remainingTime === time) {
+            return <div className="timer">Время истекло</div>;
+        }
+        const seconds = Math.round(time - remainingTime);
+        const minutes = Math.floor(seconds / 60);
+        const text = minutes > 0 ? `${minutes}:${seconds % 60}` : `${seconds % 60}`;
+        return (
+            <div className="time-wrapper">
+                <div className={styles.time}>{text}</div>
+            </div>
+        );
+    };
+
     return (
         <>
             <Header/>
             <div className={styles.mainContainer}>
                 <div className={styles.timerContainer}>
-                    <circle className={styles.timer}>timer</circle>
+                    <CountdownCircleTimer
+                        isPlaying
+                        duration={time}
+                        colors={['#00A318', '#F7B801', '#A30000']}
+                        size={160}
+                        colorsTime={[time, Math.floor(time / 2), 0]}
+                        onComplete={() => ({shouldRepeat: false})}
+                    >
+                        {({elapsedTime, color}) => (
+                            <span style={{color}}>
+                                {renderTime(elapsedTime)}
+                            </span>
+                        )}
+                    </CountdownCircleTimer>
                 </div>
                 <div className={styles.contentContainer}>
                     <Task
