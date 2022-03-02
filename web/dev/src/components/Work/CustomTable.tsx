@@ -1,4 +1,6 @@
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField} from '@material-ui/core';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
@@ -8,9 +10,17 @@ const useStyles = makeStyles({
         height: '70px',
     },
 
+    tableHead: {
+        fontWeight: 'bold',
+    },
+
     input: {
         width: '100px',
     },
+
+    pointer: {
+        cursor: 'pointer',
+    }
 });
 
 interface CustomTableProps {
@@ -26,10 +36,14 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
     const cellClickHandler = (evt: any) => {
         const id = +evt.currentTarget.id.split('_')[1];
         if (id !== inputNumber) {
-            setState(array[id%3+1].data[~~(id/3)].value?.toString() || '');
+            setState(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
             setInputNumber(id);
         }
     };
+
+    if (array.length === 0) {
+        return <></>;
+    }
 
     return (
         <TableContainer component={Paper}>
@@ -38,7 +52,12 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                     <TableRow>
                         {
                             array.map((cur) => (
-                                <TableCell align="left" width={'25%'} key={'headCell_' + cur.name}>
+                                <TableCell
+                                    className={styles.tableHead}
+                                    align="left"
+                                    width={'25%'}
+                                    key={'headCell_' + cur.name}
+                                >
                                     {cur.name}
                                 </TableCell>
                             ))
@@ -48,7 +67,7 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                 <TableBody>
                     {
                         array[0].data.map((current, idx) => (
-                            <TableRow key={'row_' + idx} className={styles.tableRow}>
+                            <TableRow key={'row_' + idx} className={styles.tableRow} hover>
                                 {
                                     array.map((cur, index) => (
                                         index === 0 ?
@@ -63,6 +82,7 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                                                 key={'cell_' + (idx * 3 + index - 1)}
                                                 width={'25%'}
                                                 onClick={cellClickHandler}
+                                                className={styles.pointer}
                                             >
                                                 {
                                                     inputNumber === idx * 3 + index - 1 ?
@@ -80,7 +100,7 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                                                             }
                                                             autoFocus
                                                         /> :
-                                                        cur.data[idx].value
+                                                        (cur.data[idx].value || '...')
                                                 }
                                             </TableCell>
                                     ))

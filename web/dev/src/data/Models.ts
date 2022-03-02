@@ -21,6 +21,7 @@ export type authSafeUser = {
   email: string,
   group: string,
   role: string,
+  userId: string
 }
 
 export type SearchResult = {
@@ -81,3 +82,27 @@ export type WorkItem = {
   estimation?: string;
   possibility: boolean;
 };
+
+export type TableItem = {
+  UI: {
+    data: UITemplateRequestData[];
+    name: string;
+  }[]
+  templateName: string;
+  whatToDo: string
+}
+
+export type UITemplateRequestValue = {
+  name: string;
+  value: string | null;
+}
+
+export type UITemplateRequestData = {
+  data: UITemplateRequestValue[];
+  name: string;
+}
+
+export type TemplateTemplateRequest = {
+  krName: string;
+  data: TableItem;
+}

@@ -6,6 +6,8 @@ import {
     calcMultipleResponse,
     metricsMetricsArray,
     SearchUser,
+    TemplateTemplateRequest,
+    WorkItem,
 } from './Models';
 
 const host = 'http://188.35.161.40';
@@ -33,6 +35,10 @@ const api = {
     admin: {
         search: apiHost + '/metrics/search',
         metrics: apiHost + '/api/v1/metrics/search_timestamp',
+    },
+    kr: {
+        getKR: apiHost + '/template/get_kr',
+        approveKR: apiHost + '/template/approve_kr'
     }
 };
 
@@ -45,6 +51,8 @@ export interface ApiInterface {
   search: (text: string) => Promise<Array<SearchUser>>,
   searchMetric: (text: string) => Promise<metricsMetricsArray>,
   searchTimestamp: (text: string, from: string, to: string) => Promise<metricsMetricsArray>
+  getWork: (id: string) => Promise<WorkItem[]>,
+  getKR: (name: string) => Promise<TemplateTemplateRequest>
 }
 
 export default api;
