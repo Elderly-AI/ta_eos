@@ -1,26 +1,19 @@
 import Header from '@Header';
-import React, {useState} from 'react';
-import {
-    makeStyles,
-    Typography,
-    Stepper,
-    Step,
-    StepLabel,
-    StepContent,
-    Button,
-} from '@material-ui/core';
+import React from 'react';
+import {Button, makeStyles, Step, StepContent, StepLabel, Stepper, Typography} from '@material-ui/core';
 import {useHistory} from 'react-router-dom';
+import CustomBadge from '../CustomBadge';
 
 class Work {
-    name: string;
-    estimation?: string;
-    possibility: boolean;
+  name: string;
+  estimation?: string;
+  possibility: boolean;
 
-    constructor(name: string, possibility: boolean, estimation?: string,) {
-        this.name = name;
-        this.estimation = estimation;
-        this.possibility = possibility;
-    }
+  constructor(name: string, possibility: boolean, estimation?: string,) {
+      this.name = name;
+      this.estimation = estimation;
+      this.possibility = possibility;
+  }
 }
 
 const useStyles = makeStyles(() => ({
@@ -39,12 +32,19 @@ const useStyles = makeStyles(() => ({
         marginLeft: '5vw',
         marginRight: '5vw',
     },
+    labelWrapper: {
+        display: 'flex',
+        gap: '8px',
+    },
     tableComponent: {
         marginTop: '5vh',
         marginBottom: '10vh',
         maxWidth: '70vw',
         marginLeft: '5vw',
         marginRight: '5vw',
+    },
+    text: {
+        color: '#FFFFFF'
     }
 }));
 
@@ -62,7 +62,7 @@ export default function Works() {
 
     const startWork = () => {
         history.push('work/1');
-        // TODO: Дима Овденко, тут делай
+    // TODO: Дима Овденко, тут делай
     };
 
     return (
@@ -70,20 +70,31 @@ export default function Works() {
             <Header/>
             <div className={classes.labelComponent}>
                 <Typography variant="h5">
-                    Список контрольных работ по дисциплине “Теория автоматов”
+          Список контрольных работ по дисциплине “Теория автоматов”
                 </Typography>
             </div>
             <div className={classes.tableComponent}>
                 <Stepper activeStep={activeStep} orientation="vertical">
                     {works.map((work, index) => (
                         <Step key={index}>
-                            <StepLabel>
-                                {'КР №' + (index + 1) + ' ' + work.name}
-                            </StepLabel>
+                            <div className={classes.labelWrapper}>
+                                <StepLabel>
+                                    {'КР №' + (index + 1) + ' ' + work.name}
+                                </StepLabel>
+                                {
+                                    work.estimation && (
+                                        <CustomBadge>
+                                            <Typography className={classes.text}>
+                                                {work.estimation}
+                                            </Typography>
+                                        </CustomBadge>
+                                    )
+                                }
+                            </div>
                             <StepContent>
                                 <div>
                                     <Button variant='contained' onClick={startWork}>
-                                        Начать
+                    Начать
                                     </Button>
                                 </div>
                             </StepContent>
