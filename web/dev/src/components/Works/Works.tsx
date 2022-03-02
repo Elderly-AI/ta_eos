@@ -5,6 +5,7 @@ import {useHistory} from 'react-router-dom';
 import CustomBadge from '../CustomBadge';
 import DataService from '@data/DataService';
 import {WorkItem} from '@data/Models';
+import {useTypedSelector} from '@hooks/useTypedSelector';
 
 const useStyles = makeStyles(() => ({
     worksComponent: {
@@ -39,17 +40,18 @@ export default function Works() {
     const classes = useStyles();
     const [works, setWorks] = useState<WorkItem[]>([]);
     const [activeStep, setActiveStep] = useState<number>(0);
+    const auth = useTypedSelector((store) => store.auth);
 
     useEffect(() => {
-        DataService.getWork(1).then((res) => {
+        DataService.getWork(auth?.userId ?? '').then((res) => {
             const firstActive = res.findIndex((item) => item.possibility) ?? 0;
             setActiveStep(firstActive);
             setWorks(res);
         });
-    }, []);
+    }, [auth]);
 
     const startWork = () => {
-        history.push('work/1');
+        history.push(`work/${auth?.userId}`);
     // TODO: Дима Овденко, тут делай
     };
 
