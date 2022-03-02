@@ -2,7 +2,6 @@ package template
 
 import (
 	"context"
-	"fmt"
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	templateFacade "github.com/Elderly-AI/ta_eos/internal/pkg/template"
@@ -157,12 +156,15 @@ func (s Server) GetKrHandler(ctx context.Context, req *pb.TemplateRequest) (*pb.
 }
 
 func (s Server) ApproveKrHandler(ctx context.Context, request *pb.TemplateRequest) (*pb.TemplateRequest, error) {
-	template, err := model.TemplateFromProto(request)
+	data := request.Data.AsMap()
+	updated, err := s.facade.ApproveKr(data)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(template)
-	res, err := model.ConvertToProtoJSON(GetFirstTemplate())
+	res, err := model.ConvertToProtoJSON(updated)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.TemplateRequest{
 		KrName: "first",
 		Data:   res,
