@@ -7,6 +7,7 @@ import (
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
 	"math/rand"
+	"strconv"
 )
 
 type Server struct {
@@ -15,8 +16,8 @@ type Server struct {
 }
 
 func GetFirstTemplate() map[string]interface{} {
-	A := rand.Intn(40-10) + 10
-	B := rand.Intn(40-10) + 10
+	A := strconv.Itoa(rand.Intn(40-10) + 10)
+	B := strconv.Itoa(rand.Intn(40-10) + 10)
 
 	res := map[string]interface{}{
 		"what_to_do":    "Первая контрольная работа",
