@@ -2,125 +2,133 @@ package template
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestKrTemplateUI_Parse(t *testing.T) {
 	t.Run("should be ok on init value", func(t *testing.T) {
-		var kr KrTemplateUI
+		facade := New()
 
 		data := map[string]interface{}{
-			"name": "table",
-			"data": []interface{}{
+			"what_to_do":    "Первая контрольная работа",
+			"template_name": "first",
+			"UI": []interface{}{
 				map[string]interface{}{
-					"name": "Переменные",
+					"name": "table",
 					"data": []interface{}{
 						map[string]interface{}{
-							"name":  "A",
-							"value": "A",
+							"name": "Переменные",
+							"data": []interface{}{
+								map[string]interface{}{
+									"name":  "A",
+									"value": "A",
+								},
+								map[string]interface{}{
+									"name":  "B",
+									"value": "B",
+								},
+								map[string]interface{}{
+									"name":  "-A",
+									"value": "-A",
+								},
+								map[string]interface{}{
+									"name":  "-B",
+									"value": "-B",
+								},
+							},
 						},
 						map[string]interface{}{
-							"name":  "B",
-							"value": "B",
+							"name": "Значения",
+							"data": []interface{}{
+								map[string]interface{}{
+									"name":  "A",
+									"value": "10",
+								},
+								map[string]interface{}{
+									"name":  "B",
+									"value": "20",
+								},
+								map[string]interface{}{
+									"name":  "-A",
+									"value": "-10",
+								},
+								map[string]interface{}{
+									"name":  "-B",
+									"value": "-20",
+								},
+							},
 						},
 						map[string]interface{}{
-							"name":  "-A",
-							"value": "-A",
+							"name": "Прямой код",
+							"data": []interface{}{
+								map[string]interface{}{
+									"name":  "A",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "B",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "-A",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "-B",
+									"value": nil,
+								},
+							},
 						},
 						map[string]interface{}{
-							"name":  "-B",
-							"value": "-B",
-						},
-					},
-				},
-				map[string]interface{}{
-					"name": "Значения",
-					"data": []interface{}{
-						map[string]interface{}{
-							"name":  "valueA",
-							"value": "bitA",
-						},
-						map[string]interface{}{
-							"name":  "valueB",
-							"value": "bitB",
-						},
-						map[string]interface{}{
-							"name":  "-valueA",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "-valueB",
-							"value": "nil",
-						},
-					},
-				},
-				map[string]interface{}{
-					"name": "Прямой код",
-					"data": []interface{}{
-						map[string]interface{}{
-							"name":  "prA",
-							"value": "nil",
+							"name": "Обратный код",
+							"data": []interface{}{
+								map[string]interface{}{
+									"name":  "A",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "B",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "-A",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "-B",
+									"value": nil,
+								},
+							},
 						},
 						map[string]interface{}{
-							"name":  "prB",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "-prA",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "-prB",
-							"value": "nil",
-						},
-					},
-				},
-				map[string]interface{}{
-					"name": "Обратный код",
-					"data": []interface{}{
-						map[string]interface{}{
-							"name":  "obrA",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "obrB",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "-obrA",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "-obrB",
-							"value": "nil",
-						},
-					},
-				},
-				map[string]interface{}{
-					"name": "Дополнительный код",
-					"data": []interface{}{
-						map[string]interface{}{
-							"name":  "dopA",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "dopB",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "-dopA",
-							"value": "nil",
-						},
-						map[string]interface{}{
-							"name":  "-dopB",
-							"value": "nil",
+							"name": "Дополнительный код",
+							"data": []interface{}{
+								map[string]interface{}{
+									"name":  "A",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "B",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "-A",
+									"value": nil,
+								},
+								map[string]interface{}{
+									"name":  "-B",
+									"value": nil,
+								},
+							},
 						},
 					},
 				},
 			},
 		}
 
-		err := kr.Parse(data)
-		fmt.Println(err)
+		data, err := facade.ApproveKr(data)
+		require.NoError(t, err)
+		fmt.Println(data)
 	})
 }

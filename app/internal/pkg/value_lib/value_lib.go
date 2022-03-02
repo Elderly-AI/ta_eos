@@ -35,11 +35,12 @@ func InitValue(val uint64, grid uint8, valueType ValueType) Value {
 }
 
 func InitValueFromInt64(val int64, grid uint8, valueType ValueType) Value {
-	value := InitValue(abs(val), grid, valueType)
+	value := InitValue(abs(val), grid, ValueTypeDirectCode)
 	if val < 0 {
 		value.value |= 1 << (grid - 1)
 	}
-	return value
+	return value.ConvertType(valueType)
+
 }
 
 func InitValueFromString(str string, grid uint8, valueType ValueType) (Value, error) {
