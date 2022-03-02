@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
-import {Button, ColorFormat, Typography} from '@material-ui/core';
+import {Button, Typography} from '@material-ui/core';
 import classNames from 'classnames';
 import CustomTable from './CustomTable';
 import DataService from '@data/DataService';
@@ -169,12 +169,19 @@ const Work = () => {
         if (!template) {
             return alert('Упс! У нас тут ошибка, повторите попытку позже');
         }
-        console.log('debug template', template);
+        // console.log('debug template', template);
         const preparedData = template;
         preparedData.data.UI[0].data = [template.data.UI[0].data[0], ...taskArray];
-        console.log('debug prep', preparedData);
+        // console.log('debug prep', preparedData);
         DataService.approveKR('first', preparedData)
-            .then((res) => console.log('debug res', res));
+            .then((res) => {
+                // console.log('debug res', res)
+                if (JSON.stringify(preparedData) !== JSON.stringify(res)) {
+                    alert('Ошибка! Один из ваших ответов неправильный');
+                } else {
+                    alert('Ок');
+                }
+            });
     };
 
     useEffect(() => {
