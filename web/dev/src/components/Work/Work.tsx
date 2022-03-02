@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
 import {Button, Typography} from '@material-ui/core';
 import classNames from 'classnames';
-import CustomInput from '@CustomInput';
 import CustomTable from './CustomTable';
+import mockTable from './tableMock';
 
 const useStyles = makeStyles(() => ({
     mainContainer: {
@@ -65,6 +65,15 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
+export interface TableState {
+    data: {
+        name: string,
+        value: string | null,
+    }[],
+    name: string,
+}
+
+
 interface TaskProps {
     number: number,
     themeName: string,
@@ -102,8 +111,10 @@ const Task = ({number, themeName, description, values}: TaskProps) => {
 
 const Work = () => {
     const styles = useStyles();
+    const [taskArray, setTaskArray] = useState<TableState[]>(mockTable);
 
     const clickHandle = () => {
+        console.log(taskArray);
         // TODO тут надо отправить результат работы на бэк
     };
 
@@ -124,7 +135,7 @@ const Work = () => {
                             {name: 'B', value: 1101},
                         ]}
                     />
-                    <CustomTable/>
+                    <CustomTable array={taskArray} setArray={setTaskArray}/>
                     <Button
                         variant="contained"
                         color="primary"
