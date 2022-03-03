@@ -2,6 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
 import {Button, Typography} from '@material-ui/core';
+import Alert from '@mui/material/Alert';
 import classNames from 'classnames';
 import CustomTable from './CustomTable';
 import DataService from '@data/DataService';
@@ -68,8 +69,17 @@ const useStyles = makeStyles(() => ({
     span: {
         display: 'inline',
         whiteSpace: 'pre-wrap',
+    },
+
+    alert: {
+        // width: '200px',
+        // marginRight: '3%',
+        // marginBottom: '40px',
     }
 }));
+
+const OkResult = 'Отличная работа! Все верно';
+const BadResult = 'В одном или более ответе ошибка(';
 
 export interface TableState {
   data: {
@@ -133,6 +143,9 @@ const Work = () => {
     const [taskArray, setTaskArray] = useState<TableState[]>([]);
     const [template, setTemplate] = useState<TemplateTemplateRequest | null>(null);
     const [disableButton, setDisable] = useState(false);
+    const [resultMessage, setMessage] = useState<string>('');
+    const [isPlaying, setPlaying] = useState(true);
+
     useEffect(() => {
         DataService.getKR('first')
             .then((res) => {
@@ -167,6 +180,7 @@ const Work = () => {
 
     const clickHandle = () => {
         setDisable(true);
+        setPlaying(false);
         console.log(taskArray);
         if (!template) {
             return alert('Упс! У нас тут ошибка, повторите попытку позже');
@@ -179,9 +193,11 @@ const Work = () => {
             .then((res) => {
                 // console.log('debug res', res)
                 if (JSON.stringify(preparedData) !== JSON.stringify(res)) {
-                    alert('Ошибка! Один из ваших ответов неправильный');
+                    setMessage(BadResult);
+                    // alert('Ошибка! Один из ваших ответов неправильный');
                 } else {
-                    alert('Ок');
+                    setMessage(OkResult);
+                    // alert('Ок');
                 }
             });
     };
@@ -211,7 +227,7 @@ const Work = () => {
             <div className={styles.mainContainer}>
                 <div className={styles.timerContainer}>
                     <CountdownCircleTimer
-                        isPlaying
+                        isPlaying={isPlaying}
                         duration={time}
                         colors={['#00A318', '#F7B801', '#A30000']}
                         size={160}
@@ -245,6 +261,15 @@ const Work = () => {
                     >
             Отправить
                     </Button>
+                    {resultMessage === '' ? '' :
+                        <Alert
+                            variant="filled"
+                            severity={resultMessage === BadResult ? 'error' : 'success'}
+                            className={styles.alert}
+                        >
+                            {resultMessage}
+                        </Alert>
+                    }
                 </div>
             </div>
         </>
