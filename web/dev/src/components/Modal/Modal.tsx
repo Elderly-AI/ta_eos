@@ -1,11 +1,14 @@
 import React, {useEffect} from 'react';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import Paper from '@material-ui/core/Paper';
 import {grey, red} from '@material-ui/core/colors';
 import {useTypedSelector} from '@hooks/useTypedSelector';
 import {useActions} from '@hooks/useActions';
+import {createTheme} from '@mui/material';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const theme = createTheme();
+
+const useStyles = makeStyles(() => ({
     root: {
         display: 'flex',
         alignItems: 'center',

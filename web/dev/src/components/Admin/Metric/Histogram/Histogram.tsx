@@ -3,7 +3,7 @@ import * as am5 from '@amcharts/amcharts5';
 // eslint-disable-next-line camelcase
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import * as am5xy from '@amcharts/amcharts5/xy';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 
 export type HistogramDataType = {
     date: string,
@@ -16,7 +16,7 @@ export interface HistogramProps {
     name: string,
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     wrapper: {
         display: 'grid',
         placeItems: 'center',

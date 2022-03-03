@@ -1,7 +1,10 @@
 import React, {ChangeEvent} from 'react';
 import TextField from '@material-ui/core/TextField';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import {blue, red} from '@material-ui/core/colors';
+import {createTheme} from '@mui/material';
+
+const theme = createTheme();
 
 export interface CustomInputProps {
   id: string;
@@ -12,7 +15,7 @@ export interface CustomInputProps {
   errorMessage?: string;
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     formItem: {
         'width': '100%',
         'color': blue[800],

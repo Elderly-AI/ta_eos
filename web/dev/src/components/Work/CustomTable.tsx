@@ -2,7 +2,7 @@ import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import React, {Dispatch, SetStateAction, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import {TableState} from './Work';
 
 const useStyles = makeStyles({

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import Paper from '@material-ui/core/Paper';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -7,10 +7,13 @@ import Tab from '@material-ui/core/Tab';
 import {grey} from '@material-ui/core/colors';
 import Registration from '@Form/Registration';
 import Login from '@Form/Login';
+import {createTheme} from '@mui/material';
+
+const theme = createTheme();
 
 const animDur = 500;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         display: 'flex',
         justifyContent: 'center',

@@ -7,7 +7,7 @@ import Select from '@material-ui/core/Select';
 import Button from '@material-ui/core/Button';
 import {blue, grey} from '@material-ui/core/colors';
 import Paper from '@material-ui/core/Paper';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import CustomInput, {CustomInputProps} from '@CustomInput';
 import HighDigitsLeftShift from './HighDigitsLeftShift';
 import LowDigitsLeftShift from './LowDigitsLeftShift';
@@ -19,8 +19,11 @@ import {calcMultipleResponse, calcMultipleResponseStep} from '@data/Models';
 import SumShift from './SumShift';
 import FactorShift from './FactorShift';
 import Validator from '@utils/Validator';
+import {createTheme} from '@mui/material';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const theme = createTheme();
+
+const useStyles = makeStyles(() => ({
     header: {
         gridArea: 'header',
     },

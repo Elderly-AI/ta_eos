@@ -1,13 +1,13 @@
 import Button from '@material-ui/core/Button';
 import React, {ChangeEvent, useState} from 'react';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import {useActions} from '@hooks/useActions';
 import CustomInput, {CustomInputProps} from '../../CustomInput/CustomInput';
 import {Link} from 'react-router-dom';
 import {authLoginRequest} from '@data/Models';
 import Validator from '@utils/Validator';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     form: {
         height: '100%',
         display: 'flex',

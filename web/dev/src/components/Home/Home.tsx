@@ -1,10 +1,10 @@
 import React from 'react';
 import {blue} from '@material-ui/core/colors';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import Header from '@Header';
 import Math from '@Math';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     container: {
         display: 'flex',
         justifyContent: 'center',

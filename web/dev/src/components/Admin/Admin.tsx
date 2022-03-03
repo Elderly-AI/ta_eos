@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import Header from '@Header';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import {blue} from '@material-ui/core/colors';
 import {Paper} from '@material-ui/core';
 import Metric from './Metric/Metric';
@@ -8,8 +8,11 @@ import {useParams} from 'react-router-dom';
 import DataService from '@data/DataService';
 import {metricsMetric} from '@data/Models';
 import metricName from './metricName';
+import {createTheme} from '@mui/material';
 
-const useStyles = makeStyles((theme: Theme) => ({
+const theme = createTheme();
+
+const useStyles = makeStyles(() => ({
     container: {
         display: 'flex',
         justifyContent: 'center',

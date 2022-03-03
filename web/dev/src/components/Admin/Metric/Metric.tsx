@@ -1,7 +1,7 @@
 import React, {useMemo, useRef} from 'react';
 import {NormalizedMetricsType} from '../Admin';
 import Histogram, {HistogramDataType, HistogramProps} from './Histogram/Histogram';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 // eslint-disable-next-line camelcase
 
 export type MetricType = 'Histogram' | 'Donut';
@@ -11,7 +11,7 @@ export interface MetricProps {
   chartsData: NormalizedMetricsType
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     histograms: {
         display: 'grid',
         gridAutoFlow: 'row',

@@ -1,14 +1,17 @@
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import React, {useEffect, useState} from 'react';
 import {IMath} from '@Math';
 import {Fade} from '@material-ui/core';
 import {calcMultipleResponseStep} from '@data/Models';
 import classNames from 'classnames';
+import {createTheme} from '@mui/material';
+
+const theme = createTheme();
 
 // Забивка пустого места при сдвиге
 const placeholder = 9;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     layout: {
         display: 'grid',
         gap: theme.spacing(4),

@@ -1,10 +1,13 @@
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {makeStyles, Theme} from '@material-ui/core/styles';
+import {makeStyles} from '@mui/styles';
 import {blue} from '@material-ui/core/colors';
 import {calcMultipleResponseStep} from '@data/Models';
 import {multiplyEnum} from '@Math/Math';
+import {createTheme} from '@mui/material';
+
+const theme = createTheme();
 
 interface SumShiftProps {
     multipleType: multiplyEnum,
@@ -13,7 +16,7 @@ interface SumShiftProps {
     setPoint: Dispatch<SetStateAction<number>>,
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
     steps: {
         justifyItems: 'center',
         alignItems: 'center',
