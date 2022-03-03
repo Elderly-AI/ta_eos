@@ -173,10 +173,7 @@ class DataService implements ApiInterface {
     }
 
     async approveKR(name: string, data: TemplateTemplateRequest): Promise<TemplateTemplateRequest> {
-        const body = JSON.stringify({
-            krName: name,
-            data: data
-        });
+        const body = JSON.stringify(data);
 
         return await fetch(api.kr.approveKR, {
             body,
