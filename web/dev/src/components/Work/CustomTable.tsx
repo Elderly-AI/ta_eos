@@ -54,6 +54,11 @@ const useStyle = makeStyles({
     },
 }, {name: 'MuiIconMock'});
 
+interface InputCellProps {
+    inputValue: string,
+    onChange: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
 interface CustomTableProps {
     array: TableState[],
     setArray: Dispatch<SetStateAction<TableState[]>>,
@@ -86,6 +91,20 @@ const TextCell = (props: {cellText: string | null}) => {
     }
 };
 
+const InputCell = ({inputValue, onChange}: InputCellProps) => {
+    const styles = useStyles();
+
+    return (
+        <TextField
+            variant="standard"
+            className={styles.input}
+            value={inputValue}
+            onChange={onChange}
+            autoFocus
+        />
+    );
+};
+
 const CustomTable = ({array, setArray}: CustomTableProps) => {
     const styles = useStyles();
     const [inputNumber, setInputNumber] = useState(0);
@@ -108,64 +127,61 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
             <Table aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        {
-                            array.map((cur) => (
-                                <TableCell
-                                    className={styles.tableHead}
-                                    align="left"
-                                    width={'25%'}
-                                    key={'headCell_' + cur.name}
-                                >
-                                    {cur.name}
-                                </TableCell>
-                            ))
-                        }
+                        {array.map((cur) => (
+                            <TableCell
+                                className={styles.tableHead}
+                                align="left"
+                                width={'25%'}
+                                key={'headCell_' + cur.name}
+                            >
+                                {cur.name}
+                            </TableCell>
+                        ))}
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {
-                        array[0].data.map((current, idx) => (
-                            <TableRow key={'row_' + idx} className={styles.tableRow} hover>
-                                {
-                                    array.map((cur, index) => (
-                                        index === 0 ?
-                                            <TableCell
-                                                key={'leftCell_' + idx * 3 + index}
-                                                width={'25%'}
-                                            >
-                                                {cur.data[idx].name}
-                                            </TableCell> :
-                                            <TableCell
-                                                id={'cell_' + (idx * 3 + index - 1)}
-                                                key={'cell_' + (idx * 3 + index - 1)}
-                                                width={'25%'}
-                                                onClick={cellClickHandler}
-                                                className={styles.pointer}
-                                            >
-                                                {
-                                                    inputNumber === idx * 3 + index - 1 ?
-                                                        <TextField
-                                                            variant="standard"
-                                                            className={styles.input}
-                                                            value={state}
-                                                            onChange={(evt) => {
-                                                                setArray((arr) => {
-                                                                    cur.data[idx].value = evt.target.value;
-                                                                    return arr;
-                                                                });
-                                                                setState(evt.target.value);
-                                                            }
-                                                            }
-                                                            autoFocus
-                                                        /> :
-                                                        <TextCell cellText={cur.data[idx].value} />
-                                                }
-                                            </TableCell>
-                                    ))
+                    {array[0].data.map((current, idx) => (
+                        // тут ебнутая логика с массивом: данные лежат в нем по столбцам, а таблица строится по строкам
+                        // первый map идет по 1(не важно какому) столбцу и задает только номер текущей строки(idx)
+                        <TableRow key={'row_' + idx} className={styles.tableRow} hover>
+                            {array.map((cur, index) => {
+                                // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
+                                // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
+                                const cellNumber = idx * 3 + index - 1;
+
+                                if (index === 0) {
+                                    return (
+                                        <TableCell key={'leftCell_' + cellNumber + 1} width="25%">
+                                            {cur.data[idx].name}
+                                        </TableCell>
+                                    );
                                 }
-                            </TableRow>
-                        ))
-                    }
+
+                                const changeHandler = (evt: React.ChangeEvent<HTMLInputElement>) => {
+                                    setArray((arr) => {
+                                        cur.data[idx].value = evt.target.value;
+                                        return arr;
+                                    });
+                                    setState(evt.target.value);
+                                };
+
+                                return (
+                                    <TableCell
+                                        id={'cell_' + cellNumber}
+                                        key={'cell_' + cellNumber}
+                                        width={'25%'}
+                                        onClick={cellClickHandler}
+                                        className={styles.pointer}
+                                    >
+                                        {inputNumber === cellNumber ?
+                                            <InputCell inputValue={state} onChange={changeHandler}/> :
+                                            <TextCell cellText={cur.data[idx].value} />
+                                        }
+                                    </TableCell>
+                                );
+                            })}
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>
