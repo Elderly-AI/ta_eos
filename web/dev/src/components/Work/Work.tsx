@@ -72,10 +72,8 @@ const useStyles = makeStyles(() => ({
         whiteSpace: 'pre-wrap',
     },
 
-    alert: {
-        // width: '200px',
-        // marginRight: '3%',
-        // marginBottom: '40px',
+    redAlert: {
+        backgroundColor: '#A30000',
     }
 }));
 
@@ -266,7 +264,7 @@ const Work = () => {
                         <Alert
                             variant="filled"
                             severity={resultMessage === BadResult ? 'error' : 'success'}
-                            className={styles.alert}
+                            className={resultMessage === BadResult ? styles.redAlert : ''}
                         >
                             {resultMessage}
                         </Alert>
