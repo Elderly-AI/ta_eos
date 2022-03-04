@@ -10,8 +10,10 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@mui/icons-material": "^5.4.4",
     "@mui/material": "^5.4.4",
+    "@types/react-copy-to-clipboard": "^5.0.2",
     "classnames": "^2.3.1",
     "react": "^17.0.2",
+    "react-copy-to-clipboard": "^5.0.4",
     "react-countdown-circle-timer": "^3.0.8",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
@@ -93,7 +95,8 @@
       "comma-dangle": "off",
       "react/prop-types": "off",
       "react/no-children-prop": "off",
-      "no-invalid-this": "off"
+      "no-invalid-this": "off",
+      "quote-props": "off"
     }
   },
   "browserslist": {
