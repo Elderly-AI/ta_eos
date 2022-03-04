@@ -1,10 +1,21 @@
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField} from '@material-ui/core';
+import {
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Typography
+} from '@material-ui/core';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import React, {Dispatch, SetStateAction, useRef, useState} from 'react';
+import React, {Dispatch, SetStateAction, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import classNames from 'classnames';
 
 const useStyles = makeStyles({
     tableRow: {
@@ -23,34 +34,26 @@ const useStyles = makeStyles({
         cursor: 'pointer',
     },
 
-    pasteIconMock: {
-        width: '20px',
-        height: '20px',
-        backgroundColor: 'blue',
-        // diaplay: 'none',
-    },
-
     iconContainer: {
         display: 'flex',
         alignItems: 'center',
         gridGap: '15px',
-        backgroundColor: 'red',
 
         '&:hover': {
             '& .MuiIconMock-root': {
-                // backgroundColor: 'gray',
-                display: 'block',
+                display: 'block !important',
             }
         },
     },
+
+    iconFontSize: {
+        fontSize: '1rem !important',
+    }
 });
 
 const useStyle = makeStyles({
     root: {
-        width: '20px',
-        height: '20px',
-        backgroundColor: 'black',
-        display: 'none',
+        display: 'none !important',
     },
 }, {name: 'MuiIconMock'});
 
@@ -82,9 +85,13 @@ const TextCell = (props: {cellText: string | null}) => {
     } else {
         return (
             <div className={styles.iconContainer}>
-                {cellText}
+                <Typography variant="subtitle1">{cellText}</Typography>
                 <CopyToClipboard text={cellText || ''}>
-                    <div className={classes.root} onClick={clickHandler}/>
+                    <ContentCopyIcon
+                        className={classNames(classes.root, styles.iconFontSize)}
+                        color="primary"
+                        onClick={clickHandler}
+                    />
                 </CopyToClipboard>
             </div>
         );
@@ -116,7 +123,7 @@ const InputCell = ({inputValue, onChange}: InputCellProps) => {
                 autoFocus
                 focused={true}
             />
-            <div className={styles.pasteIconMock} onClick={clickHandler}/>
+            <ContentPasteIcon className={styles.iconFontSize} color="primary" onClick={clickHandler}/>
         </div>
     );
 };
