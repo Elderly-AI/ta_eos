@@ -1,7 +1,7 @@
 import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField} from '@material-ui/core';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction, useRef, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
@@ -23,10 +23,10 @@ const useStyles = makeStyles({
         cursor: 'pointer',
     },
 
-    iconMock: {
+    pasteIconMock: {
         width: '20px',
         height: '20px',
-        backgroundColor: 'black',
+        backgroundColor: 'blue',
         // diaplay: 'none',
     },
 
@@ -56,7 +56,7 @@ const useStyle = makeStyles({
 
 interface InputCellProps {
     inputValue: string,
-    onChange: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (evt: any, value?: string) => void;
 }
 
 interface CustomTableProps {
@@ -94,26 +94,42 @@ const TextCell = (props: {cellText: string | null}) => {
 const InputCell = ({inputValue, onChange}: InputCellProps) => {
     const styles = useStyles();
 
+    const clickHandler = (evt: React.MouseEvent) => {
+        evt.stopPropagation();
+        if (!navigator.clipboard) return;
+        navigator.clipboard.readText().then(
+            (data) => {
+                // это я предпочел поизгаляться над ивентом, нежели прокидывать в компонент 100500 пропсов
+                onChange(undefined, inputValue + data);
+                console.log('paste', data);
+            });
+    };
+
     return (
-        <TextField
-            variant="standard"
-            className={styles.input}
-            value={inputValue}
-            onChange={onChange}
-            autoFocus
-        />
+        <div className={styles.iconContainer}>
+            <TextField
+                variant="standard"
+                className={styles.input}
+                value={inputValue}
+                onChange={onChange}
+                onBlur={(evt) => evt.currentTarget.focus()}
+                autoFocus
+                focused={true}
+            />
+            <div className={styles.pasteIconMock} onClick={clickHandler}/>
+        </div>
     );
 };
 
 const CustomTable = ({array, setArray}: CustomTableProps) => {
     const styles = useStyles();
     const [inputNumber, setInputNumber] = useState(0);
-    const [state, setState] = useState('');
+    const [inputText, setInputText] = useState('');
 
     const cellClickHandler = (evt: any) => {
         const id = +evt.currentTarget.id.split('_')[1];
         if (id !== inputNumber) {
-            setState(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
+            setInputText(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
             setInputNumber(id);
         }
     };
@@ -147,34 +163,34 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                             {array.map((cur, index) => {
                                 // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
                                 // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
-                                const cellNumber = idx * 3 + index - 1;
+                                const tmpCellNumber = idx * 3 + index - 1;
 
                                 if (index === 0) {
                                     return (
-                                        <TableCell key={'leftCell_' + cellNumber + 1} width="25%">
+                                        <TableCell key={'leftCell_' + tmpCellNumber + 1} width="25%">
                                             {cur.data[idx].name}
                                         </TableCell>
                                     );
                                 }
 
-                                const changeHandler = (evt: React.ChangeEvent<HTMLInputElement>) => {
+                                const changeHandler = (evt: any, value?: string) => {
                                     setArray((arr) => {
-                                        cur.data[idx].value = evt.target.value;
+                                        arr[index].data[idx].value = evt?.target.value || value || '';
                                         return arr;
                                     });
-                                    setState(evt.target.value);
+                                    setInputText(evt?.target.value || value || '');
                                 };
 
                                 return (
                                     <TableCell
-                                        id={'cell_' + cellNumber}
-                                        key={'cell_' + cellNumber}
+                                        id={'cell_' + tmpCellNumber}
+                                        key={'cell_' + tmpCellNumber}
                                         width={'25%'}
                                         onClick={cellClickHandler}
                                         className={styles.pointer}
                                     >
-                                        {inputNumber === cellNumber ?
-                                            <InputCell inputValue={state} onChange={changeHandler}/> :
+                                        {inputNumber === tmpCellNumber ?
+                                            <InputCell inputValue={inputText} onChange={changeHandler}/> :
                                             <TextCell cellText={cur.data[idx].value} />
                                         }
                                     </TableCell>
