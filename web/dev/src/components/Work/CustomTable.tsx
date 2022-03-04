@@ -9,8 +9,6 @@ import {
     TextField,
     Typography
 } from '@material-ui/core';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
@@ -40,7 +38,7 @@ const useStyles = makeStyles({
         gridGap: '15px',
 
         '&:hover': {
-            '& .MuiIconMock-root': {
+            '& .MuiCustomSvgIcon-root': {
                 display: 'block !important',
             }
         },
@@ -48,14 +46,21 @@ const useStyles = makeStyles({
 
     iconFontSize: {
         fontSize: '1rem !important',
-    }
+    },
+
+    icon: {
+        width: '1em',
+        height: '1em',
+        fontSize: '1rem',
+        fill: '#0d47a1',
+    },
 });
 
 const useStyle = makeStyles({
     root: {
         display: 'none !important',
     },
-}, {name: 'MuiIconMock'});
+}, {name: 'MuiCustomSvgIcon'});
 
 interface InputCellProps {
     inputValue: string,
@@ -87,11 +92,10 @@ const TextCell = (props: {cellText: string | null}) => {
             <div className={styles.iconContainer}>
                 <Typography variant="subtitle1">{cellText}</Typography>
                 <CopyToClipboard text={cellText || ''}>
-                    <ContentCopyIcon
-                        className={classNames(classes.root, styles.iconFontSize)}
-                        color="primary"
-                        onClick={clickHandler}
-                    />
+                    <svg className={classNames(styles.icon, classes.root)} viewBox="0 0 24 24" onClick={clickHandler}>
+                        {/* eslint-disable-next-line */}
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
                 </CopyToClipboard>
             </div>
         );
@@ -123,7 +127,10 @@ const InputCell = ({inputValue, onChange}: InputCellProps) => {
                 autoFocus
                 focused={true}
             />
-            <ContentPasteIcon className={styles.iconFontSize} color="primary" onClick={clickHandler}/>
+            <svg className={styles.icon} viewBox="0 0 24 24" onClick={clickHandler}>
+                {/* eslint-disable-next-line */}
+                <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
+            </svg>
         </div>
     );
 };
