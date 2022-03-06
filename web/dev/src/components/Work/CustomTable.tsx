@@ -12,8 +12,9 @@ import {
 import React, {Dispatch, SetStateAction, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
 import classNames from 'classnames';
+import useClippy from 'use-clippy';
+
 
 const useStyles = makeStyles({
     tableRow: {
@@ -64,7 +65,8 @@ const useStyle = makeStyles({
 
 interface InputCellProps {
     inputValue: string,
-    onChange: (evt: any, value?: string) => void;
+    onChange: (evt: any, value?: string) => void,
+    copiedText: string,
 }
 
 interface CustomTableProps {
@@ -72,17 +74,15 @@ interface CustomTableProps {
     setArray: Dispatch<SetStateAction<TableState[]>>,
 }
 
-const TextCell = (props: {cellText: string | null}) => {
-    const {cellText} = props;
+const TextCell = (props: {cellText: string | null, copyText: (text: string) => void}) => {
+    const {cellText, copyText} = props;
     const styles = useStyles();
     const classes = useStyle();
 
     const clickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
-        navigator.clipboard.readText().then(
-            (data) => {
-                console.log('copied', data);
-            });
+        copyText(cellText || '');
+
     };
 
     if (!cellText) {
@@ -91,29 +91,21 @@ const TextCell = (props: {cellText: string | null}) => {
         return (
             <div className={styles.iconContainer}>
                 <Typography variant="subtitle1">{cellText}</Typography>
-                <CopyToClipboard text={cellText || ''}>
-                    <svg className={classNames(styles.icon, classes.root)} viewBox="0 0 24 24" onClick={clickHandler}>
-                        {/* eslint-disable-next-line */}
-                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                    </svg>
-                </CopyToClipboard>
+                <svg className={classNames(styles.icon, classes.root)} viewBox="0 0 24 24" onClick={clickHandler}>
+                    {/* eslint-disable-next-line */}
+                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                </svg>
             </div>
         );
     }
 };
 
-const InputCell = ({inputValue, onChange}: InputCellProps) => {
+const InputCell = ({inputValue, onChange, copiedText}: InputCellProps) => {
     const styles = useStyles();
 
     const clickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
-        if (!navigator.clipboard) return;
-        navigator.clipboard.readText().then(
-            (data) => {
-                // это я предпочел поизгаляться над ивентом, нежели прокидывать в компонент 100500 пропсов
-                onChange(undefined, inputValue + data);
-                console.log('paste', data);
-            });
+        onChange(undefined, inputValue + copiedText);
     };
 
     return (
@@ -123,7 +115,6 @@ const InputCell = ({inputValue, onChange}: InputCellProps) => {
                 className={styles.input}
                 value={inputValue}
                 onChange={onChange}
-                onBlur={(evt) => evt.currentTarget.focus()}
                 autoFocus
                 focused={true}
             />
@@ -139,6 +130,7 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
     const styles = useStyles();
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
+    const [text, setText] = useClippy();
 
     const cellClickHandler = (evt: any) => {
         const id = +evt.currentTarget.id.split('_')[1];
@@ -204,8 +196,12 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                                         className={styles.pointer}
                                     >
                                         {inputNumber === tmpCellNumber ?
-                                            <InputCell inputValue={inputText} onChange={changeHandler}/> :
-                                            <TextCell cellText={cur.data[idx].value} />
+                                            <InputCell
+                                                inputValue={inputText}
+                                                onChange={changeHandler}
+                                                copiedText={text}
+                                            /> :
+                                            <TextCell cellText={cur.data[idx].value} copyText={setText}/>
                                         }
                                     </TableCell>
                                 );
