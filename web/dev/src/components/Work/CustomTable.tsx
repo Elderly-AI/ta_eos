@@ -14,6 +14,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import classNames from 'classnames';
+import useClippy from 'use-clippy';
 
 const useStyles = makeStyles({
     tableRow: {
@@ -104,16 +105,23 @@ const TextCell = (props: {cellText: string | null}) => {
 
 const InputCell = ({inputValue, onChange}: InputCellProps) => {
     const styles = useStyles();
+    const [text, setText] = useClippy();
 
     const clickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
-        if (!navigator.clipboard) return;
-        navigator.clipboard.readText().then(
-            (data) => {
-                // это я предпочел поизгаляться над ивентом, нежели прокидывать в компонент 100500 пропсов
-                onChange(undefined, inputValue + data);
-                console.log('paste', data);
-            });
+        const a = `${Math.random()%100}`;
+        console.log('random', a);
+        console.log(text);
+        setText(a);
+        console.log(text);
+        onChange(undefined, inputValue + text);
+        // if (!navigator.clipboard) return;
+        // navigator.clipboard.readText().then(
+        //     (data) => {
+        //         // это я предпочел поизгаляться над ивентом, нежели прокидывать в компонент 100500 пропсов
+        //         onChange(undefined, inputValue + data);
+        //         console.log('paste', data);
+        //     });
     };
 
     return (
@@ -153,68 +161,71 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
     }
 
     return (
-        <TableContainer component={Paper}>
-            <Table aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        {array.map((cur) => (
-                            <TableCell
-                                className={styles.tableHead}
-                                align="left"
-                                width={'25%'}
-                                key={'headCell_' + cur.name}
-                            >
-                                {cur.name}
-                            </TableCell>
-                        ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {array[0].data.map((current, idx) => (
-                        // тут ебнутая логика с массивом: данные лежат в нем по столбцам, а таблица строится по строкам
-                        // первый map идет по 1(не важно какому) столбцу и задает только номер текущей строки(idx)
-                        <TableRow key={'row_' + idx} className={styles.tableRow} hover>
-                            {array.map((cur, index) => {
-                                // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
-                                // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
-                                const tmpCellNumber = idx * 3 + index - 1;
+        <>
+            <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            {array.map((cur) => (
+                                <TableCell
+                                    className={styles.tableHead}
+                                    align="left"
+                                    width={'25%'}
+                                    key={'headCell_' + cur.name}
+                                >
+                                    {cur.name}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {array[0].data.map((current, idx) => (
+                            // тут ебнутая логика с массивом: данные лежат в нем по столбцам, а таблица
+                            // строится по строкам
+                            // первый map идет по 1(не важно какому) столбцу и задает только номер текущей строки(idx)
+                            <TableRow key={'row_' + idx} className={styles.tableRow} hover>
+                                {array.map((cur, index) => {
+                                    // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
+                                    // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
+                                    const tmpCellNumber = idx * 3 + index - 1;
 
-                                if (index === 0) {
+                                    if (index === 0) {
+                                        return (
+                                            <TableCell key={'leftCell_' + tmpCellNumber + 1} width="25%">
+                                                {cur.data[idx].name}
+                                            </TableCell>
+                                        );
+                                    }
+
+                                    const changeHandler = (evt: any, value?: string) => {
+                                        setArray((arr) => {
+                                            arr[index].data[idx].value = evt?.target.value || value || '';
+                                            return arr;
+                                        });
+                                        setInputText(evt?.target.value || value || '');
+                                    };
+
                                     return (
-                                        <TableCell key={'leftCell_' + tmpCellNumber + 1} width="25%">
-                                            {cur.data[idx].name}
+                                        <TableCell
+                                            id={'cell_' + tmpCellNumber}
+                                            key={'cell_' + tmpCellNumber}
+                                            width={'25%'}
+                                            onClick={cellClickHandler}
+                                            className={styles.pointer}
+                                        >
+                                            {inputNumber === tmpCellNumber ?
+                                                <InputCell inputValue={inputText} onChange={changeHandler}/> :
+                                                <TextCell cellText={cur.data[idx].value} />
+                                            }
                                         </TableCell>
                                     );
-                                }
-
-                                const changeHandler = (evt: any, value?: string) => {
-                                    setArray((arr) => {
-                                        arr[index].data[idx].value = evt?.target.value || value || '';
-                                        return arr;
-                                    });
-                                    setInputText(evt?.target.value || value || '');
-                                };
-
-                                return (
-                                    <TableCell
-                                        id={'cell_' + tmpCellNumber}
-                                        key={'cell_' + tmpCellNumber}
-                                        width={'25%'}
-                                        onClick={cellClickHandler}
-                                        className={styles.pointer}
-                                    >
-                                        {inputNumber === tmpCellNumber ?
-                                            <InputCell inputValue={inputText} onChange={changeHandler}/> :
-                                            <TextCell cellText={cur.data[idx].value} />
-                                        }
-                                    </TableCell>
-                                );
-                            })}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </>
     );
 };
 
