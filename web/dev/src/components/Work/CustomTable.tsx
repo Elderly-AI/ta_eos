@@ -15,7 +15,6 @@ import {TableState} from './Work';
 import classNames from 'classnames';
 import useClippy from 'use-clippy';
 
-
 const useStyles = makeStyles({
     tableRow: {
         height: '70px',
@@ -82,7 +81,6 @@ const TextCell = (props: {cellText: string | null, copyText: (text: string) => v
     const clickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
         copyText(cellText || '');
-
     };
 
     if (!cellText) {
