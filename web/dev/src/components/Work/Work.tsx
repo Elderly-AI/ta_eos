@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
-import {Button, Typography} from '@material-ui/core';
+import {Button, TextField, Typography} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 // import Alert from '@material-ui/core/Alert';
 import classNames from 'classnames';
@@ -9,6 +9,7 @@ import CustomTable from './CustomTable';
 import DataService from '@data/DataService';
 import {TemplateTemplateRequest} from '@data/Models';
 import {CountdownCircleTimer} from 'react-countdown-circle-timer';
+import TableInput from './TableInput';
 
 const useStyles = makeStyles(() => ({
     mainContainer: {
@@ -220,6 +221,12 @@ const Work = () => {
         );
     };
 
+    const [test, setTest] = useState('');// TODO тестовые данные!!!
+
+    const change = (evt: React.ChangeEvent<HTMLInputElement>) => {
+        setTest(evt.currentTarget.value);
+    };
+
     return (
         <>
             <Header/>
@@ -258,7 +265,7 @@ const Work = () => {
                         onClick={clickHandle}
                         disabled={disableButton}
                     >
-            Отправить
+                        Отправить
                     </Button>
                     {resultMessage === '' ? '' :
                         <Alert
@@ -269,6 +276,7 @@ const Work = () => {
                             {resultMessage}
                         </Alert>
                     }
+                    <TableInput value={test} onChange={change}/>
                 </div>
             </div>
         </>
