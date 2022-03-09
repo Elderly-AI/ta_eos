@@ -1,14 +1,24 @@
 import React, {useRef, useState} from 'react';
 import {TextField} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
+import classNames from 'classnames';
 
 const useStyles = makeStyles({
     input: {
-        width: '15px',
-        margin: '0 5px',
+        width: '12px',
+        margin: '0 3px',
 
         '& .MuiInputBase-input': {
             textAlign: 'center',
+            padding: '0 0 6px',
+        },
+
+        '&:first-child': {
+            marginLeft: '0',
+        },
+
+        '&:last-child': {
+            marginRight: '0',
         },
     },
 
@@ -17,6 +27,8 @@ const useStyles = makeStyles({
         width: 'fit-content',
         height: 'min-content',
         backgroundColor: 'inherit',
+        border: 'none',
+        padding: '0',
     },
 });
 
@@ -31,11 +43,12 @@ interface TableInputProps {
     id?: string,
     value: string,
     digitsNumber?: number,
-    onChange: (evt: React.ChangeEvent<HTMLInputElement>) => void,
+    onChange: (evt: any, value?: string) => void,
+    className? : string,
 }
 
 // компонент содержит значение в виде строки в родительском элементе(button) и значения каждого разряда в инпутах
-const TableInput = ({id, value, onChange, digitsNumber = 8}: TableInputProps) => {
+const TableInput = ({id, className, value, onChange, digitsNumber = 8}: TableInputProps) => {
     const styles = useStyles();
     const [errorId, setErrorId] = useState<number | undefined>(undefined);
     const [timerId, setTimerId] = useState<any>(-1);
@@ -68,7 +81,7 @@ const TableInput = ({id, value, onChange, digitsNumber = 8}: TableInputProps) =>
         const id = +evt.target.name.split('_').pop();
         const idxValue = evt.target.value;
         let fullValue = evt.currentTarget.value;
-        // заменяем пустую строку на строку с незначащими символами
+        // заменяем пустую строку на строку с незначащими символами, чтобы правильно отрабатывался ввод в любой разряд
         if (fullValue.length !== digitsNumber) {
             fullValue = nullSymbol.repeat(digitsNumber);
             evt.currentTarget.value = fullValue;
@@ -83,7 +96,7 @@ const TableInput = ({id, value, onChange, digitsNumber = 8}: TableInputProps) =>
             setTimerId(setTimeout(() => {
                 setErrorId(undefined);
                 setTimerId(-1);
-            }, 4000));
+            }, 3000));
             return;
         } else if (timerId !== -1) {
             setErrorId(undefined);
@@ -116,7 +129,13 @@ const TableInput = ({id, value, onChange, digitsNumber = 8}: TableInputProps) =>
     };
 
     return (
-        <button id={id} className={styles.container} value={value} onChange={handleChange} onKeyDown={handleKeyDown}>
+        <button
+            id={id}
+            className={classNames(styles.container, className)}
+            value={value}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+        >
             {textFieldRefs.map((refObj, idx) => (
                 <TextField
                     name={refObj.name}
