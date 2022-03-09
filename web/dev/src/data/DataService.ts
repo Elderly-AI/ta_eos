@@ -181,7 +181,10 @@ class DataService implements ApiInterface {
         })
             .then((res) => res.json())
             .catch((err) => console.error(err))
-            .then((res) => res);
+            .then((res) => ({
+                ...res,
+                point: res.point ?? 0
+            }));
     }
 }
 

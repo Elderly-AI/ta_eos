@@ -1,14 +1,5 @@
-import {
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography
-} from '@material-ui/core';
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core';
+import React, {Dispatch, FC, SetStateAction, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
 import classNames from 'classnames';
@@ -24,8 +15,7 @@ const useStyles = makeStyles({
         fontWeight: 'bold',
     },
 
-    input: {
-    },
+    input: {},
 
     pointer: {
         cursor: 'pointer',
@@ -43,17 +33,30 @@ const useStyles = makeStyles({
         },
     },
 
+    wrongCell: {
+        borderBottom: '1px solid #ff1515',
+    },
+
     iconFontSize: {
         fontSize: '1rem !important',
     },
 
+    flex: {
+        display: 'flex',
+    },
+
     icon: {
         width: '1em',
-        height: '1em',
-        fontSize: '1rem',
-        fill: '#0d47a1',
-    },
-});
+        height:
+        '1em',
+        fontSize:
+        '1rem',
+        fill:
+        '#0d47a1',
+    }
+    ,
+})
+;
 
 const useStyle = makeStyles({
     root: {
@@ -61,19 +64,33 @@ const useStyle = makeStyles({
     },
 }, {name: 'MuiCustomSvgIcon'});
 
+enum AnswerType {
+  UNCHECKED,
+  CORRECT,
+  WRONG
+}
+
 interface InputCellProps {
-    inputValue: string,
-    onChange: (evt: any, value?: string) => void,
-    copiedText: string,
+  inputValue: string,
+  onChange: (evt: any, value?: string) => void,
+  copiedText: string,
 }
 
 interface CustomTableProps {
-    array: TableState[],
-    setArray: Dispatch<SetStateAction<TableState[]>>,
+  array: TableState[],
+  compareArray: TableState[],
+  setArray: Dispatch<SetStateAction<TableState[]>>,
 }
 
-const TextCell = (props: {cellText: string | null, copyText: (text: string) => void}) => {
-    const {cellText, copyText} = props;
+type TextCellProps = {
+  cellText: string | null,
+  copyText: (text: string) => void,
+  isAnswerCorrect: AnswerType
+}
+
+const TextCell: FC<TextCellProps> = ({
+    cellText, copyText, isAnswerCorrect
+}) => {
     const styles = useStyles();
     const classes = useStyle();
 
@@ -83,15 +100,27 @@ const TextCell = (props: {cellText: string | null, copyText: (text: string) => v
     };
 
     if (!cellText) {
-        return <>...</>;
+        return <div className={styles.flex}>
+            <Typography
+                className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
+                variant="subtitle1">
+        ...
+            </Typography>
+        </div>;
     } else {
         return (
             <div className={styles.iconContainer}>
-                <Typography variant="subtitle1">{cellText}</Typography>
+                <Typography
+                    className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
+                    variant="subtitle1">
+                    {cellText}
+                </Typography>
                 <svg className={classNames(styles.icon, classes.root)} viewBox="0 0 24 24" onClick={clickHandler}>
-                    {/* eslint-disable-next-line */}
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    {/* eslint-disable max-len */}
+                    <path
+                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
                 </svg>
+                {/* eslint-enable max-len*/}
             </div>
         );
     }
@@ -109,14 +138,17 @@ const InputCell = ({inputValue, onChange, copiedText}: InputCellProps) => {
         <div className={styles.iconContainer}>
             <TableInput value={inputValue} onChange={onChange} className={styles.input}/>
             <svg className={styles.icon} viewBox="0 0 24 24" onClick={clickHandler}>
-                {/* eslint-disable-next-line */}
-                <path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
+                {/* eslint-disable max-len */}
+                <path
+                    d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
             </svg>
+            {/* eslint-enable max-len*/}
+
         </div>
     );
 };
 
-const CustomTable = ({array, setArray}: CustomTableProps) => {
+const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
     const styles = useStyles();
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
@@ -160,6 +192,7 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                                 // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
                                 // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
                                 const tmpCellNumber = idx * 3 + index - 1;
+                                let answerType: AnswerType = AnswerType.UNCHECKED;
 
                                 if (index === 0) {
                                     return (
@@ -168,6 +201,12 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                                         </TableCell>
                                     );
                                 }
+
+                                if (compareArray.length) {
+                                    answerType = array[index].data[idx].value === compareArray[index].data[idx].value ?
+                                        AnswerType.CORRECT : AnswerType.WRONG;
+                                }
+
 
                                 const changeHandler = (evt: any, value?: string) => {
                                     // currentTarget.value - полное значение, target.value - текущий разряд
@@ -192,7 +231,10 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                                                 onChange={changeHandler}
                                                 copiedText={text}
                                             /> :
-                                            <TextCell cellText={cur.data[idx].value} copyText={setText}/>
+                                            <TextCell
+                                                isAnswerCorrect={answerType}
+                                                cellText={cur.data[idx].value}
+                                                copyText={setText}/>
                                         }
                                     </TableCell>
                                 );
