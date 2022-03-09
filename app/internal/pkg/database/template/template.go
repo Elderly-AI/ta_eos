@@ -6,6 +6,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/jmoiron/sqlx"
 	"log"
+	"time"
 )
 
 type Repo struct {
@@ -18,8 +19,14 @@ func CreateRepo(conn *sqlx.DB) *Repo {
 	}
 }
 
-func (r *Repo) SaveTemplate(ctx context.Context, template map[string]interface{}, userId int) error {
-	return nil
+func (r *Repo) SaveTemplate(ctx context.Context, template map[string]interface{}, userId string, krName string) error {
+	res, marshErr := json.Marshal(template)
+	if marshErr != nil {
+		return marshErr
+	}
+	_, err := r.conn.ExecContext(ctx, "INSERT INTO templates (user_id, kr_name, template, saved_date) VALUES ($1,$2,$3,$4)",
+		userId, krName, res, time.Now())
+	return err
 }
 
 func (r *Repo) GetTemplate(ctx context.Context, id uint64) (map[string]interface{}, error) {

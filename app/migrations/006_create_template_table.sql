@@ -4,7 +4,8 @@
 CREATE TABLE IF NOT EXISTS templates
 (
     user_id    SERIAL PRIMARY KEY,
-    template   VARCHAR(256) default '',
+    kr_name    VARCHAR(256) default '',
+    template   jsonb        default null,
     saved_date timestamp
 );
 

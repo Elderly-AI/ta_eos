@@ -2,8 +2,10 @@ package template
 
 import (
 	"context"
+	"errors"
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
 	templateFacade "github.com/Elderly-AI/ta_eos/internal/pkg/template"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
 	"math/rand"
@@ -398,6 +400,14 @@ func GetTemplate(templateName string) map[string]interface{} {
 
 func (s Server) GetKrHandler(ctx context.Context, req *pb.TemplateRequest) (*pb.TemplateRequest, error) {
 	template := GetTemplate(req.KrName)
+	userID := session.GetUserIdFromContext(ctx)
+	if userID == nil {
+		return nil, errors.New("not Authed")
+	}
+	err := s.repo.SaveTemplate(ctx, template, *userID, req.KrName)
+	if err != nil {
+		return nil, err
+	}
 	res, err := model.ConvertToProtoJSON(template)
 	return &pb.TemplateRequest{
 		KrName: req.KrName,
