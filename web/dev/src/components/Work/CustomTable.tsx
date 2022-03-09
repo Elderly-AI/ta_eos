@@ -14,6 +14,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
 import classNames from 'classnames';
 import useClippy from 'use-clippy';
+import TableInput from './TableInput';
 
 const useStyles = makeStyles({
     tableRow: {
@@ -113,8 +114,8 @@ const InputCell = ({inputValue, onChange, copiedText}: InputCellProps) => {
                 className={styles.input}
                 value={inputValue}
                 onChange={onChange}
-                autoFocus
-                focused={true}
+                // autoFocus
+                // focused={true}
             />
             <svg className={styles.icon} viewBox="0 0 24 24" onClick={clickHandler}>
                 {/* eslint-disable-next-line */}
