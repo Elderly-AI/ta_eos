@@ -3,7 +3,6 @@ import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
 import {Button, Typography} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-// import Alert from '@material-ui/core/Alert';
 import classNames from 'classnames';
 import CustomTable from './CustomTable';
 import DataService from '@data/DataService';
@@ -258,7 +257,7 @@ const Work = () => {
                         onClick={clickHandle}
                         disabled={disableButton}
                     >
-            Отправить
+                        Отправить
                     </Button>
                     {resultMessage === '' ? '' :
                         <Alert
