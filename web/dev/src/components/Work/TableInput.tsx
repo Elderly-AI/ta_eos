@@ -40,11 +40,11 @@ const replaceAt = (str: string, idx: number, newSymbol: string) => {
 };
 
 interface TableInputProps {
-    id?: string,
-    value: string,
-    digitsNumber?: number,
-    onChange: (evt: any, value?: string) => void,
-    className? : string,
+  id?: string,
+  value: string,
+  digitsNumber?: number,
+  onChange: (evt: any, value?: string) => void,
+  className?: string,
 }
 
 // компонент содержит значение в виде строки в родительском элементе(button) и значения каждого разряда в инпутах

@@ -73,11 +73,19 @@ const useStyles = makeStyles(() => ({
 
     redAlert: {
         backgroundColor: '#A30000',
+    },
+
+    resultMessageWrapper: {
+        display: 'grid',
+        gridAutoFlow: 'row'
     }
 }));
 
-const OkResult = 'Отличная работа! Все верно';
-const BadResult = 'В одном или более ответе ошибка(';
+const OkResult = 'Отличная работа! Все верно.';
+const BadResult = 'В одном или более ответе ошибка.';
+const getPointMessage = (point: number): string => {
+    return `Ваша оценка = ${point}`;
+};
 
 export interface TableState {
   data: {
@@ -142,6 +150,8 @@ const Work = () => {
     const [template, setTemplate] = useState<TemplateTemplateRequest | null>(null);
     const [disableButton, setDisable] = useState(false);
     const [resultMessage, setMessage] = useState<string>('');
+    const [compareArray, setCompareArray] = useState<TableState[]>([]);
+    const [currentPoint, setCurrentPoint] = useState<number | undefined>();
     const [isPlaying, setPlaying] = useState(true);
 
     useEffect(() => {
@@ -179,30 +189,23 @@ const Work = () => {
     const clickHandle = () => {
         setDisable(true);
         setPlaying(false);
-        console.log(taskArray);
         if (!template) {
             return alert('Упс! У нас тут ошибка, повторите попытку позже');
         }
-        // console.log('debug template', template);
         const preparedData = template;
         preparedData.data.UI[0].data = [template.data.UI[0].data[0], ...taskArray];
-        // console.log('debug prep', preparedData);
         DataService.approveKR('first', preparedData)
             .then((res) => {
-                // console.log('debug res', res)
+                setCurrentPoint(res.point ?? 0);
+                setCompareArray(res.data.UI[0].data.slice(1));
+
                 if (JSON.stringify(preparedData) !== JSON.stringify(res)) {
                     setMessage(BadResult);
-                    // alert('Ошибка! Один из ваших ответов неправильный');
                 } else {
                     setMessage(OkResult);
-                    // alert('Ок');
                 }
             });
     };
-
-    useEffect(() => {
-        console.log('debug task', taskArray);
-    }, [taskArray]);
 
     const time = 300;
     const renderTime = (remainingTime: number) => {
@@ -249,7 +252,11 @@ const Work = () => {
                         themeName={'Сложение'}
                         values={taskTitle}
                     />
-                    <CustomTable array={taskArray} setArray={setTaskArray}/>
+                    <CustomTable
+                        array={taskArray}
+                        compareArray={compareArray}
+                        setArray={setTaskArray}
+                    />
                     <Button
                         variant="contained"
                         color="primary"
@@ -257,17 +264,22 @@ const Work = () => {
                         onClick={clickHandle}
                         disabled={disableButton}
                     >
-                        Отправить
+            Отправить
                     </Button>
-                    {resultMessage === '' ? '' :
+                    {!!resultMessage.length && (
                         <Alert
                             variant="filled"
-                            severity={resultMessage === BadResult ? 'error' : 'success'}
-                            className={resultMessage === BadResult ? styles.redAlert : ''}
+                            severity={resultMessage.includes(BadResult) ? 'error' : 'success'}
+                            className={resultMessage.includes(BadResult) ? styles.redAlert : ''}
                         >
-                            {resultMessage}
+                            <div className={styles.resultMessageWrapper}>
+                                {resultMessage}
+                                <Typography variant='h6'>
+                                    {getPointMessage(currentPoint ?? 0)}
+                                </Typography>
+                            </div>
                         </Alert>
-                    }
+                    )}
                 </div>
             </div>
         </>
