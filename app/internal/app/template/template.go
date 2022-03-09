@@ -147,7 +147,6 @@ func GetTemplate(templateName string) map[string]interface{} {
 }
 
 func (s Server) GetKrHandler(ctx context.Context, req *pb.TemplateRequest) (*pb.TemplateRequest, error) {
-	s.repo.SetGrades(ctx, "first", 2, 1)
 	template := GetTemplate(req.KrName)
 	res, err := model.ConvertToProtoJSON(template)
 	return &pb.TemplateRequest{
