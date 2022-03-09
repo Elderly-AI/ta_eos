@@ -170,6 +170,7 @@ const CustomTable = ({array, setArray}: CustomTableProps) => {
                                 }
 
                                 const changeHandler = (evt: any, value?: string) => {
+                                    // currentTarget.value - полное значение, target.value - текущий разряд
                                     setArray((arr) => {
                                         arr[index].data[idx].value = evt?.currentTarget.value || value || '';
                                         return arr;
