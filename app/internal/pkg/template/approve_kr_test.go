@@ -36,6 +36,56 @@ func TestKrTemplateUI_Parse(t *testing.T) {
 									"name":  "-B",
 									"value": "-B",
 								},
+								map[string]interface{}{
+									"name":     "A<<2",
+									"value":    "A<<2",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>3",
+									"value":    "A>>3",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>4",
+									"value":    "A>>4",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B<<2",
+									"value":    "B<<2",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>3",
+									"value":    "B>>3",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>4",
+									"value":    "B>>4",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+B",
+									"value":    "A+B",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+-B",
+									"value":    "-A-B",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+B",
+									"value":    "-A+B",
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+-B",
+									"value":    "A-B",
+									"overflow": false,
+								},
 							},
 						},
 						map[string]interface{}{
@@ -56,6 +106,56 @@ func TestKrTemplateUI_Parse(t *testing.T) {
 								map[string]interface{}{
 									"name":  "-B",
 									"value": "-20",
+								},
+								map[string]interface{}{
+									"name":     "A<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+-B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+-B",
+									"value":    nil,
+									"overflow": false,
 								},
 							},
 						},
@@ -78,6 +178,56 @@ func TestKrTemplateUI_Parse(t *testing.T) {
 									"name":  "-B",
 									"value": nil,
 								},
+								map[string]interface{}{
+									"name":     "A<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+-B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+-B",
+									"value":    nil,
+									"overflow": false,
+								},
 							},
 						},
 						map[string]interface{}{
@@ -98,6 +248,56 @@ func TestKrTemplateUI_Parse(t *testing.T) {
 								map[string]interface{}{
 									"name":  "-B",
 									"value": nil,
+								},
+								map[string]interface{}{
+									"name":     "A<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+-B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+-B",
+									"value":    nil,
+									"overflow": false,
 								},
 							},
 						},
@@ -120,6 +320,56 @@ func TestKrTemplateUI_Parse(t *testing.T) {
 									"name":  "-B",
 									"value": nil,
 								},
+								map[string]interface{}{
+									"name":     "A<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B<<2",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>3",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "B>>4",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+-B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "-A+B",
+									"value":    nil,
+									"overflow": false,
+								},
+								map[string]interface{}{
+									"name":     "A+-B",
+									"value":    nil,
+									"overflow": false,
+								},
 							},
 						},
 					},
@@ -127,8 +377,8 @@ func TestKrTemplateUI_Parse(t *testing.T) {
 			},
 		}
 
-		data, err := facade.ApproveKr(data)
+		data, points, err := facade.ApproveKr(data)
 		require.NoError(t, err)
-		fmt.Println(data)
+		fmt.Println(data, points)
 	})
 }

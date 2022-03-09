@@ -382,7 +382,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/templateTemplateRequest"
+              "$ref": "#/definitions/templateApproveKrHandlerResponse"
             }
           },
           "default": {
@@ -398,7 +398,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/templateTemplateRequest"
+              "$ref": "#/definitions/templateApproveKrHandlerRequest"
             }
           }
         ],
@@ -414,7 +414,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/templateTemplateRequest"
+              "$ref": "#/definitions/templateGetKrHandlerResponse"
             }
           },
           "default": {
@@ -430,7 +430,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/templateTemplateRequest"
+              "$ref": "#/definitions/templateGetKrHandlerRequest"
             }
           }
         ],
@@ -803,7 +803,41 @@
         }
       }
     },
-    "templateTemplateRequest": {
+    "templateApproveKrHandlerRequest": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "templateApproveKrHandlerResponse": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        },
+        "points": {
+          "type": "number",
+          "format": "float"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "templateGetKrHandlerRequest": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        }
+      }
+    },
+    "templateGetKrHandlerResponse": {
       "type": "object",
       "properties": {
         "krName": {

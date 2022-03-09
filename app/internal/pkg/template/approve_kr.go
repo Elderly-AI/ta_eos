@@ -4,8 +4,12 @@ import (
 	"github.com/Elderly-AI/ta_eos/internal/pkg/value_lib"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"regexp"
 	"strconv"
+	"strings"
 )
+
+const defaultGridSize = 8
 
 var errCantParseKrTemplate error = status.Errorf(codes.InvalidArgument, "error cant parse KrTemplate")
 var errCantParseKrTemplateType error = status.Errorf(codes.InvalidArgument, "error cant parse KrTemplateType")
@@ -15,40 +19,51 @@ var errCantParseKrTemplateUIBlockType error = status.Errorf(codes.InvalidArgumen
 var errCantParseKrTemplateUIBlockValuePair error = status.Errorf(codes.InvalidArgument, "error cant parse KrTemplateUIBlockValuePair")
 var errCantParseNullableString error = status.Errorf(codes.InvalidArgument, "error cant parse NullableString")
 
-func (f *Facade) ApproveKr(kr map[string]interface{}) (map[string]interface{}, error) {
+type Points struct {
+	Correct   uint64
+	Incorrect uint64
+}
+
+func (f *Facade) ApproveKr(kr map[string]interface{}) (map[string]interface{}, Points, error) {
 	var krTemplate KrTemplate
+	var points Points
+
 	err := krTemplate.Parse(kr)
 	if err != nil {
-		return nil, err
+		return nil, points, nil
 	}
 
 	switch krTemplate.Type {
 	case KrTemplateUITypeFirst:
-		err = f.KrTemplateUITypeFirstHandler(&krTemplate)
+		points, err = f.KrTemplateUITypeFirstHandler(&krTemplate)
 		if err != nil {
-			return nil, err
+			return nil, points, nil
 		}
 	}
 
-	return krTemplate.Construct(), nil
+	return krTemplate.Construct(), points, nil
 }
 
-func (f *Facade) KrTemplateUITypeFirstHandler(krTemplate *KrTemplate) (err error) {
+func (f *Facade) KrTemplateUITypeFirstHandler(krTemplate *KrTemplate) (points Points, err error) {
 	for i, ui := range krTemplate.UI {
+		var p Points
 		switch ui.Type {
 		case KrTemplateUITypeTable:
-			err = f.KrTemplateUITypeTableHandler(&krTemplate.UI[i])
+			p, err = f.KrTemplateUITypeTableHandler(&krTemplate.UI[i])
 			if err != nil {
 				return
 			}
 		}
+		points.Correct += p.Correct
+		points.Incorrect += p.Incorrect
 	}
 	return
 }
 
-func (f *Facade) KrTemplateUITypeTableHandler(ui *KrTemplateUI) (err error) {
+func (f *Facade) KrTemplateUITypeTableHandler(ui *KrTemplateUI) (points Points, err error) {
 	valuesMap := make(map[string]int64)
 	for i, block := range ui.Data {
+		var p Points
 		switch block.Type {
 		case KrTemplateUIBlockValues:
 			valuesMap, err = f.KrTemplateUIBlockValuesHandler(&ui.Data[i])
@@ -56,21 +71,24 @@ func (f *Facade) KrTemplateUITypeTableHandler(ui *KrTemplateUI) (err error) {
 				return
 			}
 		case KrTemplateUIBlockDirectCode:
-			err = f.KrTemplateUIBlockDirectCodeHandler(&ui.Data[i], valuesMap)
+			p, err = f.KrTemplateUIBlockValuePair(&ui.Data[i], value_lib.ValueTypeDirectCode, valuesMap)
 			if err != nil {
 				return
 			}
 		case KrTemplateUIBlockReturnCode:
-			err = f.KrTemplateUIBlockReturnCodeHandler(&ui.Data[i], valuesMap)
+			p, err = f.KrTemplateUIBlockValuePair(&ui.Data[i], value_lib.ValueTypeReturnCode, valuesMap)
 			if err != nil {
 				return
 			}
 		case KrTemplateUIBlockAdditionalCode:
-			err = f.KrTemplateUIBlockAdditionalCodeHandler(&ui.Data[i], valuesMap)
+			p, err = f.KrTemplateUIBlockValuePair(&ui.Data[i], value_lib.ValueTypeAdditionalCode, valuesMap)
 			if err != nil {
 				return
 			}
 		}
+
+		points.Correct += p.Correct
+		points.Incorrect += p.Incorrect
 	}
 	return
 }
@@ -89,43 +107,110 @@ func (f *Facade) KrTemplateUIBlockValuesHandler(block *KrTemplateUIBlock) (map[s
 	return valuesMap, nil
 }
 
-func (f *Facade) KrTemplateUIBlockDirectCodeHandler(block *KrTemplateUIBlock, valuesMap map[string]int64) (err error) {
+func (f *Facade) KrTemplateUIBlockValuePair(block *KrTemplateUIBlock, valueType value_lib.ValueType, valuesMap map[string]int64) (points Points, err error) {
 	for i, pair := range block.Data {
-		value, ok := valuesMap[pair.Name]
-		if !ok {
-			return errCantParseKrTemplateUIBlock
+		var value *value_lib.Value
+
+		sum, _ := regexp.MatchString(`\+`, pair.Name)
+		leftShift, _ := regexp.MatchString(`<<`, pair.Name)
+		rightShift, _ := regexp.MatchString(`>>`, pair.Name)
+
+		if sum {
+			value, err = f.KrTemplateUIBlockValuePairNameSum(pair.Name, valueType, valuesMap)
+			if err != nil {
+				return
+			}
+		} else if leftShift {
+			value, err = f.KrTemplateUIBlockValuePairNameLeftShift(pair.Name, valueType, valuesMap)
+			if err != nil {
+				return
+			}
+		} else if rightShift {
+			value, err = f.KrTemplateUIBlockValuePairNameRightShift(pair.Name, valueType, valuesMap)
+			if err != nil {
+				return
+			}
+		} else {
+			value, err = f.KrTemplateUIBlockValuePairNameValue(pair.Name, valueType, valuesMap)
+			if err != nil {
+				return
+			}
 		}
-		v := value_lib.InitValueFromInt64(value, 8, value_lib.ValueTypeDirectCode)
-		(&block.Data[i].Value).Value = v.String()
+		if block.Data[i].Overflow == value.Overflow() && (&block.Data[i].Value).Value == value.String() {
+			points.Correct += 1
+			continue
+		}
+
+		points.Incorrect += 1
+		block.Data[i].Overflow = value.Overflow()
+		(&block.Data[i].Value).Value = value.String()
 		(&block.Data[i].Value).Valid = true
 	}
 	return
 }
 
-func (f *Facade) KrTemplateUIBlockAdditionalCodeHandler(block *KrTemplateUIBlock, valuesMap map[string]int64) (err error) {
-	for i, pair := range block.Data {
-		value, ok := valuesMap[pair.Name]
-		if !ok {
-			return errCantParseKrTemplateUIBlock
-		}
-		v := value_lib.InitValueFromInt64(value, 8, value_lib.ValueTypeAdditionalCode)
-		(&block.Data[i].Value).Value = v.String()
-		(&block.Data[i].Value).Valid = true
+func (f *Facade) KrTemplateUIBlockValuePairNameSum(name string, valueType value_lib.ValueType, valuesMap map[string]int64) (*value_lib.Value, error) {
+	values := strings.Split(name, "+")
+	if len(values) != 2 {
+		return nil, errCantParseKrTemplateUIBlockValuePair
 	}
-	return
+	fv, ok := valuesMap[values[0]]
+	if !ok {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	sv, ok := valuesMap[values[1]]
+	if !ok {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	fvv := value_lib.InitValueFromInt64(fv, defaultGridSize, valueType)
+	svv := value_lib.InitValueFromInt64(sv, defaultGridSize, valueType)
+	value := fvv.Add(svv)
+	return &value, nil
 }
 
-func (f *Facade) KrTemplateUIBlockReturnCodeHandler(block *KrTemplateUIBlock, valuesMap map[string]int64) (err error) {
-	for i, pair := range block.Data {
-		value, ok := valuesMap[pair.Name]
-		if !ok {
-			return errCantParseKrTemplateUIBlock
-		}
-		v := value_lib.InitValueFromInt64(value, 8, value_lib.ValueTypeReturnCode)
-		(&block.Data[i].Value).Value = v.String()
-		(&block.Data[i].Value).Valid = true
+func (f *Facade) KrTemplateUIBlockValuePairNameLeftShift(name string, valueType value_lib.ValueType, valuesMap map[string]int64) (*value_lib.Value, error) {
+	values := strings.Split(name, "<<")
+	if len(values) != 2 {
+		return nil, errCantParseKrTemplateUIBlockValuePair
 	}
-	return
+	fv, ok := valuesMap[values[0]]
+	if !ok {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	count, err := strconv.ParseUint(values[1], 10, 64)
+	if err != nil {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	fvv := value_lib.InitValueFromInt64(fv, defaultGridSize, valueType)
+	value := fvv.LeftShift(count)
+	return &value, nil
+}
+
+func (f *Facade) KrTemplateUIBlockValuePairNameRightShift(name string, valueType value_lib.ValueType, valuesMap map[string]int64) (*value_lib.Value, error) {
+	values := strings.Split(name, ">>")
+	if len(values) != 2 {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	fv, ok := valuesMap[values[0]]
+	if !ok {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	count, err := strconv.ParseUint(values[1], 10, 64)
+	if err != nil {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	fvv := value_lib.InitValueFromInt64(fv, defaultGridSize, valueType)
+	value := fvv.RightShift(count)
+	return &value, nil
+}
+
+func (f *Facade) KrTemplateUIBlockValuePairNameValue(name string, valueType value_lib.ValueType, valuesMap map[string]int64) (*value_lib.Value, error) {
+	fv, ok := valuesMap[name]
+	if !ok {
+		return nil, errCantParseKrTemplateUIBlockValuePair
+	}
+	value := value_lib.InitValueFromInt64(fv, defaultGridSize, valueType)
+	return &value, nil
 }
 
 type KrTemplate struct {
@@ -389,8 +474,9 @@ func (k *KrTemplateUIBlockType) Construct() interface{} {
 }
 
 type ValuePair struct {
-	Name  string
-	Value NullableString
+	Name     string
+	Value    NullableString
+	Overflow bool
 }
 
 func (v *ValuePair) Parse(valuePairInterface interface{}) error {
@@ -414,13 +500,23 @@ func (v *ValuePair) Parse(valuePairInterface interface{}) error {
 	if err != nil {
 		return err
 	}
+
+	overflowInterface, ok := valuePair["overflow"]
+	if !ok {
+		return nil
+	}
+	v.Overflow, ok = overflowInterface.(bool)
+	if !ok {
+		return errCantParseKrTemplateUIBlockValuePair
+	}
 	return nil
 }
 
 func (v *ValuePair) Construct() interface{} {
 	return map[string]interface{}{
-		"name":  v.Name,
-		"value": v.Value.Construct(),
+		"name":     v.Name,
+		"value":    v.Value.Construct(),
+		"overflow": v.Overflow,
 	}
 }
 

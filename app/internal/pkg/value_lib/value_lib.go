@@ -23,6 +23,7 @@ const (
 type Value struct {
 	value     uint64
 	grid      uint8
+	overflow  bool
 	valueType ValueType
 }
 
@@ -60,6 +61,10 @@ func (v Value) Value() uint64 {
 	return v.value & ((1 << (v.grid - 1)) - 1)
 }
 
+func (v Value) Overflow() bool {
+	return v.overflow
+}
+
 func (v Value) String() string {
 	str := fmt.Sprintf("%b", v.value)
 	if int(v.grid) <= len(str) {
@@ -71,6 +76,9 @@ func (v Value) String() string {
 func (v Value) LeftShift(count uint64) Value {
 	shift := v
 	shift.value = shift.Value() << count
+	if shift.value > (1<<(v.grid-1))-1 {
+		shift.overflow = true
+	}
 	shift.value = shift.Value() | v.Sign()
 	if v.valueType == ValueTypeReturnCode && v.Sign() != 0 {
 		shift.value |= 1
@@ -98,6 +106,9 @@ func (v Value) Invert() Value {
 func (v Value) Add(val Value) Value {
 	value := v
 	value.value = v.Value() + val.Value()
+	if value.value > (1<<(v.grid-1))-1 {
+		value.overflow = true
+	}
 	value.value = value.Value() | v.Sign() | val.Sign()
 	return value
 }
@@ -117,6 +128,9 @@ func (v Value) ChangeGreed(grid uint8) Value {
 func (v Value) Inc() Value {
 	value := v
 	value.value = v.Value() + 1
+	if value.value > (1<<(v.grid-1))-1 {
+		value.overflow = true
+	}
 	value.value = value.Value() | v.Sign()
 	return value
 }

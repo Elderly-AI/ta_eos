@@ -49,33 +49,33 @@ func GetFirstTemplate() map[string]interface{} {
 								"value": "-B",
 							},
 							map[string]interface{}{
-								"name":     "A>-2",
-								"value":    "A*2^-2",
+								"name":     "A<<2",
+								"value":    "A<<2",
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+3",
-								"value":    "A*2^3",
+								"name":     "A>>3",
+								"value":    "A>>3",
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+4",
-								"value":    "A*2^4",
+								"name":     "A>>4",
+								"value":    "A>>4",
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>-2",
-								"value":    "B*2^-2",
+								"name":     "B<<2",
+								"value":    "B<<2",
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+3",
-								"value":    "B*2^3",
+								"name":     "B>>3",
+								"value":    "B>>3",
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+4",
-								"value":    "B*2^4",
+								"name":     "B>>4",
+								"value":    "B>>4",
 								"overflow": false,
 							},
 							map[string]interface{}{
@@ -84,7 +84,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "-A+-B",
 								"value":    "-A-B",
 								"overflow": false,
 							},
@@ -94,8 +94,8 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
-								"value":    "-A-B",
+								"name":     "A+-B",
+								"value":    "A-B",
 								"overflow": false,
 							},
 						},
@@ -120,32 +120,32 @@ func GetFirstTemplate() map[string]interface{} {
 								"value": strconv.Itoa(-B),
 							},
 							map[string]interface{}{
-								"name":     "A>-2",
+								"name":     "A<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+3",
+								"name":     "A>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+4",
+								"name":     "A>>4",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>-2",
+								"name":     "B<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+3",
+								"name":     "B>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+4",
+								"name":     "B>>4",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -155,7 +155,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "-A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -165,7 +165,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -191,32 +191,32 @@ func GetFirstTemplate() map[string]interface{} {
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":     "A>-2",
+								"name":     "A<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+3",
+								"name":     "A>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+4",
+								"name":     "A>>4",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>-2",
+								"name":     "B<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+3",
+								"name":     "B>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+4",
+								"name":     "B>>4",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -226,7 +226,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "-A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -236,7 +236,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -262,32 +262,32 @@ func GetFirstTemplate() map[string]interface{} {
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":     "A>-2",
+								"name":     "A<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+3",
+								"name":     "A>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+4",
+								"name":     "A>>4",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>-2",
+								"name":     "B<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+3",
+								"name":     "B>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+4",
+								"name":     "B>>4",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -297,7 +297,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "-A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -307,7 +307,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -333,32 +333,32 @@ func GetFirstTemplate() map[string]interface{} {
 								"value": nil,
 							},
 							map[string]interface{}{
-								"name":     "A>-2",
+								"name":     "A<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+3",
+								"name":     "A>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "A>+4",
+								"name":     "A>>4",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>-2",
+								"name":     "B<<2",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+3",
+								"name":     "B>>3",
 								"value":    nil,
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "B>+4",
+								"name":     "B>>4",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -368,7 +368,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "-A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -378,7 +378,7 @@ func GetFirstTemplate() map[string]interface{} {
 								"overflow": false,
 							},
 							map[string]interface{}{
-								"name":     "-A-B",
+								"name":     "A+-B",
 								"value":    nil,
 								"overflow": false,
 							},
@@ -398,7 +398,7 @@ func GetTemplate(templateName string) map[string]interface{} {
 	return make(map[string]interface{})
 }
 
-func (s Server) GetKrHandler(ctx context.Context, req *pb.TemplateRequest) (*pb.TemplateRequest, error) {
+func (s Server) GetKrHandler(ctx context.Context, req *pb.GetKrHandlerRequest) (*pb.GetKrHandlerResponse, error) {
 	template := GetTemplate(req.KrName)
 	userID := session.GetUserIdFromContext(ctx)
 	if userID == nil {
@@ -409,15 +409,15 @@ func (s Server) GetKrHandler(ctx context.Context, req *pb.TemplateRequest) (*pb.
 		return nil, err
 	}
 	res, err := model.ConvertToProtoJSON(template)
-	return &pb.TemplateRequest{
+	return &pb.GetKrHandlerResponse{
 		KrName: req.KrName,
 		Data:   res,
 	}, err
 }
 
-func (s Server) ApproveKrHandler(ctx context.Context, request *pb.TemplateRequest) (*pb.TemplateRequest, error) {
+func (s Server) ApproveKrHandler(ctx context.Context, request *pb.ApproveKrHandlerRequest) (*pb.ApproveKrHandlerResponse, error) {
 	data := request.Data.AsMap()
-	updated, err := s.facade.ApproveKr(data)
+	updated, points, err := s.facade.ApproveKr(data)
 	if err != nil {
 		return nil, err
 	}
@@ -425,9 +425,10 @@ func (s Server) ApproveKrHandler(ctx context.Context, request *pb.TemplateReques
 	if err != nil {
 		return nil, err
 	}
-	return &pb.TemplateRequest{
+	return &pb.ApproveKrHandlerResponse{
 		KrName: "first",
 		Data:   res,
+		Points: float32(points.Correct) / float32(points.Correct+points.Incorrect) * 5.0,
 	}, nil
 }
 

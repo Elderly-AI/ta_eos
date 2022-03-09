@@ -11,13 +11,13 @@ option go_package = "github.com/Elderly-AI/ta_eos/proto/template;template";
 
 
 service Template {
-  rpc GetKrHandler (TemplateRequest) returns (TemplateRequest) {
+  rpc GetKrHandler (GetKrHandlerRequest) returns (GetKrHandlerResponse) {
     option (google.api.http) = {
       post: "/api/v1/template/get_kr"
       body: "*"
     };
   }
-  rpc ApproveKrHandler (TemplateRequest) returns (TemplateRequest) {
+  rpc ApproveKrHandler (ApproveKrHandlerRequest) returns (ApproveKrHandlerResponse) {
     option (google.api.http) = {
       post: "/api/v1/template/approve_kr"
       body: "*"
@@ -26,13 +26,24 @@ service Template {
 }
 
 
-message GetKrRequest {
+message GetKrHandlerRequest {
   string kr_name = 1;
 }
 
-message TemplateRequest {
+message GetKrHandlerResponse {
   string kr_name = 1;
   google.protobuf.Struct data = 2;
+}
+
+message ApproveKrHandlerRequest {
+  string kr_name = 1;
+  google.protobuf.Struct data = 2;
+}
+
+message ApproveKrHandlerResponse {
+  string kr_name = 1;
+  float points = 2;
+  google.protobuf.Struct data = 3;
 }
 
 

@@ -120,6 +120,18 @@ func TestValueLib_LeftShift(t *testing.T) {
 		value := InitValue(defaultNegativeValue, defaultGridSize, ValueTypeReturnCode)
 		require.Equal(t, uint64(0b11010011), value.LeftShift(1).value)
 	})
+
+	t.Run("should be ok on LeftShift with owerflow", func(t *testing.T) {
+		value := InitValue(0b11000000, defaultGridSize, ValueTypeDirectCode)
+		require.Equal(t, uint64(0b10000000), value.LeftShift(1).value)
+		require.Equal(t, true, value.LeftShift(1).Overflow())
+	})
+
+	t.Run("should be ok on LeftShift with no owerflow", func(t *testing.T) {
+		value := InitValue(0b10100000, defaultGridSize, ValueTypeDirectCode)
+		require.Equal(t, uint64(0b11000000), value.LeftShift(1).value)
+		require.Equal(t, false, value.LeftShift(1).Overflow())
+	})
 }
 
 func TestValueLib_RightShift(t *testing.T) {
@@ -190,6 +202,20 @@ func TestValueLib_Add(t *testing.T) {
 		s := InitValue(defaultNegativeValue, defaultGridSize, ValueTypeDirectCode)
 		require.Equal(t, uint64(0b10010010), f.Add(s).value)
 	})
+
+	t.Run("should be ok on add with owerflow", func(t *testing.T) {
+		f := InitValue(0b11000000, defaultGridSize, ValueTypeDirectCode)
+		s := InitValue(0b11000000, defaultGridSize, ValueTypeDirectCode)
+		require.Equal(t, uint64(0b10000000), f.Add(s).value)
+		require.Equal(t, true, f.Add(s).Overflow())
+	})
+
+	t.Run("should be ok on add with no owerflow", func(t *testing.T) {
+		f := InitValue(0b10100000, defaultGridSize, ValueTypeDirectCode)
+		s := InitValue(0b10100000, defaultGridSize, ValueTypeDirectCode)
+		require.Equal(t, uint64(0b11000000), f.Add(s).value)
+		require.Equal(t, false, f.Add(s).Overflow())
+	})
 }
 
 func TestValueLib_ChangeGreed(t *testing.T) {
@@ -235,6 +261,18 @@ func TestValueLib_Inc(t *testing.T) {
 	t.Run("should be ok on inc on positive value with overflow", func(t *testing.T) {
 		value := InitValue(0b01111111, defaultGridSize, ValueTypeDirectCode)
 		require.Equal(t, uint64(0b00000000), value.Inc().value)
+	})
+
+	t.Run("should be ok on inc with overflow", func(t *testing.T) {
+		value := InitValue(0b01111111, defaultGridSize, ValueTypeDirectCode)
+		require.Equal(t, uint64(0b00000000), value.Inc().value)
+		require.Equal(t, true, value.Inc().Overflow())
+	})
+
+	t.Run("should be ok on inc with no overflow", func(t *testing.T) {
+		value := InitValue(0b00111111, defaultGridSize, ValueTypeDirectCode)
+		require.Equal(t, uint64(0b01000000), value.Inc().value)
+		require.Equal(t, false, value.Inc().Overflow())
 	})
 }
 
