@@ -480,6 +480,9 @@
         },
         "userId": {
           "type": "string"
+        },
+        "grades": {
+          "type": "string"
         }
       }
     },
