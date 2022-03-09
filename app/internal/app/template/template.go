@@ -46,6 +46,56 @@ func GetFirstTemplate() map[string]interface{} {
 								"name":  "-B",
 								"value": "-B",
 							},
+							map[string]interface{}{
+								"name":     "A>-2",
+								"value":    "A*2^-2",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+3",
+								"value":    "A*2^3",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+4",
+								"value":    "A*2^4",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>-2",
+								"value":    "B*2^-2",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+3",
+								"value":    "B*2^3",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+4",
+								"value":    "B*2^4",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A+B",
+								"value":    "A+B",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    "-A-B",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A+B",
+								"value":    "-A+B",
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    "-A-B",
+								"overflow": false,
+							},
 						},
 					},
 					map[string]interface{}{
@@ -66,6 +116,56 @@ func GetFirstTemplate() map[string]interface{} {
 							map[string]interface{}{
 								"name":  "-B",
 								"value": strconv.Itoa(-B),
+							},
+							map[string]interface{}{
+								"name":     "A>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
 							},
 						},
 					},
@@ -88,6 +188,56 @@ func GetFirstTemplate() map[string]interface{} {
 								"name":  "-B",
 								"value": nil,
 							},
+							map[string]interface{}{
+								"name":     "A>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
+							},
 						},
 					},
 					map[string]interface{}{
@@ -109,6 +259,56 @@ func GetFirstTemplate() map[string]interface{} {
 								"name":  "-B",
 								"value": nil,
 							},
+							map[string]interface{}{
+								"name":     "A>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
+							},
 						},
 					},
 					map[string]interface{}{
@@ -129,6 +329,56 @@ func GetFirstTemplate() map[string]interface{} {
 							map[string]interface{}{
 								"name":  "-B",
 								"value": nil,
+							},
+							map[string]interface{}{
+								"name":     "A>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>-2",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+3",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "B>+4",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A+B",
+								"value":    nil,
+								"overflow": false,
+							},
+							map[string]interface{}{
+								"name":     "-A-B",
+								"value":    nil,
+								"overflow": false,
 							},
 						},
 					},
