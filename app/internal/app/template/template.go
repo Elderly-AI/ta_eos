@@ -2,10 +2,8 @@ package template
 
 import (
 	"context"
-	"errors"
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
-	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
 	templateFacade "github.com/Elderly-AI/ta_eos/internal/pkg/template"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
 	"math/rand"
