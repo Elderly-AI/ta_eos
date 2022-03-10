@@ -1,10 +1,21 @@
-import {Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from '@material-ui/core';
+import {
+    Checkbox, FormControlLabel,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from '@material-ui/core';
 import React, {Dispatch, FC, SetStateAction, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
 import classNames from 'classnames';
 import useClippy from 'use-clippy';
 import TableInput from './TableInput';
+import {UITemplateRequestValue} from '@data/Models';
 
 const useStyles = makeStyles({
     tableRow: {
@@ -22,6 +33,7 @@ const useStyles = makeStyles({
     },
 
     iconContainer: {
+        position: 'relative',
         display: 'flex',
         alignItems: 'center',
         gridGap: '15px',
@@ -31,6 +43,10 @@ const useStyles = makeStyles({
                 display: 'block !important',
             }
         },
+    },
+
+    left: {
+        left: '-35px',
     },
 
     wrongCell: {
@@ -47,16 +63,15 @@ const useStyles = makeStyles({
 
     icon: {
         width: '1em',
-        height:
-        '1em',
-        fontSize:
-        '1rem',
-        fill:
-        '#0d47a1',
-    }
-    ,
-})
-;
+        height: '1em',
+        fontSize: '1rem',
+        fill: '#0d47a1',
+    },
+
+    checkboxContainer: {
+        margin: '0',
+    },
+});
 
 const useStyle = makeStyles({
     root: {
@@ -70,10 +85,19 @@ enum AnswerType {
   WRONG
 }
 
+enum OpType {
+    REGULAR,
+    SUM,
+    SHIFT
+}
+
 interface InputCellProps {
   inputValue: string,
   onChange: (evt: any, value?: string) => void,
   copiedText: string,
+  operationType: OpType,
+  overflow: boolean | null | undefined,
+  setOverflow: (evt: any) => void,
 }
 
 interface CustomTableProps {
@@ -88,9 +112,7 @@ type TextCellProps = {
   isAnswerCorrect: AnswerType
 }
 
-const TextCell: FC<TextCellProps> = ({
-    cellText, copyText, isAnswerCorrect
-}) => {
+const TextCell: FC<TextCellProps> = ({cellText, copyText, isAnswerCorrect}) => {
     const styles = useStyles();
     const classes = useStyle();
 
@@ -103,8 +125,9 @@ const TextCell: FC<TextCellProps> = ({
         return <div className={styles.flex}>
             <Typography
                 className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
-                variant="subtitle1">
-        ...
+                variant="subtitle1"
+            >
+                ...
             </Typography>
         </div>;
     } else {
@@ -120,13 +143,12 @@ const TextCell: FC<TextCellProps> = ({
                     <path
                         d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
                 </svg>
-                {/* eslint-enable max-len*/}
             </div>
         );
     }
 };
 
-const InputCell = ({inputValue, onChange, copiedText}: InputCellProps) => {
+const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, setOverflow}: InputCellProps) => {
     const styles = useStyles();
 
     const clickHandler = (evt: React.MouseEvent) => {
@@ -134,30 +156,72 @@ const InputCell = ({inputValue, onChange, copiedText}: InputCellProps) => {
         onChange(undefined, inputValue + copiedText);
     };
 
+    let checkbox: JSX.Element;
+
+    switch (operationType) {
+    case OpType.REGULAR:
+        checkbox = <></>;
+        break;
+    case OpType.SHIFT:
+    case OpType.SUM:
+        checkbox =
+            <FormControlLabel
+                className={styles.checkboxContainer}
+                value="top"
+                control={<Checkbox size="small" color="primary" checked={overflow ? overflow : false}
+                    onChange={setOverflow} />}
+                label=""
+                labelPlacement="top"
+            />;
+        break;
+    }
+
     return (
-        <div className={styles.iconContainer}>
+        <div className={classNames(styles.iconContainer, operationType !== OpType.REGULAR ? styles.left : '')}>
+            {checkbox}
             <TableInput value={inputValue} onChange={onChange} className={styles.input}/>
             <svg className={styles.icon} viewBox="0 0 24 24" onClick={clickHandler}>
                 {/* eslint-disable max-len */}
                 <path
                     d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
             </svg>
-            {/* eslint-enable max-len*/}
-
         </div>
     );
+};
+
+const transformName = (name: string) => {
+    if (name.includes('>>')) {
+        return name.replace('>>', '*2^');
+    }
+    if (name.includes('<<')) {
+        return name.replace('<<', '*2^-');
+    }
+    return name;
+};
+
+const getOpType = (name: string) => {
+    console.log(name);
+    if (name.includes('>>') || name.includes('<<')) {
+        return OpType.SHIFT;
+    }
+    if (name.includes('+')) {
+        return OpType.SUM;
+    }
+    return OpType.REGULAR;
 };
 
 const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
     const styles = useStyles();
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
+    const [inputCheckbox, setInputCheckbox] = useState(false);
     const [text, setText] = useClippy();
 
     const cellClickHandler = (evt: any) => {
         const id = +evt.currentTarget.id.split('_')[1];
         if (id !== inputNumber) {
             setInputText(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
+            setInputCheckbox(array[id % 3 + 1].data[~~(id / 3)].overflow || false);
             setInputNumber(id);
         }
     };
@@ -175,7 +239,7 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                             <TableCell
                                 className={styles.tableHead}
                                 align="left"
-                                width={'25%'}
+                                width={'16%'}
                                 key={'headCell_' + cur.name}
                             >
                                 {cur.name}
@@ -196,15 +260,15 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
 
                                 if (index === 0) {
                                     return (
-                                        <TableCell key={'leftCell_' + tmpCellNumber + 1} width="25%">
-                                            {cur.data[idx].name}
+                                        <TableCell key={'leftCell_' + tmpCellNumber + 1} width="28%">
+                                            {transformName(cur.data[idx].name)}
                                         </TableCell>
                                     );
                                 }
 
                                 if (compareArray.length) {
                                     answerType = array[index].data[idx].value === compareArray[index].data[idx].value ?
-                                        AnswerType.CORRECT : AnswerType.WRONG;
+                                        AnswerType.CORRECT : AnswerType.WRONG;// TODO добавить чекбокс в проверку
                                 }
 
 
@@ -215,6 +279,16 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                                         return arr;
                                     });
                                     setInputText(evt?.currentTarget.value || value || '');
+                                };
+
+                                const changeCheckBoxHandler = (evt: any) => {
+                                    console.log('array overflow', cur.data[idx].overflow);
+                                    console.log('change overflow', evt.currentTarget.checked);
+                                    setArray((arr) => {
+                                        arr[index].data[idx].overflow = evt.target.checked;
+                                        return arr;
+                                    });
+                                    setInputCheckbox(evt.target.checked);
                                 };
 
                                 return (
@@ -230,11 +304,15 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                                                 inputValue={inputText}
                                                 onChange={changeHandler}
                                                 copiedText={text}
+                                                operationType={getOpType(cur.data[idx].name)}
+                                                overflow={inputCheckbox}
+                                                setOverflow={changeCheckBoxHandler}
                                             /> :
                                             <TextCell
                                                 isAnswerCorrect={answerType}
                                                 cellText={cur.data[idx].value}
-                                                copyText={setText}/>
+                                                copyText={setText}
+                                            />
                                         }
                                     </TableCell>
                                 );

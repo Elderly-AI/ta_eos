@@ -95,6 +95,7 @@ export type TableItem = {
 export type UITemplateRequestValue = {
   name: string;
   value: string | null;
+  overflow?: boolean | null,
 }
 
 export type UITemplateRequestData = {

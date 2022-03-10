@@ -91,6 +91,7 @@ export interface TableState {
   data: {
     name: string,
     value: string | null,
+    overflow?: boolean | null,
   }[],
   name: string,
 }
@@ -194,6 +195,7 @@ const Work = () => {
         }
         const preparedData = template;
         preparedData.data.UI[0].data = [template.data.UI[0].data[0], ...taskArray];
+        console.log(preparedData);
         DataService.approveKR('first', preparedData)
             .then((res) => {
                 setCurrentPoint(res.point ?? 0);
