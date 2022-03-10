@@ -400,14 +400,14 @@ func GetTemplate(templateName string) map[string]interface{} {
 
 func (s Server) GetKrHandler(ctx context.Context, req *pb.GetKrHandlerRequest) (*pb.GetKrHandlerResponse, error) {
 	template := GetTemplate(req.KrName)
-	userID := session.GetUserIdFromContext(ctx)
-	if userID == nil {
-		return nil, errors.New("not Authed")
-	}
-	err := s.repo.SaveTemplate(ctx, template, *userID, req.KrName)
-	if err != nil {
-		return nil, err
-	}
+    // 	userID := session.GetUserIdFromContext(ctx)
+    // 	if userID == nil {
+    // 		return nil, errors.New("not Authed")
+    // 	}
+    // 	err := s.repo.SaveTemplate(ctx, template, *userID, req.KrName)
+    // 	if err != nil {
+    // 		return nil, err
+    // 	}
 	res, err := model.ConvertToProtoJSON(template)
 	return &pb.GetKrHandlerResponse{
 		KrName: req.KrName,
