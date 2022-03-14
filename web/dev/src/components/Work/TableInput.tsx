@@ -56,7 +56,8 @@ interface TableInputProps {
   className?: string,
 }
 
-// компонент содержит значение в виде строки в родительском элементе(button) и значения каждого разряда в инпутах
+// компонент содержит значение в виде строки в невидимом инпуте, на который ссылается(ref) компонент и
+// значения каждого разряда в инпутах
 const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
     {id, className, value, onChange, digitsNumber = 8}: TableInputProps,
     ref
