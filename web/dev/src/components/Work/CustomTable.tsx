@@ -197,10 +197,28 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
 
 const transformName = (name: string) => {
     if (name.includes('>>')) {
-        return name.replace('>>', '*2^');
+        const values = name.split('>>');
+        return (
+            <span>
+                {values[0] + '∙2'}
+                <sup>{values[1]}</sup>
+            </span>
+        );
     }
     if (name.includes('<<')) {
-        return name.replace('<<', '*2^-');
+        const values = name.split('<<');
+        return (
+            <span>
+                {values[0] + '∙2'}
+                <sup>{'-' + values[1]}</sup>
+            </span>
+        );
+    }
+    if (name.includes('+')) {
+        const values = name.split('+');
+        if (values[1][0] === '-') {
+            return values[0] + values[1];
+        }
     }
     return name;
 };
@@ -302,7 +320,7 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                                         onClick={cellClickHandler}
                                         className={styles.pointer}
                                     >
-                                        {inputNumber === tmpCellNumber ?
+                                        {inputNumber === tmpCellNumber && !compareArray.length ?
                                             <InputCell
                                                 inputValue={inputText}
                                                 onChange={changeHandler}

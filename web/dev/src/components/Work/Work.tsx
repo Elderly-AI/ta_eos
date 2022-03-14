@@ -23,7 +23,6 @@ const useStyles = makeStyles(() => ({
         backgroundColor: 'white',
         boxShadow: 'inset -2px 0px 0px rgba(0, 0, 0, 0.12)',
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
     },
 
@@ -38,13 +37,9 @@ const useStyles = makeStyles(() => ({
     },
 
     timer: {
-        width: '150px',
-        height: '150px',
-        borderRadius: '1000px',
-        backgroundColor: 'slategray',
-        color: 'white',
-        textAlign: 'center',
-        lineHeight: '150px',
+        position: 'fixed',
+        top: '50%',
+        transform: 'translate(0, -25)',
     },
 
     time: {
@@ -229,23 +224,25 @@ const Work = () => {
             <Header/>
             <div className={styles.mainContainer}>
                 <div className={styles.timerContainer}>
-                    <CountdownCircleTimer
-                        isPlaying={isPlaying}
-                        duration={time}
-                        colors={['#00A318', '#F7B801', '#A30000']}
-                        size={160}
-                        colorsTime={[time, Math.floor(time / 2), 0]}
-                        onComplete={() => {
-                            clickHandle();
-                            return {shouldRepeat: false};
-                        }}
-                    >
-                        {({elapsedTime, color}) => (
-                            <span style={{color}}>
-                                {renderTime(elapsedTime)}
-                            </span>
-                        )}
-                    </CountdownCircleTimer>
+                    <div className={styles.timer}>
+                        <CountdownCircleTimer
+                            isPlaying={isPlaying}
+                            duration={time}
+                            colors={['#00A318', '#F7B801', '#A30000']}
+                            size={160}
+                            colorsTime={[time, Math.floor(time / 2), 0]}
+                            onComplete={() => {
+                                clickHandle();
+                                return {shouldRepeat: false};
+                            }}
+                        >
+                            {({elapsedTime, color}) => (
+                                <span style={{color}}>
+                                    {renderTime(elapsedTime)}
+                                </span>
+                            )}
+                        </CountdownCircleTimer>
+                    </div>
                 </div>
                 <div className={styles.contentContainer}>
                     <Task
