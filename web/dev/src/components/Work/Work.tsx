@@ -39,7 +39,7 @@ const useStyles = makeStyles(() => ({
     timer: {
         position: 'fixed',
         top: '50%',
-        transform: 'translate(0, -25)',
+        transform: 'translate(0, -25%)',
     },
 
     time: {
