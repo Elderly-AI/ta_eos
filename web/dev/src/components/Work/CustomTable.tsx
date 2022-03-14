@@ -1,5 +1,6 @@
 import {
-    Checkbox, FormControlLabel,
+    Checkbox,
+    FormControlLabel,
     Paper,
     Table,
     TableBody,
@@ -9,13 +10,13 @@ import {
     TableRow,
     Typography
 } from '@material-ui/core';
-import React, {Dispatch, FC, SetStateAction, useState} from 'react';
+import React, {Dispatch, FC, SetStateAction, useRef, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {TableState} from './Work';
 import classNames from 'classnames';
 import useClippy from 'use-clippy';
 import TableInput from './TableInput';
-import {UITemplateRequestValue} from '@data/Models';
+import ReactTestUtils from 'react-dom/test-utils';
 
 const useStyles = makeStyles({
     tableRow: {
@@ -118,7 +119,8 @@ const TextCell: FC<TextCellProps> = ({cellText, copyText, isAnswerCorrect}) => {
 
     const clickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
-        copyText(cellText || '');
+        const value = cellText?.replaceAll('_', '');
+        copyText(value || '');
     };
 
     if (!cellText) {
@@ -150,10 +152,14 @@ const TextCell: FC<TextCellProps> = ({cellText, copyText, isAnswerCorrect}) => {
 
 const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, setOverflow}: InputCellProps) => {
     const styles = useStyles();
+    const ref = useRef<HTMLInputElement>(null);
 
     const clickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
-        onChange(undefined, inputValue + copiedText);
+
+        const input = ref.current as HTMLInputElement;
+        input.value = copiedText;
+        ReactTestUtils.Simulate.change((ref.current as HTMLInputElement));
     };
 
     let checkbox: JSX.Element;
@@ -179,7 +185,7 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
     return (
         <div className={classNames(styles.iconContainer, operationType !== OpType.REGULAR ? styles.left : '')}>
             {checkbox}
-            <TableInput value={inputValue} onChange={onChange} className={styles.input}/>
+            <TableInput id="input" ref={ref} value={inputValue} onChange={onChange} className={styles.input}/>
             <svg className={styles.icon} viewBox="0 0 24 24" onClick={clickHandler}>
                 {/* eslint-disable max-len */}
                 <path
@@ -200,7 +206,6 @@ const transformName = (name: string) => {
 };
 
 const getOpType = (name: string) => {
-    console.log(name);
     if (name.includes('>>') || name.includes('<<')) {
         return OpType.SHIFT;
     }
@@ -282,8 +287,6 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                                 };
 
                                 const changeCheckBoxHandler = (evt: any) => {
-                                    console.log('array overflow', cur.data[idx].overflow);
-                                    console.log('change overflow', evt.currentTarget.checked);
                                     setArray((arr) => {
                                         arr[index].data[idx].overflow = evt.target.checked;
                                         return arr;

@@ -1,7 +1,8 @@
-import React, {useRef, useState} from 'react';
+import React, {ForwardedRef, forwardRef, MutableRefObject, useRef, useState} from 'react';
 import {TextField} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
+import ReactTestUtils from 'react-dom/test-utils';
 
 const useStyles = makeStyles({
     input: {
@@ -30,6 +31,14 @@ const useStyles = makeStyles({
         border: 'none',
         padding: '0',
     },
+
+    invisibleInput: {
+        width: '0',
+        height: '0',
+        padding: '0',
+        margin: '0',
+        border: 'none',
+    }
 });
 
 const nullSymbol = '_';
@@ -40,7 +49,7 @@ const replaceAt = (str: string, idx: number, newSymbol: string) => {
 };
 
 interface TableInputProps {
-  id?: string,
+  id: string,
   value: string,
   digitsNumber?: number,
   onChange: (evt: any, value?: string) => void,
@@ -48,10 +57,15 @@ interface TableInputProps {
 }
 
 // компонент содержит значение в виде строки в родительском элементе(button) и значения каждого разряда в инпутах
-const TableInput = ({id, className, value, onChange, digitsNumber = 8}: TableInputProps) => {
+const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
+    {id, className, value, onChange, digitsNumber = 8}: TableInputProps,
+    ref
+) => {
     const styles = useStyles();
     const [errorId, setErrorId] = useState<number | undefined>(undefined);
     const [timerId, setTimerId] = useState<any>(-1);
+    const inputRef: MutableRefObject<HTMLInputElement> | ForwardedRef<HTMLInputElement> = ref ? ref :
+        useRef<HTMLInputElement>(null);
     const textFieldRefs: any[] = [];
     for (let i = 0; i < digitsNumber; i++) {
         const tmp = {
@@ -77,21 +91,82 @@ const TableInput = ({id, className, value, onChange, digitsNumber = 8}: TableInp
         }
     };
 
-    const handleChange = (evt: any) => {
-        const id = +evt.target.name.split('_').pop();
-        const idxValue = evt.target.value;
-        let fullValue = evt.currentTarget.value;
-        // заменяем пустую строку на строку с незначащими символами, чтобы правильно отрабатывался ввод в любой разряд
-        if (fullValue.length !== digitsNumber) {
-            fullValue = nullSymbol.repeat(digitsNumber);
-            evt.currentTarget.value = fullValue;
+    const validateIdxValue = (val: string) => {
+        if (val && val !== nullSymbol) {
+            return val;
         }
+        return '';
+    };
+
+    const setupPastedValue = (value: string) => {
+        const res = value.match(/[01]+/g);
+        // валидация вводимых данных и отображение ошибки в инпуте
+        if (timerId !== -1) {
+            clearTimeout(timerId);
+        }
+        if (!res || res[0] !== value) {
+            setErrorId(-1); // при id < 0 загораются все инпуты
+            setTimerId(setTimeout(() => {
+                setErrorId(undefined);
+                setTimerId(-1);
+            }, 3000));
+            return false;
+        } else if (timerId !== -1) {
+            setErrorId(undefined);
+            setTimerId(-1);
+        }
+        let resValue = value;
+        textFieldRefs.forEach((refObj, idx) => {
+            if (idx < digitsNumber - resValue.length) {
+                return;
+            }
+            refObj.ref.current.value = resValue[idx];
+        });
+        resValue = transFormValue(resValue);
+        (inputRef as MutableRefObject<HTMLInputElement>).current.value = resValue;
+        return true;
+    };
+
+    const transFormValue = (value: string) => {
+        if (value.length === 0) {
+            value = nullSymbol.repeat(digitsNumber);
+        } else if (value.length < digitsNumber) {
+            value = nullSymbol.repeat(digitsNumber - value.length) + value;
+        } else {
+            value = value.slice(0, digitsNumber);
+        }
+        return value;
+    };
+
+    const handleTextFieldPaste = (evt: React.ClipboardEvent<HTMLInputElement>) => {
+        evt.preventDefault();
+        const copiedText = evt.clipboardData.getData('text');
+        const input = (inputRef as MutableRefObject<HTMLInputElement>).current;
+        input.value = copiedText;
+        ReactTestUtils.Simulate.change(input);
+    };
+
+    const handleInputChange = (evt: any) => {
+        const isValid = setupPastedValue(evt.currentTarget.value);
+        if (isValid) {
+            onChange(evt);
+        }
+    };
+
+    const handleTextFieldChange = (evt: any) => {
+        const id = +evt.currentTarget.name.split('_').pop();
+        const idxValue = evt.target.value;
+        let fullValue = (inputRef as MutableRefObject<HTMLInputElement>).current.value;
+
+        // заменяем пустую строку на строку с незначащими символами, чтобы правильно отрабатывался ввод в любой разряд
+        fullValue = transFormValue(fullValue);
+        (inputRef as MutableRefObject<HTMLInputElement>).current.value = fullValue;
 
         // валидация вводимых данных и отображение ошибки в инпуте
         if (timerId !== -1) {
             clearTimeout(timerId);
         }
-        if (idxValue != '1' && idxValue != '0' && idxValue != '') {
+        if (idxValue != '1' && idxValue != '0' && idxValue !== '') {
             setErrorId(id);
             setTimerId(setTimeout(() => {
                 setErrorId(undefined);
@@ -104,9 +179,9 @@ const TableInput = ({id, className, value, onChange, digitsNumber = 8}: TableInp
         }
 
         if (idxValue === '') {
-            evt.currentTarget.value = replaceAt(fullValue, id, nullSymbol);
+            (inputRef as MutableRefObject<HTMLInputElement>).current.value = replaceAt(fullValue, id, nullSymbol);
         } else {
-            evt.currentTarget.value = replaceAt(fullValue, id, idxValue);
+            (inputRef as MutableRefObject<HTMLInputElement>).current.value = replaceAt(fullValue, id, idxValue);
             if (id > 0) {
                 // эта красота тут потому что mui не переопределяет метод select() для своего TextField и надо
                 // добраться непосредственно до самого инпута в недрах компонента
@@ -114,28 +189,13 @@ const TableInput = ({id, className, value, onChange, digitsNumber = 8}: TableInp
             }
         }
 
-        if (evt.currentTarget.value.length <= digitsNumber) {
-            onChange(evt);
-        } else {
-            console.log('overflow input', evt.currentTarget.value.length);
-        }
-    };
-
-    const validateIdxValue = (val: string) => {
-        if (val && val !== nullSymbol) {
-            return val;
-        }
-        return '';
+        evt.currentTarget = (inputRef as MutableRefObject<HTMLInputElement>).current;
+        onChange(evt);
     };
 
     return (
-        <button
-            id={id}
-            className={classNames(styles.container, className)}
-            value={value}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-        >
+        <div id={id} className={classNames(styles.container, className)} onKeyDown={handleKeyDown}>
+            <input className={styles.invisibleInput} ref={inputRef} value={value} onChange={handleInputChange}/>
             {textFieldRefs.map((refObj, idx) => (
                 <TextField
                     name={refObj.name}
@@ -143,14 +203,18 @@ const TableInput = ({id, className, value, onChange, digitsNumber = 8}: TableInp
                     ref={refObj.ref}
                     className={styles.input}
                     value={validateIdxValue(value[idx])}
+                    onChange={handleTextFieldChange}
+                    onPaste={handleTextFieldPaste}
                     variant="standard"
-                    error={errorId === idx}
+                    error={(errorId && errorId < 0) || errorId === idx}
                     autoFocus={idx === digitsNumber - 1}
                     onFocus={(evt) => evt.currentTarget.select()}
                 />
             ))}
-        </button>
+        </div>
     );
-};
+});
+
+TableInput.displayName = 'TableInput';
 
 export default TableInput;
