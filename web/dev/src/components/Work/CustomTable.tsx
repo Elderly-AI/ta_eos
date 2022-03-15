@@ -1,13 +1,13 @@
 import {
     Checkbox,
-    FormControlLabel,
     Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TableRow, Tooltip,
+    TableRow,
+    Tooltip,
     Typography
 } from '@material-ui/core';
 import React, {Dispatch, FC, SetStateAction, useRef, useState} from 'react';
@@ -174,14 +174,7 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
     case OpType.SHIFT:
         checkbox =
             <Tooltip title={'Переполнение'} placement="left" arrow>
-                <FormControlLabel
-                    className={styles.checkboxContainer}
-                    value="top"
-                    control={<Checkbox size="small" color="primary" checked={overflow ? overflow : false}
-                        onChange={setOverflow} />}
-                    label=""
-                    labelPlacement="top"
-                />
+                <Checkbox size="small" color="primary" checked={overflow ? overflow : false} onChange={setOverflow} />
             </Tooltip>;
         break;
     }
