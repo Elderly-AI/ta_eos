@@ -46,12 +46,6 @@ const useStyles = makeStyles(() => ({
         fontSize: '40px',
     },
 
-    table: {
-        height: '400px',
-        width: '100%',
-        backgroundColor: 'darkgray',
-    },
-
     button: {
         width: 'min-content',
         alignSelf: 'end',

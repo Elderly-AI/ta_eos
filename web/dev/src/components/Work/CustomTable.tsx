@@ -47,7 +47,7 @@ const useStyles = makeStyles({
     },
 
     left: {
-        left: '-35px',
+        left: '-53px',
     },
 
     wrongCell: {
@@ -109,11 +109,12 @@ interface CustomTableProps {
 
 type TextCellProps = {
   cellText: string | null,
+  isOverflow?: boolean | null | undefined,
   copyText: (text: string) => void,
   isAnswerCorrect: AnswerType
 }
 
-const TextCell: FC<TextCellProps> = ({cellText, copyText, isAnswerCorrect}) => {
+const TextCell: FC<TextCellProps> = ({cellText, isOverflow, copyText, isAnswerCorrect}) => {
     const styles = useStyles();
     const classes = useStyle();
 
@@ -123,13 +124,13 @@ const TextCell: FC<TextCellProps> = ({cellText, copyText, isAnswerCorrect}) => {
         copyText(value || '');
     };
 
-    if (!cellText) {
+    if (!cellText || isOverflow) {
         return <div className={styles.flex}>
             <Typography
                 className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
                 variant="subtitle1"
             >
-                ...
+                {isOverflow ? 'Переполнение' : '...'}
             </Typography>
         </div>;
     } else {
@@ -137,7 +138,8 @@ const TextCell: FC<TextCellProps> = ({cellText, copyText, isAnswerCorrect}) => {
             <div className={styles.iconContainer}>
                 <Typography
                     className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
-                    variant="subtitle1">
+                    variant="subtitle1"
+                >
                     {cellText}
                 </Typography>
                 <svg className={classNames(styles.icon, classes.root)} viewBox="0 0 24 24" onClick={clickHandler}>
@@ -162,14 +164,14 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
         ReactTestUtils.Simulate.change((ref.current as HTMLInputElement));
     };
 
-    let checkbox: JSX.Element;
+    let checkbox: JSX.Element | string;
 
     switch (operationType) {
     case OpType.REGULAR:
-        checkbox = <></>;
+    case OpType.SUM:
+        checkbox = '';
         break;
     case OpType.SHIFT:
-    case OpType.SUM:
         checkbox =
             <FormControlLabel
                 className={styles.checkboxContainer}
@@ -183,9 +185,16 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
     }
 
     return (
-        <div className={classNames(styles.iconContainer, operationType !== OpType.REGULAR ? styles.left : '')}>
+        <div className={classNames(styles.iconContainer, operationType === OpType.SHIFT ? styles.left : '')}>
             {checkbox}
-            <TableInput id="input" ref={ref} value={inputValue} onChange={onChange} className={styles.input}/>
+            <TableInput
+                id="input"
+                ref={ref}
+                value={inputValue}
+                onChange={onChange}
+                className={styles.input}
+                disabled={overflow ? overflow : false}
+            />
             <svg className={styles.icon} viewBox="0 0 24 24" onClick={clickHandler}>
                 {/* eslint-disable max-len */}
                 <path
@@ -332,6 +341,7 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                                             <TextCell
                                                 isAnswerCorrect={answerType}
                                                 cellText={cur.data[idx].value}
+                                                isOverflow={cur.data[idx].overflow}
                                                 copyText={setText}
                                             />
                                         }

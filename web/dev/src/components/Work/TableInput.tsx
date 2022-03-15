@@ -14,7 +14,7 @@ const useStyles = makeStyles({
             padding: '0 0 6px',
         },
 
-        '&:first-child': {
+        '&:nth-child(2)': {
             marginLeft: '0',
         },
 
@@ -54,12 +54,13 @@ interface TableInputProps {
   digitsNumber?: number,
   onChange: (evt: any, value?: string) => void,
   className?: string,
+  disabled?: boolean,
 }
 
 // компонент содержит значение в виде строки в невидимом инпуте, на который ссылается(ref) компонент и
 // значения каждого разряда в инпутах
 const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
-    {id, className, value, onChange, digitsNumber = 8}: TableInputProps,
+    {id, className, value, onChange, disabled, digitsNumber = 8}: TableInputProps,
     ref
 ) => {
     const styles = useStyles();
@@ -210,6 +211,7 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
                     error={(errorId && errorId < 0) || errorId === idx}
                     autoFocus={idx === digitsNumber - 1}
                     onFocus={(evt) => evt.currentTarget.select()}
+                    disabled={disabled}
                 />
             ))}
         </div>
