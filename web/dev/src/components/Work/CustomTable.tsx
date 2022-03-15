@@ -7,7 +7,7 @@ import {
     TableCell,
     TableContainer,
     TableHead,
-    TableRow,
+    TableRow, Tooltip,
     Typography
 } from '@material-ui/core';
 import React, {Dispatch, FC, SetStateAction, useRef, useState} from 'react';
@@ -173,14 +173,16 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
         break;
     case OpType.SHIFT:
         checkbox =
-            <FormControlLabel
-                className={styles.checkboxContainer}
-                value="top"
-                control={<Checkbox size="small" color="primary" checked={overflow ? overflow : false}
-                    onChange={setOverflow} />}
-                label=""
-                labelPlacement="top"
-            />;
+            <Tooltip title={'Переполнение'} placement="left" arrow>
+                <FormControlLabel
+                    className={styles.checkboxContainer}
+                    value="top"
+                    control={<Checkbox size="small" color="primary" checked={overflow ? overflow : false}
+                        onChange={setOverflow} />}
+                    label=""
+                    labelPlacement="top"
+                />
+            </Tooltip>;
         break;
     }
 
