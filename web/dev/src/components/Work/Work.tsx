@@ -198,14 +198,16 @@ const Work = () => {
             });
     };
 
-    const time = 300;
+    const time = 65;
     const renderTime = (remainingTime: number) => {
         if (remainingTime === time) {
             return <div className="timer">Время истекло</div>;
         }
         const seconds = Math.round(time - remainingTime);
         const minutes = Math.floor(seconds / 60);
-        const text = minutes > 0 ? `${minutes}:${seconds % 60}` : `${seconds % 60}`;
+        const remainingSeconds = seconds % 60;
+        const stringSeconds = (remainingSeconds < 10 && minutes > 0 ? '0' : '') + remainingSeconds;
+        const text = minutes > 0 ? `${minutes}:${stringSeconds}` : `${stringSeconds}`;
         return (
             <div className="time-wrapper">
                 <div className={styles.time}>{text}</div>
