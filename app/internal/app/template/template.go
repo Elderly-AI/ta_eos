@@ -2,10 +2,13 @@ package template
 
 import (
 	"context"
+	"errors"
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/session"
 	templateFacade "github.com/Elderly-AI/ta_eos/internal/pkg/template"
 	pb "github.com/Elderly-AI/ta_eos/pkg/proto/template"
+	"math"
 	"math/rand"
 	"strconv"
 )
@@ -17,8 +20,8 @@ type Server struct {
 }
 
 func GetFirstTemplate() map[string]interface{} {
-	A := rand.Intn(40-10) + 10
-	B := rand.Intn(40-10) + 10
+	A := rand.Intn(30)
+	B := -rand.Intn(30)
 
 	res := map[string]interface{}{
 		"what_to_do":    "Первая контрольная работа",
@@ -398,14 +401,14 @@ func GetTemplate(templateName string) map[string]interface{} {
 
 func (s Server) GetKrHandler(ctx context.Context, req *pb.GetKrHandlerRequest) (*pb.GetKrHandlerResponse, error) {
 	template := GetTemplate(req.KrName)
-    // 	userID := session.GetUserIdFromContext(ctx)
-    // 	if userID == nil {
-    // 		return nil, errors.New("not Authed")
-    // 	}
-    // 	err := s.repo.SaveTemplate(ctx, template, *userID, req.KrName)
-    // 	if err != nil {
-    // 		return nil, err
-    // 	}
+	userID := session.GetUserIdFromContext(ctx)
+	if userID == nil {
+		return nil, errors.New("not Authed")
+	}
+	err := s.repo.SaveTemplate(ctx, template, *userID, req.KrName)
+	if err != nil {
+		return nil, err
+	}
 	res, err := model.ConvertToProtoJSON(template)
 	return &pb.GetKrHandlerResponse{
 		KrName: req.KrName,
@@ -414,6 +417,14 @@ func (s Server) GetKrHandler(ctx context.Context, req *pb.GetKrHandlerRequest) (
 }
 
 func (s Server) ApproveKrHandler(ctx context.Context, request *pb.ApproveKrHandlerRequest) (*pb.ApproveKrHandlerResponse, error) {
+	userIDStr := session.GetUserIdFromContext(ctx)
+	if userIDStr == nil {
+		return nil, errors.New("not Authed")
+	}
+	userID, err := strconv.Atoi(*userIDStr)
+	if err != nil {
+		return nil, err
+	}
 	data := request.Data.AsMap()
 	updated, points, err := s.facade.ApproveKr(data)
 	if err != nil {
@@ -423,10 +434,15 @@ func (s Server) ApproveKrHandler(ctx context.Context, request *pb.ApproveKrHandl
 	if err != nil {
 		return nil, err
 	}
+	grade := float32(math.RoundToEven(float64(points.Correct) / float64(points.Correct+points.Incorrect) * 5.0))
+	_, err = s.repo.SetGrades(ctx, "first", int(grade), userID)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.ApproveKrHandlerResponse{
 		KrName: "first",
 		Data:   res,
-		Points: float32(points.Correct) / float32(points.Correct+points.Incorrect) * 5.0,
+		Points: grade,
 	}, nil
 }
 
