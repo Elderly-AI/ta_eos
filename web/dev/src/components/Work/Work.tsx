@@ -198,7 +198,7 @@ const Work = () => {
             });
     };
 
-    const time = 65;
+    const time = 300;
     const renderTime = (remainingTime: number) => {
         if (remainingTime === time) {
             return <div className="timer">Время истекло</div>;
