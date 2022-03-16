@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Header from '@Header';
 import {Button, Typography} from '@material-ui/core';
@@ -8,6 +8,8 @@ import CustomTable from './CustomTable';
 import DataService from '@data/DataService';
 import {TemplateTemplateRequest} from '@data/Models';
 import {CountdownCircleTimer} from 'react-countdown-circle-timer';
+import {ArrowBack} from '@mui/icons-material';
+import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
     mainContainer: {
@@ -60,21 +62,59 @@ const useStyles = makeStyles(() => ({
         whiteSpace: 'pre-wrap',
     },
 
+    alert: {
+        '& .MuiAlert-icon': {
+            paddingTop: '11px',
+            paddingBottom: '8px',
+        },
+        '& .MuiAlert-message': {
+            width: '100%',
+        }
+    },
+
     redAlert: {
         backgroundColor: '#A30000',
     },
 
+    alertText: {
+        '& .MuiTypography-subtitle1': {
+            backgroundColor: 'blue',
+            fontWeight: 500,
+        },
+    },
+
+    backWrapper: {
+        display: 'grid',
+        gridAutoFlow: 'column',
+        gap: '8px',
+        cursor: 'pointer'
+    },
+
+    backBtn: {
+        alignSelf: 'flex-end'
+    },
+
     resultMessageWrapper: {
         display: 'grid',
-        gridAutoFlow: 'row'
+        gridAutoFlow: 'row',
+        width: '100%'
+    },
+
+    resultPointsWrapper: {
+        display: 'flex',
+        justifyContent: 'space-between'
     }
 }));
-
+const MAX_POINTS = 30;
 const OkResult = 'Отличная работа! Все верно.';
-const BadResult = 'В одном или более ответе ошибка.';
+
 const getPointMessage = (point: number): string => {
-    return `Ваша оценка = ${point}`;
+    return `Ваша оценка: ${point}/${MAX_POINTS}`;
 };
+
+const getBadMessage = (mistakesCount: number): string => (
+    `Вы сделали ${mistakesCount} ошибок`
+);
 
 export interface TableState {
   data: {
@@ -135,14 +175,26 @@ const Task = ({number, themeName, description, values}: TaskProps) => {
 };
 
 const Work = () => {
+    const history = useHistory();
     const styles = useStyles();
+    const [mistakesCount, setMistakesCount] = useState<number>(0);
     const [taskArray, setTaskArray] = useState<TableState[]>([]);
     const [template, setTemplate] = useState<TemplateTemplateRequest | null>(null);
     const [disableButton, setDisable] = useState(false);
-    const [resultMessage, setMessage] = useState<string>('');
+    const [resultMessage, setResultMessage] = useState<string>('');
     const [compareArray, setCompareArray] = useState<TableState[]>([]);
     const [currentPoint, setCurrentPoint] = useState<number | undefined>();
     const [isPlaying, setPlaying] = useState(true);
+
+    const changeMistakesCount = useCallback((count: number) => {
+        setMistakesCount(count);
+    }, [setMistakesCount]);
+
+    useEffect(() => {
+        if (mistakesCount > 0) {
+            setResultMessage(getBadMessage(mistakesCount));
+        }
+    }, [mistakesCount]);
 
     useEffect(() => {
         DataService.getKR('first')
@@ -152,6 +204,10 @@ const Work = () => {
                 setTaskArray(newState);
             });
     }, []);
+
+    useEffect(() => {
+        setMistakesCount(0);
+    }, [taskArray]);
 
     const taskTitle = useMemo(() => {
         if (!taskArray.length) {
@@ -190,10 +246,8 @@ const Work = () => {
                 setCurrentPoint(res.point ?? 0);
                 setCompareArray(res.data.UI[0].data.slice(1));
 
-                if (JSON.stringify(preparedData) !== JSON.stringify(res)) {
-                    setMessage(BadResult);
-                } else {
-                    setMessage(OkResult);
+                if (JSON.stringify(preparedData) === JSON.stringify(res)) {
+                    setResultMessage(OkResult);
                 }
             });
     };
@@ -248,6 +302,7 @@ const Work = () => {
                         values={taskTitle}
                     />
                     <CustomTable
+                        mistakeCountHandler={changeMistakesCount}
                         array={taskArray}
                         compareArray={compareArray}
                         setArray={setTaskArray}
@@ -264,14 +319,42 @@ const Work = () => {
                     {!!resultMessage.length && (
                         <Alert
                             variant="filled"
-                            severity={resultMessage.includes(BadResult) ? 'error' : 'success'}
-                            className={resultMessage.includes(BadResult) ? styles.redAlert : ''}
+                            severity={!resultMessage.includes(OkResult) ? 'error' : 'success'}
+                            className={`
+                              ${styles.alert}
+                              ${!resultMessage.includes(OkResult) ? styles.redAlert : ''}
+                            `}
                         >
                             <div className={styles.resultMessageWrapper}>
+                                <div className={styles.resultPointsWrapper}>
+                                    <Typography
+                                        style={{
+                                            fontWeight: 500
+                                        }}
+                                        variant='subtitle1'>
+                                        {getPointMessage(currentPoint ?? 0)}
+                                    </Typography>
+
+                                    <div
+                                        onClick={() => {
+                                            history.push('/home');
+                                        }}
+                                        className={styles.backWrapper}
+                                    >
+                                        <Typography
+                                            style={{
+                                                fontWeight: 500
+                                            }}
+                                            variant='subtitle1'>
+                      На главную
+                                        </Typography>
+                                        <ArrowBack
+                                            className={styles.backBtn}
+                                        />
+                                    </div>
+
+                                </div>
                                 {resultMessage}
-                                <Typography variant='h6'>
-                                    {getPointMessage(currentPoint ?? 0)}
-                                </Typography>
                             </div>
                         </Alert>
                     )}

@@ -4,8 +4,12 @@
   "private": true,
   "dependencies": {
     "@amcharts/amcharts5": "^5.0.19",
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
     "@material-ui/core": "^4.11.4",
     "@material-ui/lab": "^4.0.0-alpha.60",
+    "@mui/icons-material": "^5.5.1",
+    "@mui/material": "^5.5.1",
     "@types/react-copy-to-clipboard": "^5.0.2",
     "classnames": "^2.3.1",
     "react": "^17.0.2",
@@ -27,6 +31,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "react-app-rewire-alias": "^1.1.5",
     "react-app-rewired": "^2.1.8",
     "react-scripts": "4.0.3"
@@ -43,7 +48,8 @@
       "google",
       "eslint:recommended",
       "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended"
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react-hooks/recommended"
     ],
     "rules": {
       "indent": [
@@ -62,6 +68,8 @@
         "error",
         "smart-tabs"
       ],
+      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/rules-of-hooks": "warn",
       "no-duplicate-imports": "error",
       "no-var": "error",
       "no-redeclare": "error",

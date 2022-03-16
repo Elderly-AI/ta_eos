@@ -10,13 +10,15 @@ import {
     Tooltip,
     Typography
 } from '@material-ui/core';
-import React, {Dispatch, FC, SetStateAction, useRef, useState} from 'react';
+import React, {Dispatch, FC, SetStateAction, useMemo, useRef, useState} from 'react';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {makeStyles} from '@material-ui/core/styles';
-import {TableState} from './Work';
+import ReactTestUtils from 'react-dom/test-utils';
 import classNames from 'classnames';
 import useClippy from 'use-clippy';
+import {TableState} from './Work';
 import TableInput from './TableInput';
-import ReactTestUtils from 'react-dom/test-utils';
+import {Cancel} from '@mui/icons-material';
 
 const useStyles = makeStyles({
     tableRow: {
@@ -54,6 +56,10 @@ const useStyles = makeStyles({
         borderBottom: '1px solid #ff1515',
     },
 
+    correctCel: {
+        borderBottom: '1px solid #00A318',
+    },
+
     iconFontSize: {
         fontSize: '1rem !important',
     },
@@ -87,9 +93,9 @@ enum AnswerType {
 }
 
 enum OpType {
-    REGULAR,
-    SUM,
-    SHIFT
+  REGULAR,
+  SUM,
+  SHIFT
 }
 
 interface InputCellProps {
@@ -105,6 +111,7 @@ interface CustomTableProps {
   array: TableState[],
   compareArray: TableState[],
   setArray: Dispatch<SetStateAction<TableState[]>>,
+  mistakeCountHandler: (count: number) => void
 }
 
 type TextCellProps = {
@@ -127,7 +134,6 @@ const TextCell: FC<TextCellProps> = ({cellText, isOverflow, copyText, isAnswerCo
     if (!cellText || isOverflow) {
         return <div className={styles.flex}>
             <Typography
-                className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
                 variant="subtitle1"
             >
                 {isOverflow ? 'Переполнение' : '...'}
@@ -136,8 +142,22 @@ const TextCell: FC<TextCellProps> = ({cellText, isOverflow, copyText, isAnswerCo
     } else {
         return (
             <div className={styles.iconContainer}>
+                {
+                    isAnswerCorrect === AnswerType.CORRECT && (
+                        <CheckCircleIcon
+                            color='success'
+                        />
+                    )
+                }
+                {
+                    isAnswerCorrect === AnswerType.WRONG && (
+                        <Cancel
+                            color='error'
+                        />
+                    )
+                }
+
                 <Typography
-                    className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
                     variant="subtitle1"
                 >
                     {cellText}
@@ -148,7 +168,8 @@ const TextCell: FC<TextCellProps> = ({cellText, isOverflow, copyText, isAnswerCo
                         d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
                 </svg>
             </div>
-        );
+        )
+        ;
     }
 };
 
@@ -173,9 +194,9 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
         break;
     case OpType.SHIFT:
         checkbox =
-            <Tooltip title={'Переполнение'} placement="left" arrow>
-                <Checkbox size="small" color="primary" checked={overflow ? overflow : false} onChange={setOverflow} />
-            </Tooltip>;
+        <Tooltip title={'Переполнение'} placement="left" arrow>
+            <Checkbox size="small" color="primary" checked={overflow ? overflow : false} onChange={setOverflow}/>
+        </Tooltip>;
         break;
     }
 
@@ -237,7 +258,7 @@ const getOpType = (name: string) => {
     return OpType.REGULAR;
 };
 
-const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
+const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: CustomTableProps) => {
     const styles = useStyles();
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
@@ -252,6 +273,94 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
             setInputNumber(id);
         }
     };
+
+    const tableBody = useMemo(() => {
+        let mistakesCount = 0;
+
+        const tableBody = <TableBody>
+            {array[0]?.data?.map((current, idx) => (
+                // тут ебнутая логика с массивом: данные лежат в нем по столбцам, а таблица строится по строкам
+                // первый map идет по 1(не важно какому) столбцу и задает только номер текущей строки(idx)
+                <TableRow key={'row_' + idx} className={styles.tableRow} hover>
+                    {array.map((cur, index) => {
+                        // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
+                        // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
+                        const tmpCellNumber = idx * 3 + index - 1;
+                        let answerType: AnswerType = AnswerType.UNCHECKED;
+
+                        if (index === 0) {
+                            return (
+                                <TableCell key={'leftCell_' + tmpCellNumber + 1} width="28%">
+                                    {transformName(cur.data[idx].name)}
+                                </TableCell>
+                            );
+                        }
+
+                        if (compareArray.length) {
+                            if (array[index].data[idx].overflow && compareArray[index].data[idx].overflow) {
+                                answerType = AnswerType.CORRECT;
+                            } else {
+                                answerType = array[index].data[idx].value === compareArray[index].data[idx].value ?
+                                    AnswerType.CORRECT : AnswerType.WRONG;// TODO добавить чекбокс в проверку
+                            }
+                        }
+
+                        if (answerType === AnswerType.WRONG) {
+                            mistakesCount++;
+                        }
+
+                        const changeHandler = (evt: any, value?: string) => {
+                            // currentTarget.value - полное значение, target.value - текущий разряд
+                            setArray((arr) => {
+                                arr[index].data[idx].value = evt?.currentTarget.value || value || '';
+                                return arr;
+                            });
+                            setInputText(evt?.currentTarget.value || value || '');
+                        };
+
+                        const changeCheckBoxHandler = (evt: any) => {
+                            setArray((arr) => {
+                                arr[index].data[idx].overflow = evt.target.checked;
+                                return arr;
+                            });
+                            setInputCheckbox(evt.target.checked);
+                        };
+
+                        return (
+                            <TableCell
+                                id={'cell_' + tmpCellNumber}
+                                key={'cell_' + tmpCellNumber}
+                                width={'25%'}
+                                onClick={cellClickHandler}
+                                className={styles.pointer}
+                            >
+                                {inputNumber === tmpCellNumber && !compareArray.length ?
+                                    <InputCell
+                                        inputValue={inputText}
+                                        onChange={changeHandler}
+                                        copiedText={text}
+                                        operationType={getOpType(cur.data[idx].name)}
+                                        overflow={inputCheckbox}
+                                        setOverflow={changeCheckBoxHandler}
+                                    /> :
+                                    <TextCell
+                                        isAnswerCorrect={answerType}
+                                        cellText={cur.data[idx].value}
+                                        isOverflow={cur.data[idx].overflow}
+                                        copyText={setText}
+                                    />
+                                }
+                            </TableCell>
+                        );
+                    })}
+                </TableRow>
+            ))}
+        </TableBody>;
+
+        mistakeCountHandler(mistakesCount);
+
+        return tableBody;
+    }, [array, mistakeCountHandler, styles.tableRow, styles.pointer, compareArray, cellClickHandler, inputNumber, inputText, text, inputCheckbox, setText, setArray]);
 
     if (array.length === 0) {
         return <></>;
@@ -274,78 +383,7 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                         ))}
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {array[0].data.map((current, idx) => (
-                        // тут ебнутая логика с массивом: данные лежат в нем по столбцам, а таблица строится по строкам
-                        // первый map идет по 1(не важно какому) столбцу и задает только номер текущей строки(idx)
-                        <TableRow key={'row_' + idx} className={styles.tableRow} hover>
-                            {array.map((cur, index) => {
-                                // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
-                                // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
-                                const tmpCellNumber = idx * 3 + index - 1;
-                                let answerType: AnswerType = AnswerType.UNCHECKED;
-
-                                if (index === 0) {
-                                    return (
-                                        <TableCell key={'leftCell_' + tmpCellNumber + 1} width="28%">
-                                            {transformName(cur.data[idx].name)}
-                                        </TableCell>
-                                    );
-                                }
-
-                                if (compareArray.length) {
-                                    answerType = array[index].data[idx].value === compareArray[index].data[idx].value ?
-                                        AnswerType.CORRECT : AnswerType.WRONG;// TODO добавить чекбокс в проверку
-                                }
-
-
-                                const changeHandler = (evt: any, value?: string) => {
-                                    // currentTarget.value - полное значение, target.value - текущий разряд
-                                    setArray((arr) => {
-                                        arr[index].data[idx].value = evt?.currentTarget.value || value || '';
-                                        return arr;
-                                    });
-                                    setInputText(evt?.currentTarget.value || value || '');
-                                };
-
-                                const changeCheckBoxHandler = (evt: any) => {
-                                    setArray((arr) => {
-                                        arr[index].data[idx].overflow = evt.target.checked;
-                                        return arr;
-                                    });
-                                    setInputCheckbox(evt.target.checked);
-                                };
-
-                                return (
-                                    <TableCell
-                                        id={'cell_' + tmpCellNumber}
-                                        key={'cell_' + tmpCellNumber}
-                                        width={'25%'}
-                                        onClick={cellClickHandler}
-                                        className={styles.pointer}
-                                    >
-                                        {inputNumber === tmpCellNumber && !compareArray.length ?
-                                            <InputCell
-                                                inputValue={inputText}
-                                                onChange={changeHandler}
-                                                copiedText={text}
-                                                operationType={getOpType(cur.data[idx].name)}
-                                                overflow={inputCheckbox}
-                                                setOverflow={changeCheckBoxHandler}
-                                            /> :
-                                            <TextCell
-                                                isAnswerCorrect={answerType}
-                                                cellText={cur.data[idx].value}
-                                                isOverflow={cur.data[idx].overflow}
-                                                copyText={setText}
-                                            />
-                                        }
-                                    </TableCell>
-                                );
-                            })}
-                        </TableRow>
-                    ))}
-                </TableBody>
+                {tableBody}
             </Table>
         </TableContainer>
     );
