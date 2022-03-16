@@ -50,9 +50,9 @@ const replaceAt = (str: string, idx: number, newSymbol: string) => {
 
 interface TableInputProps {
   id: string,
-  value: string,
+  value?: string,
   digitsNumber?: number,
-  onChange: (evt: any, value?: string) => void,
+  onChange?: (evt: any, value?: string) => void,
   className?: string,
   disabled?: boolean,
 }
@@ -66,6 +66,7 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
     const styles = useStyles();
     const [errorId, setErrorId] = useState<number | undefined>(undefined);
     const [timerId, setTimerId] = useState<any>(-1);
+    const [val, setVal] = useState('');
     const inputRef: MutableRefObject<HTMLInputElement> | ForwardedRef<HTMLInputElement> = ref ? ref :
         useRef<HTMLInputElement>(null);
     const textFieldRefs: any[] = [];
@@ -93,7 +94,7 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
         }
     };
 
-    const validateIdxValue = (val: string) => {
+    const validateIdxValue = (val: string | undefined) => {
         if (val && val !== nullSymbol) {
             return val;
         }
@@ -150,8 +151,14 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
 
     const handleInputChange = (evt: any) => {
         const isValid = setupPastedValue(evt.currentTarget.value);
-        if (isValid) {
+        if (!isValid) {
+            return;
+        }
+
+        if (onChange) {
             onChange(evt);
+        } else {
+            setVal((inputRef as MutableRefObject<HTMLInputElement>).current.value);
         }
     };
 
@@ -191,20 +198,25 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
             }
         }
 
+        // console.log(fullValue, idxValue, evt.currentTarget.value);
         evt.currentTarget = (inputRef as MutableRefObject<HTMLInputElement>).current;
-        onChange(evt);
+        if (onChange) {
+            onChange(evt);
+        } else {
+            setVal((inputRef as MutableRefObject<HTMLInputElement>).current.value);
+        }
     };
 
     return (
-        <div id={id} className={classNames(styles.container, className)} onKeyDown={handleKeyDown}>
-            <input className={styles.invisibleInput} ref={inputRef} value={value} onChange={handleInputChange}/>
+        <div id={id} className={classNames(className, styles.container)} onKeyDown={handleKeyDown}>
+            <input className={styles.invisibleInput} ref={inputRef} value={value || val} onChange={handleInputChange}/>
             {textFieldRefs.map((refObj, idx) => (
                 <TextField
                     name={refObj.name}
                     key={refObj.name}
                     ref={refObj.ref}
                     className={styles.input}
-                    value={validateIdxValue(value[idx])}
+                    value={validateIdxValue(value ? value[idx] : val[idx])}
                     onChange={handleTextFieldChange}
                     onPaste={handleTextFieldPaste}
                     variant="standard"

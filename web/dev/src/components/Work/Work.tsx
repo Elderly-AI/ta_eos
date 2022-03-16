@@ -8,8 +8,17 @@ import CustomTable from './CustomTable';
 import DataService from '@data/DataService';
 import {TemplateTemplateRequest} from '@data/Models';
 import {CountdownCircleTimer} from 'react-countdown-circle-timer';
+import TableInput from './TableInput';
 
 const useStyles = makeStyles(() => ({
+    none: {
+        display: 'none !important',
+    },
+
+    block: {
+        display: 'inline !important',
+    },
+
     mainContainer: {
         display: 'grid',
         gridTemplateAreas: '"timer content"',
@@ -144,6 +153,8 @@ const Work = () => {
     const [currentPoint, setCurrentPoint] = useState<number | undefined>();
     const [isPlaying, setPlaying] = useState(true);
 
+    const [close, setClose] = useState(false);
+
     useEffect(() => {
         DataService.getKR('first')
             .then((res) => {
@@ -273,6 +284,11 @@ const Work = () => {
                             </div>
                         </Alert>
                     )}
+                    <TableInput id={'1234567'} className={close ? styles.none : styles.block}/>
+                    <button onClick={() => {
+                        console.log(close);
+                        setClose((prev) => !prev);
+                    }}>Click</button>
                 </div>
             </div>
         </>

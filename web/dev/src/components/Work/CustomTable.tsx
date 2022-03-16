@@ -1,5 +1,7 @@
 import {
+    Box,
     Checkbox,
+    Collapse,
     Paper,
     Table,
     TableBody,
@@ -19,8 +21,18 @@ import TableInput from './TableInput';
 import ReactTestUtils from 'react-dom/test-utils';
 
 const useStyles = makeStyles({
+    none: {
+        display: 'none',
+    },
+
+    inputsMock: {
+        width: '100px',
+        height: '100px',
+        backgroundColor: 'red',
+    },
+
     tableRow: {
-        height: '70px',
+        height: '75px',
     },
 
     tableHead: {
@@ -72,6 +84,13 @@ const useStyles = makeStyles({
     checkboxContainer: {
         margin: '0',
     },
+
+    collapseCell: {
+        borderBottom: 'none',
+        boxShadow: 'inset 0px -1px 0px rgba(224, 224, 224, 1)',
+        padding: 0,
+        // paddingTop: 0,
+    },
 });
 
 const useStyle = makeStyles({
@@ -108,13 +127,20 @@ interface CustomTableProps {
 }
 
 type TextCellProps = {
+  className?: string
   cellText: string | null,
   isOverflow?: boolean | null | undefined,
   copyText: (text: string) => void,
-  isAnswerCorrect: AnswerType
+  isAnswerCorrect: AnswerType,
 }
 
-const TextCell: FC<TextCellProps> = ({cellText, isOverflow, copyText, isAnswerCorrect}) => {
+const TextCell: FC<TextCellProps> = ({
+    cellText,
+    isOverflow,
+    copyText,
+    isAnswerCorrect,
+    className,
+}) => {
     const styles = useStyles();
     const classes = useStyle();
 
@@ -127,7 +153,7 @@ const TextCell: FC<TextCellProps> = ({cellText, isOverflow, copyText, isAnswerCo
     if (!cellText || isOverflow) {
         return <div className={styles.flex}>
             <Typography
-                className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
+                className={`${isAnswerCorrect ? styles.wrongCell : ''} ${className || ''}`}
                 variant="subtitle1"
             >
                 {isOverflow ? 'Переполнение' : '...'}
@@ -137,7 +163,7 @@ const TextCell: FC<TextCellProps> = ({cellText, isOverflow, copyText, isAnswerCo
         return (
             <div className={styles.iconContainer}>
                 <Typography
-                    className={`${isAnswerCorrect ? styles.wrongCell : ''}`}
+                    className={`${isAnswerCorrect ? styles.wrongCell : ''} ${className || ''}`}
                     variant="subtitle1"
                 >
                     {cellText}
@@ -266,7 +292,7 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                             <TableCell
                                 className={styles.tableHead}
                                 align="left"
-                                width={'16%'}
+                                width={'25%'}
                                 key={'headCell_' + cur.name}
                             >
                                 {cur.name}
@@ -275,76 +301,117 @@ const CustomTable = ({array, setArray, compareArray}: CustomTableProps) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {array[0].data.map((current, idx) => (
+                    {array[0].data.map((current, idx) => {
+                        const rowNumber = ~~(inputNumber / 3);
+                        const columnNumber = inputNumber % 3;
+                        const collapse = getOpType(current.name) === OpType.SUM ?
+                            <TableRow>
+                                <TableCell className={styles.collapseCell} colSpan={4}>
+                                    <Collapse in={~~(inputNumber / 3) === idx && !compareArray.length} timeout="auto">
+                                        <Table>
+                                            <TableBody>
+                                                <TableRow>
+                                                    <TableCell width="25%">{''}</TableCell>
+                                                    {[0, 1, 2].map((cur, index) => (
+                                                        <TableCell
+                                                            key={`collapse_${rowNumber}_${index}`}
+                                                            width="25%"
+                                                            className={styles.pointer}
+                                                            onClick={() => setInputNumber(rowNumber * 3 + index)}
+                                                        >
+                                                            <div className={classNames(styles.inputsMock,
+                                                                (columnNumber !== index || rowNumber !== idx) ? styles.none : '')}/>
+                                                            <TextCell
+                                                                className={(columnNumber === index && rowNumber === idx) ? styles.none : ''}
+                                                                isAnswerCorrect={AnswerType.UNCHECKED}
+                                                                cellText={array[index].data[rowNumber].value}
+                                                                isOverflow={array[index].data[rowNumber].overflow}
+                                                                copyText={setText}
+                                                            />
+                                                        </TableCell>
+                                                    ))}
+                                                </TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </Collapse>
+                                </TableCell>
+                            </TableRow> :
+                            '';
                         // тут ебнутая логика с массивом: данные лежат в нем по столбцам, а таблица строится по строкам
                         // первый map идет по 1(не важно какому) столбцу и задает только номер текущей строки(idx)
-                        <TableRow key={'row_' + idx} className={styles.tableRow} hover>
-                            {array.map((cur, index) => {
-                                // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
-                                // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
-                                const tmpCellNumber = idx * 3 + index - 1;
-                                let answerType: AnswerType = AnswerType.UNCHECKED;
+                        return <>
+                            <TableRow key={'row_' + idx} className={styles.tableRow} hover>
+                                {array.map((cur, index) => {
+                                    // второй map идет по самим столбцам(массиву) и забирает по одному значению из них
+                                    // согласно номеру строки. Искренне надеюсь, что это не придется переписывать)
+                                    const tmpCellNumber = idx * 3 + index - 1;
+                                    let answerType: AnswerType = AnswerType.UNCHECKED;
 
-                                if (index === 0) {
+                                    if (index === 0) {
+                                        return (
+                                            <TableCell key={'leftCell_' + tmpCellNumber + 1} width="25%">
+                                                {transformName(cur.data[idx].name)}
+                                            </TableCell>
+                                        );
+                                    }
+
+                                    if (compareArray.length) {
+                                        answerType = array[index].data[idx].value === compareArray[index].data[idx].value ?
+                                            AnswerType.CORRECT : AnswerType.WRONG;// TODO добавить чекбокс в проверку
+                                    }
+
+                                    const changeHandler = (evt: any, value?: string) => {
+                                        // currentTarget.value - полное значение, target.value - текущий разряд
+                                        setArray((arr) => {
+                                            arr[index].data[idx].value = evt?.currentTarget.value || value || '';
+                                            return arr;
+                                        });
+                                        setInputText(evt?.currentTarget.value || value || '');
+                                    };
+
+                                    const changeCheckBoxHandler = (evt: any) => {
+                                        setArray((arr) => {
+                                            arr[index].data[idx].overflow = evt.target.checked;
+                                            return arr;
+                                        });
+                                        setInputCheckbox(evt.target.checked);
+                                    };
+
+                                    const cellIsInput = inputNumber === tmpCellNumber &&
+                                        getOpType(cur.data[idx].name) !== OpType.SUM &&
+                                        !compareArray.length;
+
                                     return (
-                                        <TableCell key={'leftCell_' + tmpCellNumber + 1} width="28%">
-                                            {transformName(cur.data[idx].name)}
+                                        <TableCell
+                                            id={'cell_' + tmpCellNumber}
+                                            key={'cell_' + tmpCellNumber}
+                                            width={'25%'}
+                                            onClick={cellClickHandler}
+                                            className={styles.pointer}
+                                        >
+                                            {cellIsInput ?
+                                                <InputCell
+                                                    inputValue={inputText}
+                                                    onChange={changeHandler}
+                                                    copiedText={text}
+                                                    operationType={getOpType(cur.data[idx].name)}
+                                                    overflow={inputCheckbox}
+                                                    setOverflow={changeCheckBoxHandler}
+                                                /> :
+                                                <TextCell
+                                                    isAnswerCorrect={answerType}
+                                                    cellText={cur.data[idx].value}
+                                                    isOverflow={cur.data[idx].overflow}
+                                                    copyText={setText}
+                                                />
+                                            }
                                         </TableCell>
                                     );
-                                }
-
-                                if (compareArray.length) {
-                                    answerType = array[index].data[idx].value === compareArray[index].data[idx].value ?
-                                        AnswerType.CORRECT : AnswerType.WRONG;// TODO добавить чекбокс в проверку
-                                }
-
-
-                                const changeHandler = (evt: any, value?: string) => {
-                                    // currentTarget.value - полное значение, target.value - текущий разряд
-                                    setArray((arr) => {
-                                        arr[index].data[idx].value = evt?.currentTarget.value || value || '';
-                                        return arr;
-                                    });
-                                    setInputText(evt?.currentTarget.value || value || '');
-                                };
-
-                                const changeCheckBoxHandler = (evt: any) => {
-                                    setArray((arr) => {
-                                        arr[index].data[idx].overflow = evt.target.checked;
-                                        return arr;
-                                    });
-                                    setInputCheckbox(evt.target.checked);
-                                };
-
-                                return (
-                                    <TableCell
-                                        id={'cell_' + tmpCellNumber}
-                                        key={'cell_' + tmpCellNumber}
-                                        width={'25%'}
-                                        onClick={cellClickHandler}
-                                        className={styles.pointer}
-                                    >
-                                        {inputNumber === tmpCellNumber && !compareArray.length ?
-                                            <InputCell
-                                                inputValue={inputText}
-                                                onChange={changeHandler}
-                                                copiedText={text}
-                                                operationType={getOpType(cur.data[idx].name)}
-                                                overflow={inputCheckbox}
-                                                setOverflow={changeCheckBoxHandler}
-                                            /> :
-                                            <TextCell
-                                                isAnswerCorrect={answerType}
-                                                cellText={cur.data[idx].value}
-                                                isOverflow={cur.data[idx].overflow}
-                                                copyText={setText}
-                                            />
-                                        }
-                                    </TableCell>
-                                );
-                            })}
-                        </TableRow>
-                    ))}
+                                })}
+                            </TableRow>
+                            {collapse}
+                        </>;
+                    })}
                 </TableBody>
             </Table>
         </TableContainer>
