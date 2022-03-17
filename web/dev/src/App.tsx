@@ -19,7 +19,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         getCurrentUser();
-    }, []);
+    }, [getCurrentUser]);
 
     return (
         <div className="App">

@@ -133,7 +133,7 @@ const Histogram: React.FC<HistogramProps> = ({histogramId, data, name}) => {
         return () => {
             root.dispose();
         };
-    }, []);
+    }, [data, histogramId]);
 
     return (
         <div className={styles.wrapper}>

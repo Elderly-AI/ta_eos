@@ -95,7 +95,24 @@ const useStyles = makeStyles({
         borderBottom: 'none',
         boxShadow: 'inset 0px -1px 0px rgba(224, 224, 224, 1)',
         padding: 0,
-        // paddingTop: 0,
+    },
+
+    sumCellContainer: {
+        display: 'grid',
+        gridTemplateAreas: `"firstLine"
+                            "secondLine"
+                            "separator"
+                            "thirdLine"
+                            "fifthLine"`,
+        gridTemplateRows: '1fr qfr min-content 1fr 1fr',
+    },
+
+    firstLine: {
+        gridTemplate: 'firstLine',
+    },
+
+    secondLine: {
+        gridTemplate: 'secondLine',
     },
 });
 
@@ -354,7 +371,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
 
                             if (index === 0) {
                                 return (
-                                    <TableCell key={'leftCell_' + tmpCellNumber + 1} width="28%">
+                                    <TableCell key={'leftCell_' + tmpCellNumber + 1} width="25%">
                                         {transformName(cur.data[idx].name)}
                                     </TableCell>
                                 );
@@ -390,6 +407,10 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                                 setInputCheckbox(evt.target.checked);
                             };
 
+                            const cellIsInput = inputNumber === tmpCellNumber &&
+                                getOpType(cur.data[idx].name) !== OpType.SUM &&
+                                !compareArray.length;
+
                             return (
                                 <TableCell
                                     id={'cell_' + tmpCellNumber}
@@ -398,7 +419,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                                     onClick={cellClickHandler}
                                     className={styles.pointer}
                                 >
-                                    {inputNumber === tmpCellNumber && !compareArray.length ?
+                                    {cellIsInput ?
                                         <InputCell
                                             inputValue={inputText}
                                             onChange={changeHandler}
@@ -419,7 +440,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                         })}
                     </TableRow>
                     {collapse}
-                </>
+                </>;
             })}
         </TableBody>;
 
@@ -441,7 +462,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                             <TableCell
                                 className={styles.tableHead}
                                 align="left"
-                                width={'16%'}
+                                width={'25%'}
                                 key={'headCell_' + cur.name}
                             >
                                 {cur.name}
@@ -452,6 +473,33 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                 {tableBody}
             </Table>
         </TableContainer>
+    );
+};
+
+interface SumInputCellProps {
+    id: string,
+    className: string,
+}
+
+const SumInputCell = ({id, className}: SumInputCellProps) => {
+    const styles = useStyles();
+    const containerClasses = classNames(styles.sumCellContainer, className ? className : '');
+
+    return (
+        <div className={containerClasses} id={id}>
+            <TableInput
+                id={`sum_cell_${id}`}
+                className={classNames(styles.input, styles.firstLine)}
+                disabled={false}
+            />
+            <Typography className={styles.firstLine}>A</Typography>
+            <TableInput
+                id={`sum_cell_${id}`}
+                className={classNames(styles.input, styles.secondLine)}
+                disabled={false}
+            />
+            <Typography className={styles.secondLine}>A</Typography>
+        </div>
     );
 };
 

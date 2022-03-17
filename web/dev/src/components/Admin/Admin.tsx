@@ -42,7 +42,7 @@ const Admin: React.FC = () => {
         DataService.searchMetric(userId)
             .then((res) => setMetrics(res.metrics))
             .catch((err) => console.log('res err', err));
-    }, []);
+    }, [userId]);
 
     const normalizedMetrics: NormalizedMetricsType | undefined = useMemo(() => metrics?.reduce((acc, cur) => {
         const name: string = cur.methodName;
