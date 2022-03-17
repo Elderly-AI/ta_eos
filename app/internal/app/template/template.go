@@ -20,8 +20,8 @@ type Server struct {
 }
 
 func GetFirstTemplate() map[string]interface{} {
-	A := rand.Intn(30)
-	B := -rand.Intn(30)
+	A := rand.Intn(20) + 20
+	B := -rand.Intn(20) - 20
 
 	res := map[string]interface{}{
 		"what_to_do":    "Первая контрольная работа",
