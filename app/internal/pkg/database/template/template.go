@@ -48,7 +48,7 @@ func (r *Repo) SetGrades(ctx context.Context, workName string, grade int, userId
 			glog.Errorf("Cant set grade for %s", workName)
 			return nil, err
 		}
-		_, err = r.conn.ExecContext(ctx, "UPDATE users SET grades=$1", res)
+		_, err = r.conn.ExecContext(ctx, "UPDATE users SET grades=$1 WHERE user_id=$2", res, userId)
 		if err != nil {
 			glog.Errorf("Cant set grade for %s", workName)
 			return nil, err
