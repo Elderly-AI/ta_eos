@@ -1,5 +1,4 @@
 import {
-    Box,
     Checkbox,
     Collapse,
     Paper,
@@ -21,10 +20,11 @@ import useClippy from 'use-clippy';
 import {TableState} from './Work';
 import TableInput from './TableInput';
 import {Cancel} from '@mui/icons-material';
+import CollapseTable from './CollapseTable';
 
 const useStyles = makeStyles({
     none: {
-        display: 'none',
+        display: 'none !important',
     },
 
     inputsMock: {
@@ -95,24 +95,6 @@ const useStyles = makeStyles({
         borderBottom: 'none',
         boxShadow: 'inset 0px -1px 0px rgba(224, 224, 224, 1)',
         padding: 0,
-    },
-
-    sumCellContainer: {
-        display: 'grid',
-        gridTemplateAreas: `"firstLine"
-                            "secondLine"
-                            "separator"
-                            "thirdLine"
-                            "fifthLine"`,
-        gridTemplateRows: '1fr qfr min-content 1fr 1fr',
-    },
-
-    firstLine: {
-        gridTemplate: 'firstLine',
-    },
-
-    secondLine: {
-        gridTemplate: 'secondLine',
     },
 });
 
@@ -324,37 +306,20 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
 
         const tableBody = <TableBody>
             {array[0]?.data?.map((current, idx) => {
-                const rowNumber = ~~(inputNumber / 3);
-                const columnNumber = inputNumber % 3;
                 const collapse = getOpType(current.name) === OpType.SUM ?
                     <TableRow>
                         <TableCell className={styles.collapseCell} colSpan={4}>
                             <Collapse in={~~(inputNumber / 3) === idx && !compareArray.length} timeout="auto">
-                                <Table>
-                                    <TableBody>
-                                        <TableRow>
-                                            <TableCell width="25%">{''}</TableCell>
-                                            {[0, 1, 2].map((cur, index) => (
-                                                <TableCell
-                                                    key={`collapse_${rowNumber}_${index}`}
-                                                    width="25%"
-                                                    className={styles.pointer}
-                                                    onClick={() => setInputNumber(rowNumber * 3 + index)}
-                                                >
-                                                    <div className={classNames(styles.inputsMock,
-                                                        (columnNumber !== index || rowNumber !== idx) ? styles.none : '')}/>
-                                                    <TextCell
-                                                        className={(columnNumber === index && rowNumber === idx) ? styles.none : ''}
-                                                        isAnswerCorrect={AnswerType.UNCHECKED}
-                                                        cellText={array[index].data[rowNumber].value}
-                                                        isOverflow={array[index].data[rowNumber].overflow}
-                                                        copyText={setText}
-                                                    />
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
+                                <CollapseTable
+                                    idx={idx}
+                                    inputNumber={inputNumber}
+                                    inputValue={inputText}
+                                    array={array}
+                                    setInputNumber={setInputNumber}
+                                    setText={setText}
+                                    setArray={setArray}
+                                    setInputText={setInputText}
+                                />
                             </Collapse>
                         </TableCell>
                     </TableRow> :
@@ -382,7 +347,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                                     answerType = AnswerType.CORRECT;
                                 } else {
                                     answerType = array[index].data[idx].value === compareArray[index].data[idx].value ?
-                                        AnswerType.CORRECT : AnswerType.WRONG;// TODO добавить чекбокс в проверку
+                                        AnswerType.CORRECT : AnswerType.WRONG;
                                 }
                             }
 
@@ -447,7 +412,8 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
         mistakeCountHandler(mistakesCount);
 
         return tableBody;
-    }, [array, mistakeCountHandler, styles.tableRow, styles.pointer, compareArray, cellClickHandler, inputNumber, inputText, text, inputCheckbox, setText, setArray]);
+    }, [array, mistakeCountHandler, styles.tableRow, styles.pointer, compareArray, cellClickHandler, inputNumber,
+        inputText, text, inputCheckbox, setText, setArray]);
 
     if (array.length === 0) {
         return <></>;
@@ -473,33 +439,6 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                 {tableBody}
             </Table>
         </TableContainer>
-    );
-};
-
-interface SumInputCellProps {
-    id: string,
-    className: string,
-}
-
-const SumInputCell = ({id, className}: SumInputCellProps) => {
-    const styles = useStyles();
-    const containerClasses = classNames(styles.sumCellContainer, className ? className : '');
-
-    return (
-        <div className={containerClasses} id={id}>
-            <TableInput
-                id={`sum_cell_${id}`}
-                className={classNames(styles.input, styles.firstLine)}
-                disabled={false}
-            />
-            <Typography className={styles.firstLine}>A</Typography>
-            <TableInput
-                id={`sum_cell_${id}`}
-                className={classNames(styles.input, styles.secondLine)}
-                disabled={false}
-            />
-            <Typography className={styles.secondLine}>A</Typography>
-        </div>
     );
 };
 

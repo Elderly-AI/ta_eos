@@ -198,7 +198,6 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
             }
         }
 
-        // console.log(fullValue, idxValue, evt.currentTarget.value);
         evt.currentTarget = (inputRef as MutableRefObject<HTMLInputElement>).current;
         if (onChange) {
             onChange(evt);

@@ -240,7 +240,13 @@ const Work = () => {
         }
         const preparedData = template;
         preparedData.data.UI[0].data = [template.data.UI[0].data[0], ...taskArray];
-        console.log(preparedData);
+        // todo убрать логи на проде!
+        preparedData.data.UI[0].data.forEach((cur, index) => {
+            if (index > 1) {
+                console.log(cur.name);
+                console.table(cur.data);
+            }
+        });
         DataService.approveKR('first', preparedData)
             .then((res) => {
                 setCurrentPoint(res.point ?? 0);
@@ -252,7 +258,7 @@ const Work = () => {
             });
     };
 
-    const time = 300;
+    const time = 3000;
     const renderTime = (remainingTime: number) => {
         if (remainingTime === time) {
             return <div className="timer">Время истекло</div>;
