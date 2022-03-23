@@ -128,7 +128,7 @@ interface CellTextValueProps {
     onClick?: (evt: any) => void,
 }
 
-const CellTextValue = ({id, value, onClick, valueLength = 8}: CellTextValueProps) => {
+const CellTextValue = React.memo(({id, value, onClick, valueLength = 8}: CellTextValueProps) => {
     const styles = useStyles();
     const digits = [];
     if (!value) {
@@ -149,29 +149,42 @@ const CellTextValue = ({id, value, onClick, valueLength = 8}: CellTextValueProps
             {digits}
         </span>
     );
-};
+});
+
+CellTextValue.displayName = 'CellTextValue';
 
 interface SumCellProps {
     id: string,
     className?: string,
     value: string | null,
     onChange: (evt: any, value?: string) => void,
+    inputCellNumber: number,
+    sumTmpValues: Record<string, string[]>,
+    setSumValues: Dispatch<SetStateAction<Record<string, string[]>>>,
 }
 
-const SumCell = ({id, className, value, onChange}: SumCellProps) => {
+const SumCell = React.memo(({
+    id,
+    className,
+    value,
+    onChange,
+    inputCellNumber,
+    setSumValues,
+    sumTmpValues
+}: SumCellProps) => {
     const styles = useStyles();
     const containerClasses = classNames(styles.cellContainer, className ? className : '');
     const [isResultInput, setIsInput] = useState(false);
-    const [resArr, serResArr] = useState<string[]>(['', '', '']);
+    // const [resArr, serResArr] = useState<string[]>(['', '', '']);
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
 
     const handleChecked = () => {
         if (!isResultInput) {
-            serResArr((arr) => {
+            setSumValues((obj) => {
                 // если нажат чекбокс, надо добавить 3-й инпут и вставить в него значение их рузультирующего. поэтому 2
-                resArr[2] = value || '';
-                return arr;
+                obj[inputCellNumber][2] = value || '';
+                return obj;
             });
             onChange(undefined, '');
         }
@@ -179,9 +192,10 @@ const SumCell = ({id, className, value, onChange}: SumCellProps) => {
     };
 
     const handleClick = (evt: any) => {
+        console.log('id', evt.currentTarget.id);
         const id = +evt.currentTarget.id.split('_').pop();
         if (id !== inputNumber) {
-            setInputText(resArr[id] || '');
+            setInputText(sumTmpValues[inputCellNumber][id] || '');
             setInputNumber(id);
         }
     };
@@ -205,22 +219,24 @@ const SumCell = ({id, className, value, onChange}: SumCellProps) => {
                 <div className={styles.separator}/>
                 {[0, 1, 2].map((index) => {
                     const handleChange = (evt: any) => {
-                        serResArr((arr) => {
-                            resArr[index] = evt.currentTarget.value || '';
-                            return arr;
+                        console.log('evt', evt.currentTarget.value);
+                        setSumValues((obj) => {
+                            obj[inputCellNumber][index] = evt.currentTarget.value || '';
+                            return obj;
                         });
                         setInputText(evt?.currentTarget.value || '');
                     };
 
                     if (isResultInput || index !== 2) {
+                        const isNotEmpty = sumTmpValues[inputCellNumber];
+                        console.log('inputText', inputText);
                         return <SumInputCell
                             id={id}
-                            inputText={inputText}
+                            inputText={isNotEmpty ? sumTmpValues[inputCellNumber][index] : ''}
                             onChange={handleChange}
                             onClick={handleClick}
                             index={index}
                             inputNumber={inputNumber}
-                            arrayValue={resArr[index]}
                         />;
                     }
                 })}
@@ -231,24 +247,31 @@ const SumCell = ({id, className, value, onChange}: SumCellProps) => {
                     onClick={handleClick}
                     index={3}
                     inputNumber={inputNumber}
-                    arrayValue={value || ''}
                 />
             </div>
         </div>
     );
-};
+});
+
+SumCell.displayName = 'SumCell';
 
 interface SumInputCellProps {
     id: string,
     inputNumber: number,
     index: number,
     inputText: string,
-    arrayValue: string,
     onChange: (evt: any) => void,
     onClick: (evt: any) => void,
 }
 
-const SumInputCell = ({id, arrayValue, inputNumber, index, inputText, onChange, onClick}: SumInputCellProps) => {
+const SumInputCell = React.memo(({
+    id,
+    inputNumber,
+    index,
+    inputText,
+    onChange,
+    onClick
+}: SumInputCellProps) => {
     const styles = useStyles();
 
     return (
@@ -266,12 +289,14 @@ const SumInputCell = ({id, arrayValue, inputNumber, index, inputText, onChange, 
                     key={`sum_cell_typo_${id}_${index}`}
                     id={`sum_cell_typo_${id}_${index}`}
                     onClick={onClick}
-                    value={arrayValue}
+                    value={inputText}
                 />
             }
         </>
     );
-};
+});
+
+SumInputCell.displayName = 'SumInputCell';
 
 interface CollapseTableProps {
     idx: number,
@@ -281,7 +306,9 @@ interface CollapseTableProps {
     setInputNumber: Dispatch<SetStateAction<number>>,
     setText: (clipboard: string) => void,
     setArray: Dispatch<SetStateAction<TableState[]>>,
-    setInputText: Dispatch<SetStateAction<string>>
+    setInputText: Dispatch<SetStateAction<string>>,
+    sumTmpValues: Record<string, string[]>,
+    setSumValues: Dispatch<SetStateAction<Record<string, string[]>>>,
 }
 
 const CollapseTable = React.memo(({
@@ -292,11 +319,32 @@ const CollapseTable = React.memo(({
     setInputText,
     setInputNumber,
     setText,
-    array
+    array,
+    setSumValues,
+    sumTmpValues,
 }: CollapseTableProps) => {
     const styles = useStyles();
     const rowNumber = ~~(inputNumber / 3);
     const columnNumber = inputNumber % 3;
+    if (!sumTmpValues[inputNumber]) {
+        console.log('row idx', inputNumber, rowNumber * 3, rowNumber * 3 + 1, rowNumber * 3 + 2);
+        setSumValues((values) => {
+            console.log(values);
+            values[rowNumber * 3] = ['', '', ''];
+            values[rowNumber * 3 + 1] = ['', '', ''];
+            values[rowNumber * 3 + 2] = ['', '', ''];
+            return values;
+        });
+    }
+
+    const changeHandler = (evt: any, index: number, idx: number, value?: string) => {
+        // currentTarget.value - полное значение, target.value - текущий разряд
+        setArray((arr) => {
+            arr[index+1].data[idx].value = evt?.currentTarget.value || '';
+            return arr;
+        });
+        setInputText(evt?.currentTarget.value || '');
+    };
 
     return (
         <Table>
@@ -312,27 +360,19 @@ const CollapseTable = React.memo(({
                                 className={styles.pointer}
                                 onClick={() => setInputNumber(rowNumber * 3 + index)}
                             >
-                                <SumCell
-                                    id={`sum_input_cell_${index}`}
-                                    className={(columnNumber !== index || rowNumber !== idx) ? styles.none : ''}
-                                    value={inputValue}
-                                    onChange={
-                                        (evt: any, value?: string) => {
-                                            // currentTarget.value - полное значение, target.value - текущий разряд
-                                            setArray((arr) => {
-                                                arr[index+1].data[idx].value = evt?.currentTarget.value || value || '';
-                                                return arr;
-                                            });
-                                            setInputText(evt?.currentTarget.value || value || '');
-                                        }
-                                    }
-                                />
-                                <Typography
-                                    className={(columnNumber === index && rowNumber === idx) ? styles.none : ''}
-                                    variant="subtitle1"
-                                >
-                                    {array[index+1].data[rowNumber].value || '...'}
-                                </Typography>
+                                {columnNumber === index && rowNumber === idx ?
+                                    <SumCell
+                                        id={`sum_input_cell_${index}`}
+                                        value={inputValue} // todo тут почему-то пробрасывается везде одно и то же значе
+                                        onChange={(evt: any, value?: string) => changeHandler(evt, index, idx, value)}
+                                        inputCellNumber={inputNumber}
+                                        setSumValues={setSumValues}
+                                        sumTmpValues={sumTmpValues}
+                                    /> :
+                                    <Typography variant="subtitle1">
+                                        {array[index+1].data[rowNumber].value || '...'}
+                                    </Typography>
+                                }
                             </TableCell>
                         );
                     })}

@@ -290,6 +290,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
     const [inputCheckbox, setInputCheckbox] = useState(false);
+    const [sumTmpValues, setSumValues] = useState<Record<string, string[]>>({});
     const [text, setText] = useClippy();
 
     const cellClickHandler = (evt: any) => {
@@ -309,7 +310,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                 const collapse = getOpType(current.name) === OpType.SUM ?
                     <TableRow>
                         <TableCell className={styles.collapseCell} colSpan={4}>
-                            <Collapse in={~~(inputNumber / 3) === idx && !compareArray.length} timeout="auto">
+                            <Collapse in={~~(inputNumber / 3) === idx && !compareArray.length} timeout="auto" unmountOnExit>
                                 <CollapseTable
                                     idx={idx}
                                     inputNumber={inputNumber}
@@ -319,6 +320,8 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                                     setText={setText}
                                     setArray={setArray}
                                     setInputText={setInputText}
+                                    sumTmpValues={sumTmpValues}
+                                    setSumValues={setSumValues}
                                 />
                             </Collapse>
                         </TableCell>
@@ -413,7 +416,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
 
         return tableBody;
     }, [array, mistakeCountHandler, styles.tableRow, styles.pointer, compareArray, cellClickHandler, inputNumber,
-        inputText, text, inputCheckbox, setText, setArray]);
+        inputText, text, inputCheckbox, setText, setArray, sumTmpValues, setSumValues]);
 
     if (array.length === 0) {
         return <></>;
