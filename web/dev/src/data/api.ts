@@ -12,7 +12,7 @@ import {
 
 const host = 'http://188.35.161.40';
 const apiPrefix = '/api/v1';
-const apiHost = host + apiPrefix;
+const apiHost = apiPrefix;
 
 const api = {
     inside: apiHost + '/users', // ???
