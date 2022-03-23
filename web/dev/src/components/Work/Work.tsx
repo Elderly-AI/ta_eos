@@ -10,6 +10,7 @@ import {TemplateTemplateRequest} from '../../../src/data/Models';
 import {CountdownCircleTimer} from 'react-countdown-circle-timer';
 import {ArrowBack} from '@mui/icons-material';
 import {useHistory} from 'react-router-dom';
+import {useActions} from '../../hooks/useActions';
 
 const useStyles = makeStyles(() => ({
     mainContainer: {
@@ -105,35 +106,34 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'space-between'
     }
 }));
-const MAX_POINTS = 30;
 const OkResult = 'Отличная работа! Все верно.';
 
 const getPointMessage = (point: number): string => {
-    return `Ваша оценка: ${point}/${MAX_POINTS}`;
+    return `Ваша оценка: ${point}`;
 };
 
 const getBadMessage = (mistakesCount: number): string => (
-    `Вы сделали ${mistakesCount} ошибок`
+    `Количество ошибок: ${mistakesCount}`
 );
 
 export interface TableState {
-  data: {
+    data: {
+        name: string,
+        value: string | null,
+        overflow?: boolean | null,
+    }[],
     name: string,
-    value: string | null,
-    overflow?: boolean | null,
-  }[],
-  name: string,
 }
 
 
 interface TaskProps {
-  number: number,
-  themeName: string,
-  description: string,
-  values: {
-    name: string,
-    value: string | null,
-  }[] | undefined,
+    number: number,
+    themeName: string,
+    description: string,
+    values: {
+        name: string,
+        value: string | null,
+    }[] | undefined,
 }
 
 const Task = ({number, themeName, description, values}: TaskProps) => {
@@ -143,7 +143,7 @@ const Task = ({number, themeName, description, values}: TaskProps) => {
         if (!values) {
             return (
                 <Typography variant="h6" className={classNames(styles.selection, styles.span)}>
-          ---
+                  ---
                 </Typography>
             );
         }
@@ -177,13 +177,14 @@ const Task = ({number, themeName, description, values}: TaskProps) => {
 const Work = () => {
     const history = useHistory();
     const styles = useStyles();
+    const {getCurrentUser} = useActions();
     const [mistakesCount, setMistakesCount] = useState<number>(0);
     const [taskArray, setTaskArray] = useState<TableState[]>([]);
     const [template, setTemplate] = useState<TemplateTemplateRequest | null>(null);
     const [disableButton, setDisable] = useState(false);
     const [resultMessage, setResultMessage] = useState<string>('');
     const [compareArray, setCompareArray] = useState<TableState[]>([]);
-    const [currentPoint, setCurrentPoint] = useState<number | undefined>();
+    const [currentPoint, setCurrentPoint] = useState<number>(0);
     const [isPlaying, setPlaying] = useState(true);
 
     const changeMistakesCount = useCallback((count: number) => {
@@ -240,15 +241,16 @@ const Work = () => {
         }
         const preparedData = template;
         preparedData.data.UI[0].data = [template.data.UI[0].data[0], ...taskArray];
-        console.log(preparedData);
         DataService.approveKR('first', preparedData)
             .then((res) => {
-                setCurrentPoint(res.point ?? 0);
+                setCurrentPoint(res.points ?? 0);
                 setCompareArray(res.data.UI[0].data.slice(1));
 
                 if (JSON.stringify(preparedData) === JSON.stringify(res)) {
                     setResultMessage(OkResult);
                 }
+
+                getCurrentUser();
             });
     };
 
@@ -314,15 +316,15 @@ const Work = () => {
                         onClick={clickHandle}
                         disabled={disableButton}
                     >
-            Отправить
+                      Отправить
                     </Button>
                     {!!resultMessage.length && (
                         <Alert
                             variant="filled"
-                            severity={!resultMessage.includes(OkResult) ? 'error' : 'success'}
+                            severity={currentPoint < 3 ? 'error' : 'success'}
                             className={`
                               ${styles.alert}
-                              ${!resultMessage.includes(OkResult) ? styles.redAlert : ''}
+                              ${currentPoint < 3 ? styles.redAlert : ''}
                             `}
                         >
                             <div className={styles.resultMessageWrapper}>
@@ -346,7 +348,7 @@ const Work = () => {
                                                 fontWeight: 500
                                             }}
                                             variant='subtitle1'>
-                      На главную
+                                        На главную
                                         </Typography>
                                         <ArrowBack
                                             className={styles.backBtn}
