@@ -1,5 +1,5 @@
 import {Dispatch} from 'redux';
-import {timingAction, timingENUM} from '@Redux/reducers/timing';
+import {timingAction, timingENUM} from '../../../src/Redux/reducers/timing';
 
 export const getTiming = () => {
     return (dispatch: Dispatch<timingAction>) => {

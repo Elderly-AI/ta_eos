@@ -1,12 +1,12 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Header from '@Header';
+import Header from '../../../src/components/Header';
 import {Button, Typography} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import classNames from 'classnames';
 import CustomTable from './CustomTable';
-import DataService from '@data/DataService';
-import {TemplateTemplateRequest} from '@data/Models';
+import DataService from '../../../src/data/DataService';
+import {TemplateTemplateRequest} from '../../../src/data/Models';
 import {CountdownCircleTimer} from 'react-countdown-circle-timer';
 import {ArrowBack} from '@mui/icons-material';
 import {useHistory} from 'react-router-dom';

@@ -1,8 +1,8 @@
 import React from 'react';
 import {blue} from '@material-ui/core/colors';
 import {makeStyles, Theme} from '@material-ui/core/styles';
-import Header from '@Header';
-import Math from '@Math';
+import Header from '../../../src/components/Header';
+import Math from '../../../src/components/Math';
 
 const useStyles = makeStyles((theme: Theme) => ({
     container: {

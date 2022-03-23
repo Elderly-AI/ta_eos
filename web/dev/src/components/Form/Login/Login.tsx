@@ -1,11 +1,11 @@
 import Button from '@material-ui/core/Button';
 import React, {ChangeEvent, useState} from 'react';
 import {makeStyles, Theme} from '@material-ui/core/styles';
-import {useActions} from '@hooks/useActions';
+import {useActions} from '../../../../src/hooks/useActions';
 import CustomInput, {CustomInputProps} from '../../CustomInput/CustomInput';
 import {Link} from 'react-router-dom';
-import {authLoginRequest} from '@data/Models';
-import Validator from '@utils/Validator';
+import {authLoginRequest} from '../../../../src/data/Models';
+import Validator from '../../../../src/utils/Validator';
 
 const useStyles = makeStyles((theme: Theme) => ({
     form: {

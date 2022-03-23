@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import {Fade} from '@material-ui/core';
-import {IMath} from '@Math';
-import {calcMultipleResponseStep} from '@data/Models';
+import {IMath} from '../../../../src/components/Math';
+import {calcMultipleResponseStep} from '../../../../src/data/Models';
 import classNames from 'classnames';
 
 // Забивка пустого места при сдвиге
