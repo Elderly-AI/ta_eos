@@ -80,7 +80,7 @@ func (s *Store) SetCookieGRPC(c context.Context, userId string) error {
 }
 
 func (s *Store) GetSetCookieHeader(authToken string) string {
-	return fmt.Sprintf("authToken=%s; Max-Age=%d", authToken, s.cookieTimeout)
+	return fmt.Sprintf("authToken=%s; Max-Age=%d; Path=/", authToken, s.cookieTimeout)
 }
 
 func (s *Store) SetAuthCookieHeaderGrpc(c context.Context, authToken string) error {
