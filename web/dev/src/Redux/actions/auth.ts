@@ -1,6 +1,6 @@
 import {Dispatch} from 'redux';
 import {authAction, authAPI} from '../reducers/auth';
-import {authLoginRequest, authRegisterRequest} from '@data/Models';
+import {authLoginRequest, authRegisterRequest} from '../../../src/data/Models';
 import DataService from '../../data/DataService';
 
 export function authorize(user: authLoginRequest) {

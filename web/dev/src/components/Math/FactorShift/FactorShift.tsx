@@ -3,8 +3,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import {blue} from '@material-ui/core/colors';
-import {calcMultipleResponseStep} from '@data/Models';
-import {multiplyEnum} from '@Math/Math';
+import {calcMultipleResponseStep} from '../../../../src/data/Models';
+import {multiplyEnum} from '../../../../src/components/Math/Math';
 
 interface SumShiftProps {
     multipleType: multiplyEnum,

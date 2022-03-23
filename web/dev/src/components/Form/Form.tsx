@@ -5,8 +5,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {grey} from '@material-ui/core/colors';
-import Registration from '@Form/Registration';
-import Login from '@Form/Login';
+import Registration from './Registration';
+import Login from './Login';
 
 const animDur = 500;
 

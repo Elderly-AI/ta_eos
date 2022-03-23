@@ -7,7 +7,7 @@ import {
 import {blue} from '@material-ui/core/colors';
 import {Link as RouterLink} from 'react-router-dom';
 import React, {useState} from 'react';
-import {useTypedSelector} from '@hooks/useTypedSelector';
+import {useTypedSelector} from '../../../src/hooks/useTypedSelector';
 
 const useStyles = makeStyles(() => ({
     header: {

@@ -1,11 +1,11 @@
-import Header from '@Header';
+import Header from '../../../src/components/Header';
 import React, {useEffect, useState} from 'react';
 import {Button, makeStyles, Step, StepContent, StepLabel, Stepper, Typography} from '@material-ui/core';
 import {useHistory} from 'react-router-dom';
 import CustomBadge from '../CustomBadge';
-import DataService from '@data/DataService';
-import {WorkItem} from '@data/Models';
-import {useTypedSelector} from '@hooks/useTypedSelector';
+import DataService from '../../../src/data/DataService';
+import {WorkItem} from '../../../src/data/Models';
+import {useTypedSelector} from '../../../src/hooks/useTypedSelector';
 
 const useStyles = makeStyles(() => ({
     worksComponent: {
