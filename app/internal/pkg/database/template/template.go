@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/golang/glog"
 	"github.com/jmoiron/sqlx"
-	"log"
 	"time"
 )
 
@@ -41,23 +40,16 @@ func (r *Repo) SetGrades(ctx context.Context, workName string, grade int, userId
 	if err != nil {
 		return nil, err
 	}
-	if len(gradesRaw) < 3 {
-		gradesDict = map[string]int{workName: grade}
-		res, marshErr := json.Marshal(gradesDict)
-		if marshErr != nil {
-			glog.Errorf("Cant set grade for %s", workName)
-			return nil, err
-		}
-		_, err = r.conn.ExecContext(ctx, "UPDATE users SET grades=$1 WHERE user_id=$2", res, userId)
-		if err != nil {
-			glog.Errorf("Cant set grade for %s", workName)
-			return nil, err
-		}
-		return gradesDict, nil
+	gradesDict = map[string]int{workName: grade}
+	res, marshErr := json.Marshal(gradesDict)
+	if marshErr != nil {
+		glog.Errorf("Cant set grade for %s", workName)
+		return nil, err
 	}
-	if err := json.Unmarshal([]byte(gradesRaw), &gradesDict); err != nil {
-		log.Fatalf("Cant set grade with %r", err)
+	_, err = r.conn.ExecContext(ctx, "UPDATE users SET grades=$1 WHERE user_id=$2", res, userId)
+	if err != nil {
+		glog.Errorf("Cant set grade for %s", workName)
+		return nil, err
 	}
-	gradesDict[workName] = grade
 	return gradesDict, nil
 }
