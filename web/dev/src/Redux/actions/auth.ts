@@ -30,11 +30,20 @@ export const getCurrentUser = () => {
         DataService.curUser()
             .then((newUser) => {
                 if (newUser) {
+                    const grades = JSON.parse(newUser.grades as string);
+
                     return dispatch({
                         type: authAPI.GET_CURRENT_USER,
-                        payload: newUser
+                        payload: {
+                            ...newUser,
+                            grades
+                        }
                     });
                 }
             });
     };
+};
+
+export const setGrade = () => {
+    getCurrentUser();
 };

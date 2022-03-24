@@ -1,5 +1,5 @@
 import './App.css';
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import Form from './components/Form';
 import Modal from './components/Modal';
 import {useTypedSelector} from '../src/hooks/useTypedSelector';
@@ -16,10 +16,19 @@ const App: React.FC = () => {
     const modal = useTypedSelector((state) => state.modal);
     const {getCurrentUser} = useActions();
     const history = useHistory();
-
     useEffect(() => {
         getCurrentUser();
     }, [getCurrentUser]);
+
+    const redirect = useCallback(() => {
+        if (!auth) {
+            history.push('/auth');
+        }
+
+        if (history.location.pathname === '/auth') {
+            history.push('/home');
+        }
+    }, [auth, history]);
 
     return (
         <div className="App">
@@ -30,7 +39,7 @@ const App: React.FC = () => {
                 <Route path='/admin/:userId' component={Admin}/>
                 <Route exact path="/works" component={Works}/>
                 <Route exact path="/work/:userId" component={Work}/>
-                {auth?.name ? history.push('/home') : history.push('/auth')}
+                {redirect()}
             </Switch>
             {modal.show ? <Modal/> : ''}
         </div>

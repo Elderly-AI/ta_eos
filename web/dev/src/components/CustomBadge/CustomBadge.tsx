@@ -8,28 +8,37 @@ const useStyles = makeStyles(() => ({
         justifyContent: 'center',
         borderRadius: '64px',
         minWidth: 52,
-        backgroundColor: '#2E7D32'
     },
     wrapper: {
         display: 'flex',
         gap: '8px',
+    },
+    successBadge: {
+        backgroundColor: '#2E7D32'
+    },
+    errorBadge: {
+        backgroundColor: 'red'
     }
 }));
 
 type Props = {
   text: string,
+  isSuccessBadge: boolean
 }
 
 const CustomBadge: FC<Props> = ({
     children,
-    text
+    text,
+    isSuccessBadge
 }) => {
     const classes = useStyles();
 
     return <div className={classes.wrapper}>
         {text}
         {
-            children && <div className={classes.badge}>
+            children && <div
+                className={`${classes.badge} ${isSuccessBadge ? classes.successBadge : classes.errorBadge}`}
+            >
                 {children}
             </div>
         }

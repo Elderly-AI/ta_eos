@@ -4,6 +4,7 @@ import {
     authSafeUser,
     calcMultipleRequest,
     calcMultipleResponse,
+    Grades,
     metricsMetricsArray,
     SearchUser,
     TemplateTemplateRequest,
@@ -12,7 +13,7 @@ import {
 
 const host = 'http://188.35.161.40';
 const apiPrefix = '/api/v1';
-const apiHost = host + apiPrefix;
+const apiHost = apiPrefix;
 
 const api = {
     inside: apiHost + '/users', // ???
@@ -51,7 +52,7 @@ export interface ApiInterface {
   search: (text: string) => Promise<Array<SearchUser>>,
   searchMetric: (text: string) => Promise<metricsMetricsArray>,
   searchTimestamp: (text: string, from: string, to: string) => Promise<metricsMetricsArray>
-  getWork: (id: string) => Promise<WorkItem[]>,
+  getWork: (id: string, grades: Grades) => Promise<WorkItem[]>,
   getKR: (name: string) => Promise<TemplateTemplateRequest>
 }
 

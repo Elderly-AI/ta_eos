@@ -5,6 +5,7 @@ import {
     authSafeUser,
     calcMultipleRequest,
     calcMultipleResponse,
+    Grades,
     metricsMetricsArray,
     SearchResult,
     SearchUser,
@@ -14,16 +15,18 @@ import {
 
 const MOCK_KP_LIST: WorkItem[] = [
     {
-        name: 'Если не справился, ты идиот',
+        key: 'first',
+        name: 'Контрольная работа №1',
         possibility: false,
-        estimation: 'отл'
     },
     {
-        name: 'Если не справился, ты идиот',
-        possibility: true,
+        key: 'second',
+        name: 'Контрольная работа №2',
+        possibility: false,
     },
     {
-        name: 'Если не справился, ты идиот',
+        key: 'third',
+        name: 'Контрольная работа №3',
         possibility: false,
     }
 ] as WorkItem[];
@@ -147,10 +150,24 @@ class DataService implements ApiInterface {
             .then((dat: metricsMetricsArray) => dat);
     }
 
-    async getWork(id: string): Promise<WorkItem[]> {
+    async getWork(id: string, grades: Grades): Promise<WorkItem[]> {
         const prom = new Promise((resolve, reject) => {
             try {
-                resolve(MOCK_KP_LIST);
+                const preparedList = MOCK_KP_LIST.map((kp) => {
+                    const newItem: WorkItem = {
+                        ...kp,
+                    };
+                    // @ts-ignore
+                    const grade = grades[kp.key];
+                    const isGradeExist = !isNaN(grade);
+                    if (isGradeExist) {
+                        newItem.estimation = grade;
+                        newItem.possibility = isGradeExist;
+                    }
+                    return newItem;
+                });
+
+                resolve(preparedList);
             } catch (e) {
                 reject(e);
             }
@@ -183,7 +200,7 @@ class DataService implements ApiInterface {
             .catch((err) => console.error(err))
             .then((res) => ({
                 ...res,
-                point: res.point ?? 0
+                points: res.points ?? 0
             }));
     }
 }

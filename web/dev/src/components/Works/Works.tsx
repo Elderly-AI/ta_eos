@@ -38,12 +38,16 @@ const useStyles = makeStyles(() => ({
 export default function Works() {
     const history = useHistory();
     const classes = useStyles();
+    const auth = useTypedSelector((store) => store.auth);
     const [works, setWorks] = useState<WorkItem[]>([]);
     const [activeStep, setActiveStep] = useState<number>(0);
-    const auth = useTypedSelector((store) => store.auth);
 
     useEffect(() => {
-        DataService.getWork(auth?.userId ?? '').then((res) => {
+        if (!auth || (auth && !auth.grades)) {
+            return;
+        }
+
+        DataService.getWork(auth?.userId ?? '', auth?.grades ?? {}).then((res) => {
             const firstActive = res.findIndex((item) => item.possibility) ?? 0;
             setActiveStep(firstActive);
             setWorks(res);
@@ -71,8 +75,11 @@ export default function Works() {
                                 <Step key={index}>
                                     <StepLabel>
 
-                                        <CustomBadge text={'КР №' + (index + 1) + ' ' + work.name}>
-                                            {work.estimation && (
+                                        <CustomBadge
+                                            isSuccessBadge={work?.estimation as number > 3}
+                                            text={'КР №' + (index + 1) + ' ' + work.name}
+                                        >
+                                            {!isNaN(work.estimation as number) && (
                                                 <Typography className={classes.text}>
                                                     {work.estimation}
                                                 </Typography>
