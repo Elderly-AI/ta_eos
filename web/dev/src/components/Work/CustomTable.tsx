@@ -290,7 +290,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
     const [inputCheckbox, setInputCheckbox] = useState(false);
-    const [sumTmpValues, setSumValues] = useState<Record<string, string[]>>({});
+    const [sumTmpValues, setSumValues] = useState<Record<string, any>>({});
     const [text, setText] = useClippy();
 
     const cellClickHandler = (evt: any) => {

@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {Checkbox, Table, TableBody, TableCell, TableRow, Tooltip, Typography} from '@material-ui/core';
 import {TableState} from './Work';
 import classNames from 'classnames';
@@ -159,8 +159,8 @@ interface SumCellProps {
     value: string | null,
     onChange: (evt: any, value?: string) => void,
     inputCellNumber: number,
-    sumTmpValues: Record<string, string[]>,
-    setSumValues: Dispatch<SetStateAction<Record<string, string[]>>>,
+    sumTmpValues: Record<string, any>,
+    setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
 }
 
 const SumCell = React.memo(({
@@ -179,15 +179,25 @@ const SumCell = React.memo(({
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
 
+    // useEffect(() => {
+    //     setIsInput(!!sumTmpValues[inputCellNumber]?.overflow);
+    // }, []);
+
     const handleChecked = () => {
-        if (!isResultInput) {
-            setSumValues((obj) => {
-                // если нажат чекбокс, надо добавить 3-й инпут и вставить в него значение их рузультирующего. поэтому 2
-                obj[inputCellNumber][2] = value || '';
-                return obj;
-            });
-            onChange(undefined, '');
-        }
+        console.log('ahahahah', sumTmpValues[inputCellNumber].overflow);
+        setSumValues((obj) => {
+            const prepared = {
+                ...obj
+            };
+
+            if (!prepared[inputCellNumber].overflow) {
+                prepared[inputCellNumber].value[2] = value || '';
+                onChange(undefined, '');
+            }
+
+            prepared[inputCellNumber].overflow = !prepared[inputCellNumber].overflow;
+            return prepared;
+        });
         setIsInput((prev) => !prev);
     };
 
@@ -195,7 +205,7 @@ const SumCell = React.memo(({
         console.log('id', evt.currentTarget.id);
         const id = +evt.currentTarget.id.split('_').pop();
         if (id !== inputNumber) {
-            setInputText(sumTmpValues[inputCellNumber][id] || '');
+            setInputText(sumTmpValues[inputCellNumber].value[id] || '');
             setInputNumber(id);
         }
     };
@@ -210,7 +220,7 @@ const SumCell = React.memo(({
                     <Checkbox
                         size="small"
                         color="primary"
-                        checked={isResultInput}
+                        checked={!!sumTmpValues[inputCellNumber]?.overflow}
                         onChange={handleChecked}
                     />
                 </Tooltip>
@@ -221,18 +231,18 @@ const SumCell = React.memo(({
                     const handleChange = (evt: any) => {
                         console.log('evt', evt.currentTarget.value);
                         setSumValues((obj) => {
-                            obj[inputCellNumber][index] = evt.currentTarget.value || '';
+                            obj[inputCellNumber].value[index] = evt.currentTarget.value || '';
                             return obj;
                         });
                         setInputText(evt?.currentTarget.value || '');
                     };
 
-                    if (isResultInput || index !== 2) {
+                    if ((sumTmpValues[inputCellNumber]  && sumTmpValues[inputCellNumber].overflow) || index !== 2) {
                         const isNotEmpty = sumTmpValues[inputCellNumber];
                         console.log('inputText', inputText);
                         return <SumInputCell
                             id={id}
-                            inputText={isNotEmpty ? sumTmpValues[inputCellNumber][index] : ''}
+                            inputText={isNotEmpty ? sumTmpValues[inputCellNumber].value[index] : ''}
                             onChange={handleChange}
                             onClick={handleClick}
                             index={index}
@@ -307,8 +317,8 @@ interface CollapseTableProps {
     setText: (clipboard: string) => void,
     setArray: Dispatch<SetStateAction<TableState[]>>,
     setInputText: Dispatch<SetStateAction<string>>,
-    sumTmpValues: Record<string, string[]>,
-    setSumValues: Dispatch<SetStateAction<Record<string, string[]>>>,
+    sumTmpValues: Record<string, any>,
+    setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
 }
 
 const CollapseTable = React.memo(({
@@ -330,9 +340,9 @@ const CollapseTable = React.memo(({
         console.log('row idx', inputNumber, rowNumber * 3, rowNumber * 3 + 1, rowNumber * 3 + 2);
         setSumValues((values) => {
             console.log(values);
-            values[rowNumber * 3] = ['', '', ''];
-            values[rowNumber * 3 + 1] = ['', '', ''];
-            values[rowNumber * 3 + 2] = ['', '', ''];
+            values[rowNumber * 3] = {value: ['', '', ''], overflow: false};
+            values[rowNumber * 3 + 1] = {value: ['', '', ''], overflow: false};
+            values[rowNumber * 3 + 2] = {value: ['', '', ''], overflow: false};
             return values;
         });
     }
