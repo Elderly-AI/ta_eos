@@ -346,6 +346,11 @@ const CollapseTable = React.memo(({
         setInputText(evt?.currentTarget.value || '');
     };
 
+    const clickHandler = (index: number) => {
+        setInputText(array[index + 1].data[rowNumber].value?.toString()|| '');
+        setInputNumber(rowNumber * 3 + index);
+    };
+
     return (
         <Table>
             <TableBody>
@@ -358,12 +363,12 @@ const CollapseTable = React.memo(({
                                 key={key}
                                 width="25%"
                                 className={styles.pointer}
-                                onClick={() => setInputNumber(rowNumber * 3 + index)}
+                                onClick={() => clickHandler(index)}
                             >
                                 {columnNumber === index && rowNumber === idx ?
                                     <SumCell
                                         id={`sum_input_cell_${index}`}
-                                        value={inputValue} // todo тут почему-то пробрасывается везде одно и то же значе
+                                        value={inputValue}
                                         onChange={(evt: any, value?: string) => changeHandler(evt, index, idx, value)}
                                         inputCellNumber={inputNumber}
                                         setSumValues={setSumValues}
