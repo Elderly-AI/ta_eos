@@ -1,5 +1,5 @@
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import {Checkbox, Table, TableBody, TableCell, TableRow, Tooltip, Typography} from '@material-ui/core';
+import {Checkbox, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography} from '@material-ui/core';
 import {TableState} from './Work';
 import classNames from 'classnames';
 import TableInput from './TableInput';
@@ -62,12 +62,15 @@ const useStyles = makeStyles({
     sumCellContainer: {
         position: 'relative',
         display: 'grid',
+        height: '260px',
         gridTemplateAreas: `"firstLine"
                             "secondLine"
                             "separator"
                             "thirdLine"
-                            "fifthLine"`,
-        gridTemplateRows: '1fr 1fr min-content 1fr 1fr',
+                            "fifthLine"
+                            "sixthLine"
+                            "seventhLine"`,
+        gridTemplateRows: '1fr 1fr min-content 1fr 1fr 1fr 1fr',
         gridGap: '5px',
     },
 
@@ -77,6 +80,14 @@ const useStyles = makeStyles({
 
     secondLine: {
         gridTemplate: 'secondLine',
+    },
+
+    sixthLine: {
+        gridArea: 'sixthLine',
+    },
+
+    seventhLine: {
+        gridArea: 'seventhLine',
     },
 
     separator: {
@@ -95,6 +106,10 @@ const useStyles = makeStyles({
         position: 'absolute',
         top: '0.75rem',
         right: '-15px',
+    },
+
+    center: {
+        textAlign: 'center',
     },
 
     digit: {
@@ -119,6 +134,11 @@ const useStyles = makeStyles({
         width: '100%',
         // height: '25px',
     },
+
+    resDirect: {
+        display: 'flex',
+        alignItems: 'center',
+    }
 });
 
 interface CellTextValueProps {
@@ -175,13 +195,8 @@ const SumCell = React.memo(({
     const styles = useStyles();
     const containerClasses = classNames(styles.cellContainer, className ? className : '');
     const [isResultInput, setIsInput] = useState(false);
-    // const [resArr, serResArr] = useState<string[]>(['', '', '']);
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
-
-    // useEffect(() => {
-    //     setIsInput(!!sumTmpValues[inputCellNumber]?.overflow);
-    // }, []);
 
     const handleChecked = () => {
         console.log('ahahahah', sumTmpValues[inputCellNumber].overflow);
@@ -210,12 +225,21 @@ const SumCell = React.memo(({
         }
     };
 
+    const handleChange = (evt: any, index: number) => {
+        console.log('evt', evt.currentTarget.value);
+        setSumValues((obj) => {
+            obj[inputCellNumber].value[index] = evt.currentTarget.value || '';
+            return obj;
+        });
+        setInputText(evt?.currentTarget.value || '');
+    };
+
     return (
         <div className={containerClasses} id={`container_${id}`}>
             <div className={styles.sumCellContainer}>
-                <Typography>A</Typography>
+                <Typography className={styles.center}>A</Typography>
                 <Typography className={styles.plusSymbol}>+</Typography>
-                <Typography>B</Typography>
+                <Typography className={styles.center}>B</Typography>
                 <Tooltip className={styles.sumCheckbox} title={'Перенос разряда'} placement="left" arrow>
                     <Checkbox
                         size="small"
@@ -224,26 +248,25 @@ const SumCell = React.memo(({
                         onChange={handleChecked}
                     />
                 </Tooltip>
+                <Typography className={styles.sixthLine}>
+                    {'A+B'}
+                    <sub>пр</sub>
+                </Typography>
+                <Typography className={styles.seventhLine}>
+                    {'A+B'}
+                    <sub>10</sub>
+                </Typography>
             </div>
             <div className={styles.sumCellContainer}>
                 <div className={styles.separator}/>
                 {[0, 1, 2].map((index) => {
-                    const handleChange = (evt: any) => {
-                        console.log('evt', evt.currentTarget.value);
-                        setSumValues((obj) => {
-                            obj[inputCellNumber].value[index] = evt.currentTarget.value || '';
-                            return obj;
-                        });
-                        setInputText(evt?.currentTarget.value || '');
-                    };
-
                     if ((sumTmpValues[inputCellNumber]  && sumTmpValues[inputCellNumber].overflow) || index !== 2) {
                         const isNotEmpty = sumTmpValues[inputCellNumber];
                         console.log('inputText', inputText);
                         return <SumInputCell
                             id={id}
                             inputText={isNotEmpty ? sumTmpValues[inputCellNumber].value[index] : ''}
-                            onChange={handleChange}
+                            onChange={(evt) => handleChange(evt, index)}
                             onClick={handleClick}
                             index={index}
                             inputNumber={inputNumber}
@@ -257,6 +280,21 @@ const SumCell = React.memo(({
                     onClick={handleClick}
                     index={3}
                     inputNumber={inputNumber}
+                />
+                <div className={classNames(styles.sixthLine, styles.resDirect)}>
+                    <SumInputCell
+                        id={id}
+                        inputText={sumTmpValues[inputCellNumber] ? sumTmpValues[inputCellNumber].value[4] : ''}
+                        onChange={(evt) => handleChange(evt, 4)}
+                        onClick={handleClick}
+                        index={4}
+                        inputNumber={inputNumber}
+                    />
+                </div>
+                <TextField
+                    className={styles.seventhLine}
+                    value={sumTmpValues[inputCellNumber] ? sumTmpValues[inputCellNumber].value[5] : ''}
+                    onChange={(evt) => handleChange(evt, 5)}
                 />
             </div>
         </div>
@@ -340,9 +378,9 @@ const CollapseTable = React.memo(({
         console.log('row idx', inputNumber, rowNumber * 3, rowNumber * 3 + 1, rowNumber * 3 + 2);
         setSumValues((values) => {
             console.log(values);
-            values[rowNumber * 3] = {value: ['', '', ''], overflow: false};
-            values[rowNumber * 3 + 1] = {value: ['', '', ''], overflow: false};
-            values[rowNumber * 3 + 2] = {value: ['', '', ''], overflow: false};
+            values[rowNumber * 3] = {value: ['', '', '', '', '', ''], overflow: false};
+            values[rowNumber * 3 + 1] = {value: ['', '', '', '', '', ''], overflow: false};
+            values[rowNumber * 3 + 2] = {value: ['', '', '', '', '', ''], overflow: false};
             return values;
         });
     }
