@@ -61,6 +61,16 @@ func (v Value) Value() uint64 {
 	return v.value & ((1 << (v.grid - 1)) - 1)
 }
 
+func (v Value) ToInt() string {
+	valueCopy := v
+	valueCopy.ConvertType(ValueTypeDirectCode)
+	val := int(valueCopy.Value())
+	if valueCopy.Sign() != 0 {
+		val = -val
+	}
+	return fmt.Sprintf("%d", val)
+}
+
 func (v Value) Overflow() bool {
 	return v.overflow
 }

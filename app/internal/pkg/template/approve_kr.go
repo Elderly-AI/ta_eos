@@ -1,12 +1,14 @@
 package template
 
 import (
-	"github.com/Elderly-AI/ta_eos/internal/pkg/value_lib"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	"github.com/Elderly-AI/ta_eos/internal/pkg/value_lib"
 )
 
 const defaultGridSize = 8
@@ -18,6 +20,7 @@ var errCantParseKrTemplateUIBlock error = status.Errorf(codes.InvalidArgument, "
 var errCantParseKrTemplateUIBlockType error = status.Errorf(codes.InvalidArgument, "error cant parse KrTemplateUIBlockType")
 var errCantParseKrTemplateUIBlockValuePair error = status.Errorf(codes.InvalidArgument, "error cant parse KrTemplateUIBlockValuePair")
 var errCantParseNullableString error = status.Errorf(codes.InvalidArgument, "error cant parse NullableString")
+var errCantParseNullableAdditionalSteps error = status.Errorf(codes.InvalidArgument, "error cant parse NullableAdditionalSteps")
 
 type Points struct {
 	Correct   uint64
@@ -30,7 +33,7 @@ func (f *Facade) ApproveKr(kr map[string]interface{}) (map[string]interface{}, P
 
 	err := krTemplate.Parse(kr)
 	if err != nil {
-		return nil, points, nil
+		return nil, points, err
 	}
 
 	switch krTemplate.Type {
@@ -110,13 +113,14 @@ func (f *Facade) KrTemplateUIBlockValuesHandler(block *KrTemplateUIBlock) (map[s
 func (f *Facade) KrTemplateUIBlockValuePair(block *KrTemplateUIBlock, valueType value_lib.ValueType, valuesMap map[string]int64) (points Points, err error) {
 	for i, pair := range block.Data {
 		var value *value_lib.Value
+		var additionalSteps NullableAdditionalSteps
 
 		sum, _ := regexp.MatchString(`\+`, pair.Name)
 		leftShift, _ := regexp.MatchString(`<<`, pair.Name)
 		rightShift, _ := regexp.MatchString(`>>`, pair.Name)
 
 		if sum {
-			value, err = f.KrTemplateUIBlockValuePairNameSum(pair.Name, valueType, valuesMap)
+			value, additionalSteps, err = f.KrTemplateUIBlockValuePairNameSum(pair.Name, valueType, valuesMap)
 			if err != nil {
 				return
 			}
@@ -136,36 +140,64 @@ func (f *Facade) KrTemplateUIBlockValuePair(block *KrTemplateUIBlock, valueType 
 				return
 			}
 		}
+		correct := false
+
 		if block.Data[i].Overflow == value.Overflow() && (&block.Data[i].Value).Value == value.String() {
-			points.Correct += 1
-			continue
+			correct = true
+		} else {
+			correct = false
+		}
+		if correct && additionalSteps.Valid && (!block.Data[i].AdditionalSteps.Valid ||
+			additionalSteps.ValueA != block.Data[i].AdditionalSteps.ValueA ||
+			additionalSteps.ValueB != block.Data[i].AdditionalSteps.ValueB ||
+			additionalSteps.Transfer != block.Data[i].AdditionalSteps.Transfer ||
+			additionalSteps.Direct != block.Data[i].AdditionalSteps.Direct ||
+			additionalSteps.Decimal != block.Data[i].AdditionalSteps.Decimal) {
+			correct = false
 		}
 
-		points.Incorrect += 1
-		block.Data[i].Overflow = value.Overflow()
-		(&block.Data[i].Value).Value = value.String()
-		(&block.Data[i].Value).Valid = true
+		if correct {
+			points.Correct += 1
+		} else {
+			points.Incorrect += 1
+			block.Data[i].Overflow = value.Overflow()
+			(&block.Data[i].Value).Value = value.String()
+			(&block.Data[i].Value).Valid = true
+			block.Data[i].AdditionalSteps = additionalSteps
+		}
 	}
 	return
 }
 
-func (f *Facade) KrTemplateUIBlockValuePairNameSum(name string, valueType value_lib.ValueType, valuesMap map[string]int64) (*value_lib.Value, error) {
+func (f *Facade) KrTemplateUIBlockValuePairNameSum(name string, valueType value_lib.ValueType, valuesMap map[string]int64) (*value_lib.Value, NullableAdditionalSteps, error) {
+	additionalSteps := NullableAdditionalSteps{Valid: false}
 	values := strings.Split(name, "+")
 	if len(values) != 2 {
-		return nil, errCantParseKrTemplateUIBlockValuePair
+		return nil, additionalSteps, errCantParseKrTemplateUIBlockValuePair
 	}
 	fv, ok := valuesMap[values[0]]
 	if !ok {
-		return nil, errCantParseKrTemplateUIBlockValuePair
+		return nil, additionalSteps, errCantParseKrTemplateUIBlockValuePair
 	}
 	sv, ok := valuesMap[values[1]]
 	if !ok {
-		return nil, errCantParseKrTemplateUIBlockValuePair
+		return nil, additionalSteps, errCantParseKrTemplateUIBlockValuePair
 	}
 	fvv := value_lib.InitValueFromInt64(fv, defaultGridSize, valueType)
 	svv := value_lib.InitValueFromInt64(sv, defaultGridSize, valueType)
 	value := fvv.Add(svv)
-	return &value, nil
+
+	if value.Overflow() {
+		additionalSteps.ValueA = fvv.String()
+		additionalSteps.ValueB = svv.String()
+		directValue := value
+		directValue.ConvertType(value_lib.ValueTypeDirectCode)
+		additionalSteps.Direct = directValue.String()
+		additionalSteps.Decimal = directValue.ToInt()
+		additionalSteps.Transfer = value_lib.InitValueFromInt64(1, defaultGridSize, value_lib.ValueTypeDirectCode).String()
+		additionalSteps.Valid = true
+	}
+	return &value, additionalSteps, nil
 }
 
 func (f *Facade) KrTemplateUIBlockValuePairNameLeftShift(name string, valueType value_lib.ValueType, valuesMap map[string]int64) (*value_lib.Value, error) {
@@ -474,9 +506,10 @@ func (k *KrTemplateUIBlockType) Construct() interface{} {
 }
 
 type ValuePair struct {
-	Name     string
-	Value    NullableString
-	Overflow bool
+	Name            string
+	Value           NullableString
+	Overflow        bool
+	AdditionalSteps NullableAdditionalSteps
 }
 
 func (v *ValuePair) Parse(valuePairInterface interface{}) error {
@@ -500,24 +533,35 @@ func (v *ValuePair) Parse(valuePairInterface interface{}) error {
 	if err != nil {
 		return err
 	}
-
 	overflowInterface, ok := valuePair["overflow"]
-	if !ok {
-		return nil
+	if ok {
+		v.Overflow, ok = overflowInterface.(bool)
+		if !ok {
+			return errCantParseKrTemplateUIBlockValuePair
+		}
 	}
-	v.Overflow, ok = overflowInterface.(bool)
+	additionalStepsInterface, ok := valuePair["additionalSteps"]
 	if !ok {
-		return errCantParseKrTemplateUIBlockValuePair
+		v.AdditionalSteps.Valid = false
+	} else {
+		err = v.AdditionalSteps.Parse(additionalStepsInterface)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 func (v *ValuePair) Construct() interface{} {
-	return map[string]interface{}{
+	valuePairMap := map[string]interface{}{
 		"name":     v.Name,
 		"value":    v.Value.Construct(),
 		"overflow": v.Overflow,
 	}
+	if v.AdditionalSteps.Valid {
+		valuePairMap["additionalSteps"] = v.AdditionalSteps.Construct()
+	}
+	return valuePairMap
 }
 
 type NullableString struct {
@@ -544,4 +588,79 @@ func (n *NullableString) Construct() interface{} {
 		return n.Value
 	}
 	return nil
+}
+
+type NullableAdditionalSteps struct {
+	ValueA   string
+	ValueB   string
+	Transfer string
+	Direct   string
+	Decimal  string
+	Valid    bool
+}
+
+func (n *NullableAdditionalSteps) Parse(nullableAdditionalStepsInterface interface{}) error {
+	if nullableAdditionalStepsInterface == nil {
+		n.Valid = false
+		return nil
+	}
+	nullableAdditionalStepsMap, ok := nullableAdditionalStepsInterface.(map[string]interface{})
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	valueAInterface, ok := nullableAdditionalStepsMap["a"]
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	n.ValueA, ok = valueAInterface.(string)
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	valueBInterface, ok := nullableAdditionalStepsMap["b"]
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	n.ValueB, ok = valueBInterface.(string)
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	transferInterface, ok := nullableAdditionalStepsMap["transfer"]
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	n.Transfer, ok = transferInterface.(string)
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	directInterface, ok := nullableAdditionalStepsMap["direct"]
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	n.Direct, ok = directInterface.(string)
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	decimalInterface, ok := nullableAdditionalStepsMap["decimal"]
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	n.Decimal, ok = decimalInterface.(string)
+	if !ok {
+		return errCantParseNullableAdditionalSteps
+	}
+	n.Valid = true
+	return nil
+}
+
+func (n *NullableAdditionalSteps) Construct() interface{} {
+	if !n.Valid {
+		return nil
+	}
+	return map[string]interface{}{
+		"a":        n.ValueA,
+		"b":        n.ValueB,
+		"transfer": n.Transfer,
+		"direct":   n.Direct,
+		"decimal":  n.Decimal,
+	}
 }
