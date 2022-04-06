@@ -93,19 +93,19 @@ func TestKrTemplateUI_Parse(t *testing.T) {
 							"data": []interface{}{
 								map[string]interface{}{
 									"name":  "A",
-									"value": "10",
+									"value": "60",
 								},
 								map[string]interface{}{
 									"name":  "B",
-									"value": "20",
+									"value": "60",
 								},
 								map[string]interface{}{
 									"name":  "-A",
-									"value": "-10",
+									"value": "-60",
 								},
 								map[string]interface{}{
 									"name":  "-B",
-									"value": "-20",
+									"value": "-60",
 								},
 								map[string]interface{}{
 									"name":     "A<<2",
