@@ -3,7 +3,7 @@ services:
   app:
     build: "./app"
     ports:
-      - "8090"
+      - "8090:8090"
     depends_on:
       - "postgres"
       - "redis"
