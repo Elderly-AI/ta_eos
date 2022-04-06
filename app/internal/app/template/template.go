@@ -2,6 +2,8 @@ package template
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"errors"
 	templateRepo "github.com/Elderly-AI/ta_eos/internal/pkg/database/template"
 	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
@@ -11,6 +13,7 @@ import (
 	"math"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 type Server struct {
@@ -400,19 +403,42 @@ func GetTemplate(templateName string) map[string]interface{} {
 }
 
 func (s Server) GetKrHandler(ctx context.Context, req *pb.GetKrHandlerRequest) (*pb.GetKrHandlerResponse, error) {
-	template := GetTemplate(req.KrName)
+	krStartTime := time.Now()
 	userID := session.GetUserIdFromContext(ctx)
 	if userID == nil {
 		return nil, errors.New("not Authed")
 	}
-	err := s.repo.SaveTemplate(ctx, template, *userID, req.KrName)
+	startNew := false
+	test, err := s.repo.GetTemplate(ctx, *userID, req.KrName)
 	if err != nil {
-		return nil, err
+		startNew = true
+		if err != sql.ErrNoRows {
+			return nil, err
+		}
 	}
+	var templateMap map[string]interface{}
+	if startNew == false {
+		err = json.Unmarshal(test.Template, &templateMap)
+		if err != nil {
+			return nil, err
+		}
+	}
+	template := GetTemplate(req.KrName)
+	if len(templateMap) > 0 {
+		template = templateMap
+		krStartTime = test.Saved_date
+	} else {
+		err = s.repo.SaveTemplate(ctx, template, *userID, req.KrName)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	res, err := model.ConvertToProtoJSON(template)
 	return &pb.GetKrHandlerResponse{
-		KrName: req.KrName,
-		Data:   res,
+		KrName:      req.KrName,
+		Data:        res,
+		KrStartTime: krStartTime.Format("2006-01-02T15:04:05"),
 	}, err
 }
 

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/structpb"
+	"time"
 )
 
 type TableStruct struct {
@@ -21,6 +22,11 @@ type KrTemplate struct {
 	WhatToDo     string        `json:"what_to_do"`
 	TemplateName string        `json:"template_name"`
 	UI           []interface{} `json:"UI"`
+}
+
+type KrTemplateResult struct {
+	Template   []byte    `json:"template" db:"template"`
+	Saved_date time.Time `json:"saved_date" db:"saved_date"`
 }
 
 func ConvertToProtoJSON(template interface{}) (*structpb.Struct, error) {

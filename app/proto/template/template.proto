@@ -33,6 +33,7 @@ message GetKrHandlerRequest {
 message GetKrHandlerResponse {
   string kr_name = 1;
   google.protobuf.Struct data = 2;
+  string kr_start_time = 3;
 }
 
 message ApproveKrHandlerRequest {

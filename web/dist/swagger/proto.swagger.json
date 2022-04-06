@@ -845,6 +845,9 @@
         },
         "data": {
           "type": "object"
+        },
+        "krStartTime": {
+          "type": "string"
         }
       }
     }

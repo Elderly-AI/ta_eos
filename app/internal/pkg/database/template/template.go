@@ -3,6 +3,7 @@ package template
 import (
 	"context"
 	"encoding/json"
+	"github.com/Elderly-AI/ta_eos/internal/pkg/model"
 	"github.com/golang/glog"
 	"github.com/jmoiron/sqlx"
 	"time"
@@ -28,8 +29,10 @@ func (r *Repo) SaveTemplate(ctx context.Context, template map[string]interface{}
 	return err
 }
 
-func (r *Repo) GetTemplate(ctx context.Context, id uint64) (map[string]interface{}, error) {
-	return nil, nil
+func (r *Repo) GetTemplate(ctx context.Context, userId string, krName string) (model.KrTemplateResult, error) {
+	var res model.KrTemplateResult
+	err := r.conn.GetContext(ctx, &res, "SELECT template,saved_date from templates where user_id=$1 and kr_name=$2 order by saved_date LIMIT 1", userId, krName)
+	return res, err
 }
 
 func (r *Repo) SetGrades(ctx context.Context, workName string, grade int, userId int) (map[string]int, error) {
