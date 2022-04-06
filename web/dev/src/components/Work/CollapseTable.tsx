@@ -42,6 +42,8 @@ const useStyles = makeStyles({
     },
 
     cellContainer: {
+        position: 'relative',
+        left: '-80px',
         display: 'flex',
         gridGap: '20px',
     },
@@ -60,6 +62,7 @@ const useStyles = makeStyles({
     },
 
     sumCellContainer: {
+        width: '60px',
         position: 'relative',
         display: 'grid',
         height: '260px',
@@ -84,6 +87,8 @@ const useStyles = makeStyles({
 
     sixthLine: {
         gridArea: 'sixthLine',
+        width: 'max-content',
+        justifySelf: 'center',
     },
 
     seventhLine: {
@@ -175,6 +180,7 @@ CellTextValue.displayName = 'CellTextValue';
 
 interface SumCellProps {
     id: string,
+    array: TableState[],
     className?: string,
     value: string | null,
     onChange: (evt: any, value?: string) => void,
@@ -185,6 +191,7 @@ interface SumCellProps {
 
 const SumCell = React.memo(({
     id,
+    array,
     className,
     value,
     onChange,
@@ -199,7 +206,6 @@ const SumCell = React.memo(({
     const [inputText, setInputText] = useState('');
 
     const handleChecked = () => {
-        console.log('ahahahah', sumTmpValues[inputCellNumber].overflow);
         setSumValues((obj) => {
             const prepared = {
                 ...obj
@@ -233,13 +239,23 @@ const SumCell = React.memo(({
         });
         setInputText(evt?.currentTarget.value || '');
     };
+    console.log('ID:', id, id.split('_').pop()!);
+    const operationName = array[0].data[+id.split('_').pop()!].name;
+    let operationNameValues = [];
+    let resultName = '';
+    operationNameValues = operationName.split('+');
+    if (operationNameValues[1][0] === '-') {
+        resultName = operationNameValues[0] + operationNameValues[1];
+    } else {
+        resultName = operationName;
+    }
 
     return (
         <div className={containerClasses} id={`container_${id}`}>
             <div className={styles.sumCellContainer}>
-                <Typography className={styles.center}>A</Typography>
+                <Typography className={styles.center}>{operationNameValues[0]}</Typography>
                 <Typography className={styles.plusSymbol}>+</Typography>
-                <Typography className={styles.center}>B</Typography>
+                <Typography className={styles.center}>{operationNameValues[1]}</Typography>
                 <Tooltip className={styles.sumCheckbox} title={'Перенос разряда'} placement="left" arrow>
                     <Checkbox
                         size="small"
@@ -249,11 +265,11 @@ const SumCell = React.memo(({
                     />
                 </Tooltip>
                 <Typography className={styles.sixthLine}>
-                    {'A+B'}
-                    <sub>пр</sub>
+                    <span>{resultName}</span>
+                    <sub>[пр]</sub>
                 </Typography>
                 <Typography className={styles.seventhLine}>
-                    {'A+B'}
+                    <span>{resultName}</span>
                     <sub>10</sub>
                 </Typography>
             </div>
@@ -415,7 +431,8 @@ const CollapseTable = React.memo(({
                             >
                                 {columnNumber === index && rowNumber === idx ?
                                     <SumCell
-                                        id={`sum_input_cell_${index}`}
+                                        id={`sum_input_cell_${idx}`}
+                                        array={array}
                                         value={inputValue}
                                         onChange={(evt: any, value?: string) => changeHandler(evt, index, idx, value)}
                                         inputCellNumber={inputNumber}
