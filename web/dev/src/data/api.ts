@@ -11,7 +11,7 @@ import {
     WorkItem,
 } from './Models';
 
-const host = 'http://188.35.161.40';
+const host = 'http://127.0.0.1';
 const apiPrefix = '/api/v1';
 const apiHost = apiPrefix;
 
