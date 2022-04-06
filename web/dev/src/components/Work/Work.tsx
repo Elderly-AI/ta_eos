@@ -107,6 +107,7 @@ const useStyles = makeStyles(() => ({
     }
 }));
 const OkResult = 'Отличная работа! Все верно.';
+const workDuration = 3600 * 1000; // час в мс
 
 const getPointMessage = (point: number): string => {
     return `Ваша оценка: ${point}`;
@@ -186,6 +187,7 @@ const Work = () => {
     const [compareArray, setCompareArray] = useState<TableState[]>([]);
     const [currentPoint, setCurrentPoint] = useState<number>(0);
     const [isPlaying, setPlaying] = useState(true);
+    const [timeLeft, setTimeLeft] = useState(0);
 
     const changeMistakesCount = useCallback((count: number) => {
         setMistakesCount(count);
@@ -200,6 +202,8 @@ const Work = () => {
     useEffect(() => {
         DataService.getKR('first')
             .then((res) => {
+                const krStartDate = new Date(res.krStartTime as string);
+                setTimeLeft(((+krStartDate - +Date.now()) + workDuration) / 1000);
                 setTemplate(res);
                 const newState = res.data.UI[0].data.filter((item) => item.name !== 'Переменные');
                 setTaskArray(newState);
@@ -261,12 +265,12 @@ const Work = () => {
             });
     };
 
-    const time = 1500;
+    const time = 3600;
     const renderTime = (remainingTime: number) => {
-        if (remainingTime === time) {
+        if (remainingTime === workDuration) {
             return <div className="timer">Время истекло</div>;
         }
-        const seconds = Math.round(time - remainingTime);
+        const seconds = Math.round(workDuration - remainingTime);
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         const stringSeconds = (remainingSeconds < 10 && minutes > 0 ? '0' : '') + remainingSeconds;
@@ -289,7 +293,7 @@ const Work = () => {
                             duration={time}
                             colors={['#00A318', '#F7B801', '#A30000']}
                             size={160}
-                            colorsTime={[time, Math.floor(time / 2), 0]}
+                            colorsTime={[workDuration, Math.floor(workDuration / 2), 0]}
                             onComplete={() => {
                                 clickHandle();
                                 return {shouldRepeat: false};

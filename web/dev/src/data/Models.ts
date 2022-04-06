@@ -110,5 +110,6 @@ export type UITemplateRequestData = {
 export type TemplateTemplateRequest = {
   krName: string;
   data: TableItem;
+  krStartTime?: string;
   points?: number
 }
