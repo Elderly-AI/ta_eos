@@ -29,7 +29,16 @@ const MOCK_KP_LIST: WorkItem[] = [
         name: 'Контрольная работа №3',
         possibility: false,
     }
-] as WorkItem[];
+];
+
+const START_KP: WorkItem[] = [
+    {
+        ...MOCK_KP_LIST[0],
+        possibility: true
+    },
+    ...MOCK_KP_LIST.slice(1, MOCK_KP_LIST.length)
+]
+;
 
 class DataService implements ApiInterface {
     async curUser(): Promise<authSafeUser> {
@@ -160,6 +169,7 @@ class DataService implements ApiInterface {
                     // @ts-ignore
                     const grade = grades[kp.key];
                     const isGradeExist = !isNaN(grade);
+
                     if (isGradeExist) {
                         newItem.estimation = grade;
                         newItem.possibility = isGradeExist;
@@ -167,7 +177,9 @@ class DataService implements ApiInterface {
                     return newItem;
                 });
 
-                resolve(preparedList);
+                const isAnyKrHasEstimation = preparedList.some((kp) => kp.estimation !== undefined);
+
+                resolve(isAnyKrHasEstimation ? preparedList : START_KP);
             } catch (e) {
                 reject(e);
             }
