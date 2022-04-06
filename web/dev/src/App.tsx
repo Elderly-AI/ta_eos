@@ -16,6 +16,7 @@ const App: React.FC = () => {
     const modal = useTypedSelector((state) => state.modal);
     const {getCurrentUser} = useActions();
     const history = useHistory();
+
     useEffect(() => {
         getCurrentUser();
     }, []);
