@@ -6,6 +6,7 @@ import CustomBadge from '../CustomBadge';
 import DataService from '../../../src/data/DataService';
 import {WorkItem} from '../../../src/data/Models';
 import {useTypedSelector} from '../../../src/hooks/useTypedSelector';
+import {useActions} from '../../hooks/useActions';
 
 const useStyles = makeStyles(() => ({
     worksComponent: {
@@ -41,6 +42,11 @@ export default function Works() {
     const auth = useTypedSelector((store) => store.auth);
     const [works, setWorks] = useState<WorkItem[]>([]);
     const [activeStep, setActiveStep] = useState<number>(0);
+    const {getCurrentUser} = useActions();
+
+    useEffect(() => {
+        getCurrentUser();
+    }, []);
 
     useEffect(() => {
         if (!auth || (auth && !auth.grades)) {
