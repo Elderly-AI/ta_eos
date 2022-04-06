@@ -18,11 +18,13 @@ const App: React.FC = () => {
     const history = useHistory();
     useEffect(() => {
         getCurrentUser();
-    }, [getCurrentUser]);
+    }, []);
 
     const redirect = useCallback(() => {
+        console.log('auth', auth);
         if (!auth) {
             history.push('/auth');
+            return;
         }
 
         if (history.location.pathname === '/auth') {
