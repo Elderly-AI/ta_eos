@@ -121,6 +121,9 @@ type DefaultTableCell = {
   value: string | null,
   overflow?: boolean | null,
 };
+export type AdditionalTableCellInfo = {
+  additionalSteps?: CollapsedTableCell
+}
 export type CollapsedTableCell = {
   a?: string,
   b?: string,
@@ -128,7 +131,7 @@ export type CollapsedTableCell = {
   direct?: string,
   decimal?: string
 }
-type TableCellData = DefaultTableCell & CollapsedTableCell;
+type TableCellData = DefaultTableCell & AdditionalTableCellInfo;
 
 export interface TableState {
   data: TableCellData[],

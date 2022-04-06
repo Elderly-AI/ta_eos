@@ -411,7 +411,6 @@ const CollapseTable = React.memo(({
     const rowNumber = ~~(inputNumber / 3);
     const columnNumber = inputNumber % 3;
     if (!sumTmpValues[inputNumber]) {
-        console.log('row idx', inputNumber, rowNumber * 3, rowNumber * 3 + 1, rowNumber * 3 + 2);
         setSumValues((values) => {
             console.log(values);
             values[rowNumber * 3] = {value: ['', '', '', '', '', ''], overflow: false};
@@ -428,36 +427,56 @@ const CollapseTable = React.memo(({
         switch (field) {
         case 'a':
             setArray((arr) => {
-                arr[index + 1].data[idx].a = newValue;
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    a: newValue
+                };
                 return arr;
             });
             break;
         case 'b':
             setArray((arr) => {
-                arr[index + 1].data[idx].b = newValue;
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    b: newValue
+                };
                 return arr;
             });
             break;
         case 'transfer':
             setArray((arr) => {
-                arr[index + 1].data[idx].transfer = newValue;
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    transfer: newValue
+                };
                 return arr;
             });
             break;
         case 'direct':
             setArray((arr) => {
-                arr[index + 1].data[idx].direct = newValue;
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    direct: newValue
+                };
                 return arr;
             });
             break;
         case 'decimal':
             setArray((arr) => {
-                arr[index + 1].data[idx].decimal = newValue;
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    decimal: newValue
+                };
                 return arr;
             });
             break;
         case undefined:
             setArray((arr) => {
+                // TODO: REMOVE WITH BE FIX THIS BUG
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    transfer: '000000'
+                };
                 arr[index + 1].data[idx].value = evt?.currentTarget.value || '';
                 return arr;
             });
@@ -485,7 +504,8 @@ const CollapseTable = React.memo(({
                                 className={styles.pointer}
                                 onClick={() => clickHandler(index)}
                             >
-                                {(columnNumber === index && rowNumber === idx) || !isDisabled ?
+                                {(columnNumber === index && rowNumber === idx) ||
+                (rowNumber * 3 + index === inputNumber && !isDisabled) ?
                                     <SumCell
                                         id={`sum_input_cell_${idx}`}
                                         array={array}
