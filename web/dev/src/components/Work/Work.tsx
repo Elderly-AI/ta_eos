@@ -267,10 +267,10 @@ const Work = () => {
 
     const time = 3600;
     const renderTime = (remainingTime: number) => {
-        if (remainingTime === workDuration) {
+        if (remainingTime === time) {
             return <div className="timer">Время истекло</div>;
         }
-        const seconds = Math.round(workDuration - remainingTime);
+        const seconds = Math.round(time - remainingTime);
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         const stringSeconds = (remainingSeconds < 10 && minutes > 0 ? '0' : '') + remainingSeconds;
@@ -293,7 +293,7 @@ const Work = () => {
                             duration={time}
                             colors={['#00A318', '#F7B801', '#A30000']}
                             size={160}
-                            colorsTime={[workDuration, Math.floor(workDuration / 2), 0]}
+                            colorsTime={[time, Math.floor(time / 2), 0]}
                             onComplete={() => {
                                 clickHandle();
                                 return {shouldRepeat: false};
