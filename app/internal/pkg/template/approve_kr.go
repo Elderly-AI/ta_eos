@@ -195,6 +195,7 @@ func (f *Facade) KrTemplateUIBlockValuePairNameSum(name string, valueType value_
 		additionalSteps.Direct = directValue.String()
 		additionalSteps.Decimal = directValue.ToInt()
 		additionalSteps.Transfer = value_lib.InitValueFromInt64(1, defaultGridSize, value_lib.ValueTypeDirectCode).String()
+		additionalSteps.Valid = true
 	}
 	return &value, additionalSteps, nil
 }
