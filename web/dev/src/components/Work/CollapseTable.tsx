@@ -221,6 +221,7 @@ interface SumCellProps {
   inputCellNumber: number,
   sumTmpValues: Record<string, any>,
   setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
+  handleChangeOverflow: (newValue: boolean) => void
   coppiedText: string,
   copyText: (clipboard: string) => void,
   isDisabled: boolean,
@@ -234,6 +235,8 @@ const SumCell = React.memo(({
     onChange,
     inputCellNumber,
     setSumValues,
+    sumTmpValues,
+    handleChangeOverflow
     sumTmpValues,
     coppiedText,
     copyText,
@@ -255,6 +258,7 @@ const SumCell = React.memo(({
                 prepared[inputCellNumber].value[2] = value || '';
                 onChange(undefined, '');
             }
+            handleChangeOverflow(!prepared[inputCellNumber].overflow);
 
             prepared[inputCellNumber].overflow = !prepared[inputCellNumber].overflow;
             return prepared;
@@ -561,10 +565,12 @@ const CollapseTable = React.memo(({
         case undefined:
             setArray((arr) => {
                 // TODO: REMOVE WITH BE FIX THIS BUG
-                arr[index + 1].data[idx].additionalSteps = {
-                    ...arr[index + 1].data[idx].additionalSteps,
-                    transfer: '000000'
-                };
+                if (!arr[index + 1].data[idx].additionalSteps?.transfer) {
+                    arr[index + 1].data[idx].additionalSteps = {
+                        ...arr[index + 1].data[idx].additionalSteps,
+                        transfer: '000000'
+                    };
+                }
                 arr[index + 1].data[idx].value = evt?.currentTarget.value || '';
                 return arr;
             });
@@ -572,6 +578,16 @@ const CollapseTable = React.memo(({
             break;
         }
     };
+
+    const handleChangeOverflow = (index: number, idx: number, newOverflow: boolean) => {
+        setArray((arr) => {
+            console.log('arr be', arr[index].data[idx]);
+            arr[index].data[idx].overflow = newOverflow;
+            console.log('arr aft', arr[index].data[idx]);
+            return arr;
+        });
+    }
+  ;
 
     const clickHandler = (index: number) => {
         setInputText(array[index + 1].data[rowNumber].value?.toString() || '');
@@ -605,6 +621,8 @@ const CollapseTable = React.memo(({
                                         inputCellNumber={inputNumber}
                                         setSumValues={setSumValues}
                                         sumTmpValues={sumTmpValues}
+                                        handleChangeOverflow={((newValue) =>
+                                            handleChangeOverflow(index, idx, newValue))}
                                         coppiedText={coppiedText}
                                         copyText={copyText}
                                         isDisabled={!!isDisabled}
