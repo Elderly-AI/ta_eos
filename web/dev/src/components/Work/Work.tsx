@@ -117,24 +117,36 @@ const getBadMessage = (mistakesCount: number): string => (
     `Количество ошибок: ${mistakesCount}`
 );
 
+type DefaultTableCell = {
+  name: string,
+  value: string | null,
+  overflow?: boolean | null,
+};
+export type AdditionalTableCellInfo = {
+  additionalSteps?: CollapsedTableCell
+}
+export type CollapsedTableCell = {
+  a?: string,
+  b?: string,
+  transfer?: string,
+  direct?: string,
+  decimal?: string
+}
+type TableCellData = DefaultTableCell & AdditionalTableCellInfo;
+
 export interface TableState {
-    data: {
-        name: string,
-        value: string | null,
-        overflow?: boolean | null,
-    }[],
-    name: string,
+  data: TableCellData[],
+  name: string,
 }
 
-
 interface TaskProps {
-    number: number,
-    themeName: string,
-    description: string,
-    values: {
-        name: string,
-        value: string | null,
-    }[] | undefined,
+  number: number,
+  themeName: string,
+  description: string,
+  values: {
+    name: string,
+    value: string | null,
+  }[] | undefined,
 }
 
 const Task = ({number, themeName, description, values}: TaskProps) => {
@@ -144,7 +156,7 @@ const Task = ({number, themeName, description, values}: TaskProps) => {
         if (!values) {
             return (
                 <Typography variant="h6" className={classNames(styles.selection, styles.span)}>
-                  ---
+          ---
                 </Typography>
             );
         }
@@ -212,6 +224,7 @@ const Work = () => {
 
     useEffect(() => {
         setMistakesCount(0);
+        console.log('debug arr', taskArray);
     }, [taskArray]);
 
     const taskTitle = useMemo(() => {
@@ -327,7 +340,7 @@ const Work = () => {
                         onClick={clickHandle}
                         disabled={disableButton}
                     >
-                      Отправить
+            Отправить
                     </Button>
                     {!!resultMessage.length && (
                         <Alert
@@ -359,7 +372,7 @@ const Work = () => {
                                                 fontWeight: 500
                                             }}
                                             variant='subtitle1'>
-                                        На главную
+                      На главную
                                         </Typography>
                                         <ArrowBack
                                             className={styles.backBtn}

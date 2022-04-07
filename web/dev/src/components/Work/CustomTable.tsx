@@ -304,30 +304,30 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
 
     const tableBody = useMemo(() => {
         let mistakesCount = 0;
+        const isDisabled = !compareArray.length;
 
         const tableBody = <TableBody>
             {array[0]?.data?.map((current, idx) => {
-                const collapse = getOpType(current.name) === OpType.SUM ?
-                    <TableRow>
-                        <TableCell className={styles.collapseCell} colSpan={4}>
-                            <Collapse in={~~(inputNumber / 3) === idx && !compareArray.length} timeout="auto" unmountOnExit>
-                                <CollapseTable
-                                    idx={idx}
-                                    inputNumber={inputNumber}
-                                    inputValue={inputText}
-                                    array={array}
-                                    setInputNumber={setInputNumber}
-                                    coppiedText={text}
-                                    copyText={setText}
-                                    setArray={setArray}
-                                    setInputText={setInputText}
-                                    sumTmpValues={sumTmpValues}
-                                    setSumValues={setSumValues}
-                                />
-                            </Collapse>
-                        </TableCell>
-                    </TableRow> :
-                    '';
+                const isCollapsed = ~~(inputNumber / 3) === idx;
+                const collapse = getOpType(current.name) === OpType.SUM &&
+            <TableCell className={styles.collapseCell} colSpan={4}>
+                <Collapse in={isCollapsed} timeout="auto" unmountOnExit>
+                    <CollapseTable
+                        idx={idx}
+                        inputNumber={inputNumber}
+                        inputValue={inputText}
+                        array={array}
+                        setInputNumber={setInputNumber}
+                        coppiedText={text}
+                        copyText={setText}
+                        setArray={setArray}
+                        setInputText={setInputText}
+                        sumTmpValues={sumTmpValues}
+                        setSumValues={setSumValues}
+                        isDisabled={isDisabled}
+                    />
+                </Collapse>
+            </TableCell>;
                 // тут ебнутая логика с массивом: данные лежат в нем по столбцам, а таблица строится по строкам
                 // первый map идет по 1(не важно какому) столбцу и задает только номер текущей строки(idx)
                 return <>
@@ -377,8 +377,8 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                             };
 
                             const cellIsInput = inputNumber === tmpCellNumber &&
-                                getOpType(cur.data[idx].name) !== OpType.SUM &&
-                                !compareArray.length;
+                  getOpType(cur.data[idx].name) !== OpType.SUM &&
+                  !compareArray.length;
 
                             return (
                                 <TableCell
@@ -416,8 +416,20 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
         mistakeCountHandler(mistakesCount);
 
         return tableBody;
-    }, [array, mistakeCountHandler, styles.tableRow, styles.pointer, compareArray, cellClickHandler, inputNumber,
-        inputText, text, inputCheckbox, setText, setArray, sumTmpValues, setSumValues]);
+    }, [
+        array,
+        mistakeCountHandler,
+        inputNumber,
+        compareArray,
+        styles.collapseCell,
+        styles.tableRow,
+        styles.pointer,
+        inputText, setText,
+        setArray, sumTmpValues,
+        cellClickHandler, text,
+        inputCheckbox
+    ]
+    );
 
     if (array.length === 0) {
         return <></>;

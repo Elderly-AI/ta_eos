@@ -1,6 +1,6 @@
 import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
 import {Checkbox, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography} from '@material-ui/core';
-import {TableState} from './Work';
+import {CollapsedTableCell, TableState} from './Work';
 import classNames from 'classnames';
 import TableInput from './TableInput';
 import {makeStyles} from '@material-ui/core/styles';
@@ -181,10 +181,10 @@ const useStyle = makeStyles({
 }, {name: 'MuiCustomSvgIcon'});
 
 interface CellTextValueProps {
-    id: string,
-    value: string,
-    valueLength?: number,
-    onClick?: (evt: any) => void,
+  id: string,
+  value: string,
+  valueLength?: number,
+  onClick?: (evt: any) => void,
 }
 
 const CellTextValue = React.memo(({id, value, onClick, valueLength = 8}: CellTextValueProps) => {
@@ -213,16 +213,16 @@ const CellTextValue = React.memo(({id, value, onClick, valueLength = 8}: CellTex
 CellTextValue.displayName = 'CellTextValue';
 
 interface SumCellProps {
-    id: string,
-    array: TableState[],
-    className?: string,
-    value: string | null,
-    onChange: (evt: any, value?: string) => void,
-    inputCellNumber: number,
-    sumTmpValues: Record<string, any>,
-    setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
-    coppiedText: string,
-    copyText: (clipboard: string) => void,
+  id: string,
+  array: TableState[],
+  className?: string,
+  value: string | null,
+  onChange: (evt: any, value?: string, field?: keyof CollapsedTableCell) => void,
+  inputCellNumber: number,
+  sumTmpValues: Record<string, any>,
+  setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
+  coppiedText: string,
+  copyText: (clipboard: string) => void,
 }
 
 const SumCell = React.memo(({
@@ -270,7 +270,6 @@ const SumCell = React.memo(({
     };
 
     const handleChange = (evt: any, index: number) => {
-        console.log('evt', evt.currentTarget.value);
         setSumValues((obj) => {
             obj[inputCellNumber].value[index] = evt.currentTarget.value || '';
             return obj;
@@ -314,13 +313,26 @@ const SumCell = React.memo(({
             <div className={styles.sumCellContainer}>
                 <div className={styles.separator}/>
                 {[0, 1, 2].map((index) => {
-                    if ((sumTmpValues[inputCellNumber]  && sumTmpValues[inputCellNumber].overflow) || index !== 2) {
+                    if ((sumTmpValues[inputCellNumber] && sumTmpValues[inputCellNumber].overflow) || index !== 2) {
                         const isNotEmpty = sumTmpValues[inputCellNumber];
                         console.log('inputText', inputText);
                         return <SumInputCell
                             id={id}
                             inputText={isNotEmpty ? sumTmpValues[inputCellNumber].value[index] : ''}
-                            onChange={(evt) => handleChange(evt, index)}
+                            onChange={(evt) => {
+                                handleChange(evt, index);
+                                switch (index) {
+                                case 0:
+                                    onChange(evt, id, 'a');
+                                    break;
+                                case 1:
+                                    onChange(evt, id, 'b');
+                                    break;
+                                case 2:
+                                    onChange(evt, id, 'transfer');
+                                    break;
+                                }
+                            }}
                             onClick={handleClick}
                             index={index}
                             inputNumber={inputNumber}
@@ -332,7 +344,7 @@ const SumCell = React.memo(({
                 <SumInputCell
                     id={id}
                     inputText={value || ''}
-                    onChange={onChange}
+                    onChange={(evt) => onChange(evt, id)}
                     onClick={handleClick}
                     index={3}
                     inputNumber={inputNumber}
@@ -343,7 +355,10 @@ const SumCell = React.memo(({
                     <SumInputCell
                         id={id}
                         inputText={sumTmpValues[inputCellNumber] ? sumTmpValues[inputCellNumber].value[4] : ''}
-                        onChange={(evt) => handleChange(evt, 4)}
+                        onChange={(evt) => {
+                            handleChange(evt, 4);
+                            onChange(evt, id, 'direct');
+                        }}
                         onClick={handleClick}
                         index={4}
                         inputNumber={inputNumber}
@@ -354,7 +369,10 @@ const SumCell = React.memo(({
                 <TextField
                     className={styles.seventhLine}
                     value={sumTmpValues[inputCellNumber] ? sumTmpValues[inputCellNumber].value[5] : ''}
-                    onChange={(evt) => handleChange(evt, 5)}
+                    onChange={(evt) => {
+                        handleChange(evt, 5);
+                        onChange(evt, id, 'decimal');
+                    }}
                 />
             </div>
         </div>
@@ -442,17 +460,19 @@ const SumInputCell = React.memo(({
 SumInputCell.displayName = 'SumInputCell';
 
 interface CollapseTableProps {
-    idx: number,
-    inputNumber: number,
-    inputValue: string,
-    array: TableState[],
-    setInputNumber: Dispatch<SetStateAction<number>>,
-    coppiedText: string,
-    copyText: (clipboard: string) => void,
-    setArray: Dispatch<SetStateAction<TableState[]>>,
-    setInputText: Dispatch<SetStateAction<string>>,
-    sumTmpValues: Record<string, any>,
-    setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
+  idx: number,
+  inputNumber: number,
+  inputValue: string,
+  array: TableState[],
+  setInputNumber: Dispatch<SetStateAction<number>>,
+  setText: (clipboard: string) => void,
+  setArray: Dispatch<SetStateAction<TableState[]>>,
+  setInputText: Dispatch<SetStateAction<string>>,
+  sumTmpValues: Record<string, any>,
+  setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
+  isDisabled?: boolean,
+  coppiedText: string,
+  copyText: (clipboard: string) => void,
 }
 
 const CollapseTable = React.memo(({
@@ -467,12 +487,12 @@ const CollapseTable = React.memo(({
     array,
     setSumValues,
     sumTmpValues,
+    isDisabled,
 }: CollapseTableProps) => {
     const styles = useStyles();
     const rowNumber = ~~(inputNumber / 3);
     const columnNumber = inputNumber % 3;
     if (!sumTmpValues[inputNumber]) {
-        console.log('row idx', inputNumber, rowNumber * 3, rowNumber * 3 + 1, rowNumber * 3 + 2);
         setSumValues((values) => {
             console.log(values);
             values[rowNumber * 3] = {value: ['', '', '', '', '', ''], overflow: false};
@@ -482,17 +502,73 @@ const CollapseTable = React.memo(({
         });
     }
 
-    const changeHandler = (evt: any, index: number, idx: number, value?: string) => {
-        // currentTarget.value - полное значение, target.value - текущий разряд
-        setArray((arr) => {
-            arr[index+1].data[idx].value = evt?.currentTarget.value || '';
-            return arr;
-        });
-        setInputText(evt?.currentTarget.value || '');
+    const changeHandler = (evt: any, index: number, idx: number, value?: string, field?: keyof CollapsedTableCell) => {
+        console.log('handle check', evt, index, idx, value, array);
+        const newValue = evt?.currentTarget.value || '';
+
+        switch (field) {
+        case 'a':
+            setArray((arr) => {
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    a: newValue
+                };
+                return arr;
+            });
+            break;
+        case 'b':
+            setArray((arr) => {
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    b: newValue
+                };
+                return arr;
+            });
+            break;
+        case 'transfer':
+            setArray((arr) => {
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    transfer: newValue
+                };
+                return arr;
+            });
+            break;
+        case 'direct':
+            setArray((arr) => {
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    direct: newValue
+                };
+                return arr;
+            });
+            break;
+        case 'decimal':
+            setArray((arr) => {
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    decimal: newValue
+                };
+                return arr;
+            });
+            break;
+        case undefined:
+            setArray((arr) => {
+                // TODO: REMOVE WITH BE FIX THIS BUG
+                arr[index + 1].data[idx].additionalSteps = {
+                    ...arr[index + 1].data[idx].additionalSteps,
+                    transfer: '000000'
+                };
+                arr[index + 1].data[idx].value = evt?.currentTarget.value || '';
+                return arr;
+            });
+            setInputText(evt?.currentTarget.value || '');
+            break;
+        }
     };
 
     const clickHandler = (index: number) => {
-        setInputText(array[index + 1].data[rowNumber].value?.toString()|| '');
+        setInputText(array[index + 1].data[rowNumber].value?.toString() || '');
         setInputNumber(rowNumber * 3 + index);
     };
 
@@ -510,12 +586,14 @@ const CollapseTable = React.memo(({
                                 className={styles.pointer}
                                 onClick={() => clickHandler(index)}
                             >
-                                {columnNumber === index && rowNumber === idx ?
+                                {(columnNumber === index && rowNumber === idx) ||
+                (rowNumber * 3 + index === inputNumber && !isDisabled) ?
                                     <SumCell
                                         id={`sum_input_cell_${idx}`}
                                         array={array}
                                         value={inputValue}
-                                        onChange={(evt: any, value?: string) => changeHandler(evt, index, idx, value)}
+                                        onChange={(evt: any, value?: string, field?: keyof CollapsedTableCell) =>
+                                            changeHandler(evt, index, idx, value, field)}
                                         inputCellNumber={inputNumber}
                                         setSumValues={setSumValues}
                                         sumTmpValues={sumTmpValues}
@@ -523,7 +601,7 @@ const CollapseTable = React.memo(({
                                         copyText={copyText}
                                     /> :
                                     <Typography variant="subtitle1">
-                                        {array[index+1].data[rowNumber].value || '...'}
+                                        {array[index + 1].data[rowNumber].value || '...'}
                                     </Typography>
                                 }
                             </TableCell>
