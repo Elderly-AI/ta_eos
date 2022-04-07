@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
+import React, {Dispatch, SetStateAction, useRef, useState} from 'react';
 import {Checkbox, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography} from '@material-ui/core';
 import {CollapsedTableCell, TableState} from './Work';
 import classNames from 'classnames';
@@ -223,6 +223,7 @@ interface SumCellProps {
   setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
   coppiedText: string,
   copyText: (clipboard: string) => void,
+  isDisabled: boolean,
 }
 
 const SumCell = React.memo(({
@@ -236,6 +237,7 @@ const SumCell = React.memo(({
     sumTmpValues,
     coppiedText,
     copyText,
+    isDisabled,
 }: SumCellProps) => {
     const styles = useStyles();
     const containerClasses = classNames(styles.cellContainer, className ? className : '');
@@ -299,6 +301,7 @@ const SumCell = React.memo(({
                         color="primary"
                         checked={!!sumTmpValues[inputCellNumber]?.overflow}
                         onChange={handleChecked}
+                        disabled={!isDisabled}
                     />
                 </Tooltip>
                 <Typography className={classNames(styles.sixthLine, styles.sixthLineLeft)}>
@@ -338,6 +341,7 @@ const SumCell = React.memo(({
                             inputNumber={inputNumber}
                             coppiedText={coppiedText}
                             copyText={copyText}
+                            isDisabled={isDisabled}
                         />;
                     }
                 })}
@@ -350,6 +354,7 @@ const SumCell = React.memo(({
                     inputNumber={inputNumber}
                     coppiedText={coppiedText}
                     copyText={copyText}
+                    isDisabled={isDisabled}
                 />
                 <div className={classNames(styles.sixthLine, styles.resDirect)}>
                     <SumInputCell
@@ -364,6 +369,7 @@ const SumCell = React.memo(({
                         inputNumber={inputNumber}
                         coppiedText={coppiedText}
                         copyText={copyText}
+                        isDisabled={isDisabled}
                     />
                 </div>
                 <TextField
@@ -390,6 +396,7 @@ interface SumInputCellProps {
     onClick: (evt: any) => void,
     coppiedText: string,
     copyText: (clipboard: string) => void,
+    isDisabled: boolean,
 }
 
 const SumInputCell = React.memo(({
@@ -401,6 +408,7 @@ const SumInputCell = React.memo(({
     onClick,
     coppiedText,
     copyText,
+    isDisabled,
 }: SumInputCellProps) => {
     const styles = useStyles();
     const classes = useStyle();
@@ -422,7 +430,7 @@ const SumInputCell = React.memo(({
 
     return (
         <div className={styles.iconsContainer}>
-            {inputNumber === index ?
+            {inputNumber === index && isDisabled ?
                 <>
                     <TableInput
                         key={`sum_cell_${id}_${index}`}
@@ -585,18 +593,21 @@ const CollapseTable = React.memo(({
                                 onClick={() => clickHandler(index)}
                             >
                                 {(columnNumber === index && rowNumber === idx) ||
-                (rowNumber * 3 + index === inputNumber && !isDisabled) ?
+                                    (rowNumber * 3 + index === inputNumber && !isDisabled) ?
                                     <SumCell
                                         id={`sum_input_cell_${idx}`}
                                         array={array}
                                         value={inputValue}
-                                        onChange={(evt: any, value?: string, field?: keyof CollapsedTableCell) =>
-                                            changeHandler(evt, index, idx, value, field)}
+                                        onChange={
+                                            (evt: any, value?: string, field?: keyof CollapsedTableCell) =>
+                                                changeHandler(evt, index, idx, value, field)
+                                        }
                                         inputCellNumber={inputNumber}
                                         setSumValues={setSumValues}
                                         sumTmpValues={sumTmpValues}
                                         coppiedText={coppiedText}
                                         copyText={copyText}
+                                        isDisabled={!!isDisabled}
                                     /> :
                                     <Typography variant="subtitle1">
                                         {array[index + 1].data[rowNumber].value || '...'}
