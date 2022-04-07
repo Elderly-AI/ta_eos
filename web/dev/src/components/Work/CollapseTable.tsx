@@ -1,9 +1,10 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
 import {Checkbox, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography} from '@material-ui/core';
 import {TableState} from './Work';
 import classNames from 'classnames';
 import TableInput from './TableInput';
 import {makeStyles} from '@material-ui/core/styles';
+import ReactTestUtils from 'react-dom/test-utils';
 
 const useStyles = makeStyles({
     none: {
@@ -42,6 +43,7 @@ const useStyles = makeStyles({
     },
 
     cellContainer: {
+        width: 'calc(100% + 80px)',
         position: 'relative',
         left: '-80px',
         display: 'flex',
@@ -62,7 +64,6 @@ const useStyles = makeStyles({
     },
 
     sumCellContainer: {
-        width: '60px',
         position: 'relative',
         display: 'grid',
         height: '260px',
@@ -77,6 +78,10 @@ const useStyles = makeStyles({
         gridGap: '5px',
     },
 
+    leftSumCellContainer: {
+        width: '60px',
+    },
+
     firstLine: {
         gridTemplate: 'firstLine',
     },
@@ -87,12 +92,16 @@ const useStyles = makeStyles({
 
     sixthLine: {
         gridArea: 'sixthLine',
+    },
+
+    sixthLineLeft: {
         width: 'max-content',
         justifySelf: 'center',
     },
 
     seventhLine: {
         gridArea: 'seventhLine',
+        textAlign: 'center',
     },
 
     separator: {
@@ -136,15 +145,40 @@ const useStyles = makeStyles({
     emptyCell: {
         textAlign: 'center',
         fontSize: '1rem',
-        width: '100%',
-        // height: '25px',
+        width: '138px',
     },
 
     resDirect: {
         display: 'flex',
         alignItems: 'center',
-    }
+    },
+
+    iconsContainer: {
+        display: 'flex',
+        gridGap: '15px',
+        position: 'relative',
+        alignItems: 'center',
+
+        '&:hover': {
+            '& .MuiCustomSvgIcon-root': {
+                display: 'block !important',
+            }
+        },
+    },
+
+    icons: {
+        width: '1em',
+        height: '1em',
+        fontSize: '1rem',
+        fill: '#0d47a1',
+    },
 });
+
+const useStyle = makeStyles({
+    root: {
+        display: 'none !important',
+    },
+}, {name: 'MuiCustomSvgIcon'});
 
 interface CellTextValueProps {
     id: string,
@@ -187,6 +221,8 @@ interface SumCellProps {
     inputCellNumber: number,
     sumTmpValues: Record<string, any>,
     setSumValues: Dispatch<SetStateAction<Record<string, any>>>,
+    coppiedText: string,
+    copyText: (clipboard: string) => void,
 }
 
 const SumCell = React.memo(({
@@ -197,7 +233,9 @@ const SumCell = React.memo(({
     onChange,
     inputCellNumber,
     setSumValues,
-    sumTmpValues
+    sumTmpValues,
+    coppiedText,
+    copyText,
 }: SumCellProps) => {
     const styles = useStyles();
     const containerClasses = classNames(styles.cellContainer, className ? className : '');
@@ -252,7 +290,7 @@ const SumCell = React.memo(({
 
     return (
         <div className={containerClasses} id={`container_${id}`}>
-            <div className={styles.sumCellContainer}>
+            <div className={classNames(styles.sumCellContainer, styles.leftSumCellContainer)}>
                 <Typography className={styles.center}>{operationNameValues[0]}</Typography>
                 <Typography className={styles.plusSymbol}>+</Typography>
                 <Typography className={styles.center}>{operationNameValues[1]}</Typography>
@@ -264,7 +302,7 @@ const SumCell = React.memo(({
                         onChange={handleChecked}
                     />
                 </Tooltip>
-                <Typography className={styles.sixthLine}>
+                <Typography className={classNames(styles.sixthLine, styles.sixthLineLeft)}>
                     <span>{resultName}</span>
                     <sub>[пр]</sub>
                 </Typography>
@@ -286,6 +324,8 @@ const SumCell = React.memo(({
                             onClick={handleClick}
                             index={index}
                             inputNumber={inputNumber}
+                            coppiedText={coppiedText}
+                            copyText={copyText}
                         />;
                     }
                 })}
@@ -296,6 +336,8 @@ const SumCell = React.memo(({
                     onClick={handleClick}
                     index={3}
                     inputNumber={inputNumber}
+                    coppiedText={coppiedText}
+                    copyText={copyText}
                 />
                 <div className={classNames(styles.sixthLine, styles.resDirect)}>
                     <SumInputCell
@@ -305,6 +347,8 @@ const SumCell = React.memo(({
                         onClick={handleClick}
                         index={4}
                         inputNumber={inputNumber}
+                        coppiedText={coppiedText}
+                        copyText={copyText}
                     />
                 </div>
                 <TextField
@@ -326,6 +370,8 @@ interface SumInputCellProps {
     inputText: string,
     onChange: (evt: any) => void,
     onClick: (evt: any) => void,
+    coppiedText: string,
+    copyText: (clipboard: string) => void,
 }
 
 const SumInputCell = React.memo(({
@@ -334,29 +380,62 @@ const SumInputCell = React.memo(({
     index,
     inputText,
     onChange,
-    onClick
+    onClick,
+    coppiedText,
+    copyText,
 }: SumInputCellProps) => {
     const styles = useStyles();
+    const classes = useStyle();
+    const ref = useRef<HTMLInputElement>(null);
+
+    const pasteClickHandler = (evt: React.MouseEvent) => {
+        evt.stopPropagation();
+
+        const input = ref.current as HTMLInputElement;
+        input.value = coppiedText;
+        ReactTestUtils.Simulate.change((ref.current as HTMLInputElement));
+    };
+
+    const copyClickHandler = (evt: React.MouseEvent) => {
+        evt.stopPropagation();
+        const value = inputText?.replaceAll('_', '');
+        copyText(value || '');
+    };
 
     return (
-        <>
+        <div className={styles.iconsContainer}>
             {inputNumber === index ?
-                <TableInput
-                    key={`sum_cell_${id}_${index}`}
-                    id={`sum_cell_${id}_${index}`}
-                    className={classNames(styles.input)}
-                    disabled={false}
-                    value={inputText}
-                    onChange={onChange}
-                /> :
-                <CellTextValue
-                    key={`sum_cell_typo_${id}_${index}`}
-                    id={`sum_cell_typo_${id}_${index}`}
-                    onClick={onClick}
-                    value={inputText}
-                />
+                <>
+                    <TableInput
+                        key={`sum_cell_${id}_${index}`}
+                        id={`sum_cell_${id}_${index}`}
+                        ref={ref}
+                        className={classNames(styles.input)}
+                        disabled={false}
+                        value={inputText}
+                        onChange={onChange}
+                    />
+                    <svg className={styles.icons} viewBox="0 0 24 24" onClick={pasteClickHandler}>
+                        {/* eslint-disable max-len */}
+                        <path
+                            d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
+                    </svg>
+                </> :
+                <>
+                    <CellTextValue
+                        key={`sum_cell_typo_${id}_${index}`}
+                        id={`sum_cell_typo_${id}_${index}`}
+                        onClick={onClick}
+                        value={inputText}
+                    />
+                    {inputText && <svg className={classNames(styles.icons, classes.root)} viewBox="0 0 24 24" onClick={copyClickHandler}>
+                        {/* eslint-disable max-len */}
+                        <path
+                            d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>}
+                </>
             }
-        </>
+        </div>
     );
 });
 
@@ -368,7 +447,8 @@ interface CollapseTableProps {
     inputValue: string,
     array: TableState[],
     setInputNumber: Dispatch<SetStateAction<number>>,
-    setText: (clipboard: string) => void,
+    coppiedText: string,
+    copyText: (clipboard: string) => void,
     setArray: Dispatch<SetStateAction<TableState[]>>,
     setInputText: Dispatch<SetStateAction<string>>,
     sumTmpValues: Record<string, any>,
@@ -382,7 +462,8 @@ const CollapseTable = React.memo(({
     setArray,
     setInputText,
     setInputNumber,
-    setText,
+    coppiedText,
+    copyText,
     array,
     setSumValues,
     sumTmpValues,
@@ -438,6 +519,8 @@ const CollapseTable = React.memo(({
                                         inputCellNumber={inputNumber}
                                         setSumValues={setSumValues}
                                         sumTmpValues={sumTmpValues}
+                                        coppiedText={coppiedText}
+                                        copyText={copyText}
                                     /> :
                                     <Typography variant="subtitle1">
                                         {array[index+1].data[rowNumber].value || '...'}
