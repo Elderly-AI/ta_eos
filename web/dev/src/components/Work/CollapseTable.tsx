@@ -465,7 +465,6 @@ interface CollapseTableProps {
   inputValue: string,
   array: TableState[],
   setInputNumber: Dispatch<SetStateAction<number>>,
-  setText: (clipboard: string) => void,
   setArray: Dispatch<SetStateAction<TableState[]>>,
   setInputText: Dispatch<SetStateAction<string>>,
   sumTmpValues: Record<string, any>,
@@ -494,7 +493,6 @@ const CollapseTable = React.memo(({
     const columnNumber = inputNumber % 3;
     if (!sumTmpValues[inputNumber]) {
         setSumValues((values) => {
-            console.log(values);
             values[rowNumber * 3] = {value: ['', '', '', '', '', ''], overflow: false};
             values[rowNumber * 3 + 1] = {value: ['', '', '', '', '', ''], overflow: false};
             values[rowNumber * 3 + 2] = {value: ['', '', '', '', '', ''], overflow: false};
