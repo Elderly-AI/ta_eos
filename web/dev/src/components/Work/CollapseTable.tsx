@@ -236,8 +236,7 @@ const SumCell = React.memo(({
     inputCellNumber,
     setSumValues,
     sumTmpValues,
-    handleChangeOverflow
-    sumTmpValues,
+    handleChangeOverflow,
     coppiedText,
     copyText,
     isDisabled,
