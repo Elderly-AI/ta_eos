@@ -133,27 +133,47 @@ interface CustomTableProps {
 }
 
 type TextCellProps = {
+  id? : string,
   className?: string
   cellText: string | null,
   isOverflow?: boolean | null | undefined,
   copyText: (text: string) => void,
   isAnswerCorrect: AnswerType,
+  popSelectState: () => SelectionMock,
 }
 
 const TextCell: FC<TextCellProps> = ({
+    id,
     cellText,
     isOverflow,
     copyText,
     isAnswerCorrect,
     className,
+    popSelectState,
 }) => {
     const styles = useStyles();
     const classes = useStyle();
 
-    const clickHandler = (evt: React.MouseEvent) => {
+    const copyClickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
-        const value = cellText?.replaceAll('_', '');
-        copyText(value || '');
+
+        const tmpSelection = popSelectState();
+        const selectionParentId = tmpSelection?.anchorNode?.parentElement?.id?.split('_')?.pop() ?? '';
+        const currentTargetId = evt.currentTarget.id.split('_').pop() ?? '';
+
+        if (
+            tmpSelection &&
+            !tmpSelection.isCollapsed &&
+            tmpSelection.anchorNode === tmpSelection.focusNode &&
+            selectionParentId === currentTargetId
+        ) {
+            // знаю, что выглядит как пиздец, но это косяк ts. Поле data в anchorNode на самом деле есть
+            const selectedText = (tmpSelection?.anchorNode as (Node & {data: string}))?.data;
+            copyText(selectedText.slice(tmpSelection?.anchorOffset, tmpSelection?.focusOffset));
+        } else {
+            const value = cellText?.replaceAll('_', '');
+            copyText(value || '');
+        }
     };
 
     if (!cellText || isOverflow) {
@@ -167,7 +187,7 @@ const TextCell: FC<TextCellProps> = ({
         </div>;
     } else {
         return (
-            <div className={styles.iconContainer}>
+            <div id={id || ''} className={styles.iconContainer}>
                 {
                     isAnswerCorrect === AnswerType.CORRECT && (
                         <CheckCircleIcon
@@ -184,12 +204,18 @@ const TextCell: FC<TextCellProps> = ({
                 }
 
                 <Typography
+                    id={id ? 'text_' + id : ''}
                     className={`${isAnswerCorrect ? styles.wrongCell : ''} ${className || ''}`}
                     variant="subtitle1"
                 >
                     {cellText}
                 </Typography>
-                <svg className={classNames(styles.icon, classes.root)} viewBox="0 0 24 24" onClick={clickHandler}>
+                <svg
+                    id={id ? 'icon_' + id : ''}
+                    className={classNames(styles.icon, classes.root)}
+                    viewBox="0 0 24 24"
+                    onClick={copyClickHandler}
+                >
                     {/* eslint-disable max-len */}
                     <path
                         d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
@@ -285,21 +311,59 @@ const getOpType = (name: string) => {
     return OpType.REGULAR;
 };
 
+interface SelectionMock {
+    anchorNode: Node | null | undefined;
+    anchorOffset: number | undefined;
+    focusNode: Node | null | undefined;
+    focusOffset: number | undefined;
+    isCollapsed: boolean | undefined,
+}
+
 const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: CustomTableProps) => {
     const styles = useStyles();
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
     const [inputCheckbox, setInputCheckbox] = useState(false);
     const [sumTmpValues, setSumValues] = useState<Record<string, any>>({});
+    const [prevSelection, setPrevSelection] = useState<SelectionMock>({} as SelectionMock);
     const [text, setText] = useClippy();
 
+    const popPrevSelectState = () => {
+        const selectState = {
+            anchorNode: prevSelection?.anchorNode,
+            anchorOffset: prevSelection?.anchorOffset,
+            focusNode: prevSelection?.focusNode,
+            focusOffset: prevSelection?.focusOffset,
+            isCollapsed: prevSelection?.isCollapsed,
+        };
+        setPrevSelection({} as SelectionMock);
+        return selectState;
+    };
+
     const cellClickHandler = (evt: any) => {
-        const id = +evt.currentTarget.id.split('_')[1];
-        if (id !== inputNumber) {
-            setInputText(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
-            setInputCheckbox(array[id % 3 + 1].data[~~(id / 3)].overflow || false);
-            setInputNumber(id);
+        const tmpSelection = document.getSelection();
+
+        if (tmpSelection?.isCollapsed || (
+            tmpSelection?.anchorNode === prevSelection?.anchorNode &&
+            tmpSelection?.anchorOffset === prevSelection?.anchorOffset &&
+            tmpSelection?.focusNode === prevSelection?.focusNode &&
+            tmpSelection?.focusOffset === prevSelection?.focusOffset
+        )) {
+            // условие аналогично тому, что произошел клик, а не селект текста
+            const id = +evt.currentTarget.id.split('_')[1];
+            if (id !== inputNumber) {
+                setInputText(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
+                setInputCheckbox(array[id % 3 + 1].data[~~(id / 3)].overflow || false);
+                setInputNumber(id);
+            }
         }
+        setPrevSelection({
+            anchorNode: tmpSelection?.anchorNode,
+            anchorOffset: tmpSelection?.anchorOffset,
+            focusNode: tmpSelection?.focusNode,
+            focusOffset: tmpSelection?.focusOffset,
+            isCollapsed: prevSelection?.isCollapsed,
+        });
     };
 
     const tableBody = useMemo(() => {
@@ -377,8 +441,8 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                             };
 
                             const cellIsInput = inputNumber === tmpCellNumber &&
-                  getOpType(cur.data[idx].name) !== OpType.SUM &&
-                  !compareArray.length;
+                                getOpType(cur.data[idx].name) !== OpType.SUM &&
+                                !compareArray.length;
 
                             return (
                                 <TableCell
@@ -398,10 +462,12 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                                             setOverflow={changeCheckBoxHandler}
                                         /> :
                                         <TextCell
+                                            id={`text_cell_${tmpCellNumber}`}
                                             isAnswerCorrect={answerType}
                                             cellText={cur.data[idx].value}
                                             isOverflow={cur.data[idx].overflow}
                                             copyText={setText}
+                                            popSelectState={popPrevSelectState}
                                         />
                                     }
                                 </TableCell>
