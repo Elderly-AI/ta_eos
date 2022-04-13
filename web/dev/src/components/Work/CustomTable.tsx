@@ -161,18 +161,16 @@ const TextCell: FC<TextCellProps> = ({
         const selectionParentId = tmpSelection?.anchorNode?.parentElement?.id?.split('_')?.pop() ?? '';
         const currentTargetId = evt.currentTarget.id.split('_').pop() ?? '';
 
+        const value = cellText?.replaceAll('_', '') ?? '';
         if (
             tmpSelection &&
             !tmpSelection.isCollapsed &&
             tmpSelection.anchorNode === tmpSelection.focusNode &&
             selectionParentId === currentTargetId
         ) {
-            // знаю, что выглядит как пиздец, но это косяк ts. Поле data в anchorNode на самом деле есть
-            const selectedText = (tmpSelection?.anchorNode as (Node & {data: string}))?.data;
-            copyText(selectedText.slice(tmpSelection?.anchorOffset, tmpSelection?.focusOffset));
+            copyText(tmpSelection.selelctedText ?? value);
         } else {
-            const value = cellText?.replaceAll('_', '');
-            copyText(value || '');
+            copyText(value);
         }
     };
 
@@ -317,6 +315,7 @@ interface SelectionMock {
     focusNode: Node | null | undefined;
     focusOffset: number | undefined;
     isCollapsed: boolean | undefined,
+    selelctedText: string | null | undefined,
 }
 
 const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: CustomTableProps) => {
@@ -335,6 +334,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
             focusNode: prevSelection?.focusNode,
             focusOffset: prevSelection?.focusOffset,
             isCollapsed: prevSelection?.isCollapsed,
+            selelctedText: prevSelection.selelctedText,
         };
         setPrevSelection({} as SelectionMock);
         return selectState;
@@ -362,7 +362,8 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
             anchorOffset: tmpSelection?.anchorOffset,
             focusNode: tmpSelection?.focusNode,
             focusOffset: tmpSelection?.focusOffset,
-            isCollapsed: prevSelection?.isCollapsed,
+            isCollapsed: tmpSelection?.isCollapsed,
+            selelctedText: tmpSelection?.toString(),
         });
     };
 

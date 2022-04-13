@@ -1,8 +1,9 @@
-import React, {ForwardedRef, forwardRef, MutableRefObject, useRef, useState} from 'react';
+import React, {ForwardedRef, forwardRef, MutableRefObject, useRef, useState, FocusEvent} from 'react';
 import {TextField} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
 import ReactTestUtils from 'react-dom/test-utils';
+import ReactDOM from 'react-dom';
 
 const useStyles = makeStyles({
     input: {
@@ -149,6 +150,12 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
         ReactTestUtils.Simulate.change(input);
     };
 
+    const handleTextFieldFocus = (evt: FocusEvent<HTMLInputElement>) => {
+        evt.currentTarget?.select();
+        const id = +(evt.currentTarget.name.split('_').pop() ?? '0');
+        (inputRef as MutableRefObject<HTMLInputElement>).current.setAttribute('data-focusedIndex', id.toString());
+    };
+
     const handleInputChange = (evt: any) => {
         const isValid = setupPastedValue(evt.currentTarget.value);
         if (!isValid) {
@@ -208,7 +215,11 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
 
     return (
         <div id={id} className={classNames(className, styles.container)} onKeyDown={handleKeyDown}>
-            <input className={styles.invisibleInput} ref={inputRef} value={value || val} onChange={handleInputChange}/>
+            <input
+                className={styles.invisibleInput}
+                data-focusedIndex={7}
+                ref={inputRef} value={value || val}
+                onChange={handleInputChange}/>
             {textFieldRefs.map((refObj, idx) => (
                 <TextField
                     name={refObj.name}
@@ -218,10 +229,10 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
                     value={validateIdxValue(value ? value[idx] : val[idx])}
                     onChange={handleTextFieldChange}
                     onPaste={handleTextFieldPaste}
+                    onFocus={handleTextFieldFocus}
                     variant="standard"
                     error={(errorId && errorId < 0) || errorId === idx}
                     autoFocus={idx === digitsNumber - 1}
-                    onFocus={(evt) => evt.currentTarget.select()}
                     disabled={disabled}
                 />
             ))}
