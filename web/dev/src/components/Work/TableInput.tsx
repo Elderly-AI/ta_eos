@@ -135,23 +135,42 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
     };
 
     const transFormValue = (value: string) => {
-        console.log(value.length);
         if (value.length === 0) {
             value = nullSymbol.repeat(digitsNumber);
         } else if (value.length < digitsNumber) {
             const inputElement = (inputRef as MutableRefObject<HTMLInputElement>).current;
             const focusedTextFieldNumber = +(inputElement.getAttribute('data-focusedIndex') ?? 0);
+            let leftFreeInputsNumber = 0;
+            let rightFreeInputsNumber = 0;
             let resValue = '';
             if (focusedTextFieldNumber + value.length <= digitsNumber) {
                 // если есть место для вставки справа
-                resValue += nullSymbol.repeat(focusedTextFieldNumber);
+                leftFreeInputsNumber = focusedTextFieldNumber;
+                rightFreeInputsNumber = digitsNumber - focusedTextFieldNumber - value.length;
+                resValue += nullSymbol.repeat(leftFreeInputsNumber);
                 resValue += value;
-                resValue += nullSymbol.repeat(digitsNumber - focusedTextFieldNumber - value.length);
+                resValue += nullSymbol.repeat(rightFreeInputsNumber);
+                if (leftFreeInputsNumber + value.length < digitsNumber) {
+                    (textFieldRefs[leftFreeInputsNumber + value.length].ref
+                        .current.children[0].children[0] as HTMLInputElement).focus();
+                } else {
+                    (textFieldRefs[leftFreeInputsNumber - 1].ref
+                        .current.children[0].children[0] as HTMLInputElement).focus();
+                }
             } else {
                 // если есть место для вставки слева
-                resValue += nullSymbol.repeat(focusedTextFieldNumber - value.length + 1);
+                leftFreeInputsNumber = focusedTextFieldNumber - value.length + 1;
+                rightFreeInputsNumber = digitsNumber - focusedTextFieldNumber - 1;
+                resValue += nullSymbol.repeat(leftFreeInputsNumber);
                 resValue += value;
-                resValue += nullSymbol.repeat(digitsNumber - focusedTextFieldNumber - 1);
+                resValue += nullSymbol.repeat(rightFreeInputsNumber);
+                if (leftFreeInputsNumber + value.length < digitsNumber) {
+                    (textFieldRefs[leftFreeInputsNumber + value.length].ref
+                        .current.children[0].children[0] as HTMLInputElement).focus();
+                } else {
+                    (textFieldRefs[leftFreeInputsNumber-1].ref
+                        .current.children[0].children[0] as HTMLInputElement).focus();
+                }
             }
             value = resValue;
         } else {
