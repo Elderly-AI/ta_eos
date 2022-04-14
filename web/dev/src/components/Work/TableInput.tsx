@@ -147,30 +147,20 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
                 // если есть место для вставки справа
                 leftFreeInputsNumber = focusedTextFieldNumber;
                 rightFreeInputsNumber = digitsNumber - focusedTextFieldNumber - value.length;
-                resValue += nullSymbol.repeat(leftFreeInputsNumber);
-                resValue += value;
-                resValue += nullSymbol.repeat(rightFreeInputsNumber);
-                if (leftFreeInputsNumber + value.length < digitsNumber) {
-                    (textFieldRefs[leftFreeInputsNumber + value.length].ref
-                        .current.children[0].children[0] as HTMLInputElement).focus();
-                } else {
-                    (textFieldRefs[leftFreeInputsNumber - 1].ref
-                        .current.children[0].children[0] as HTMLInputElement).focus();
-                }
             } else {
                 // если есть место для вставки слева
                 leftFreeInputsNumber = focusedTextFieldNumber - value.length + 1;
                 rightFreeInputsNumber = digitsNumber - focusedTextFieldNumber - 1;
-                resValue += nullSymbol.repeat(leftFreeInputsNumber);
-                resValue += value;
-                resValue += nullSymbol.repeat(rightFreeInputsNumber);
-                if (leftFreeInputsNumber + value.length < digitsNumber) {
-                    (textFieldRefs[leftFreeInputsNumber + value.length].ref
-                        .current.children[0].children[0] as HTMLInputElement).focus();
-                } else {
-                    (textFieldRefs[leftFreeInputsNumber-1].ref
-                        .current.children[0].children[0] as HTMLInputElement).focus();
-                }
+            }
+            resValue += nullSymbol.repeat(leftFreeInputsNumber);
+            resValue += value;
+            resValue += nullSymbol.repeat(rightFreeInputsNumber);
+            if (leftFreeInputsNumber + value.length < digitsNumber) {
+                (textFieldRefs[leftFreeInputsNumber + value.length].ref
+                    .current.children[0].children[0] as HTMLInputElement).focus();
+            } else {
+                (textFieldRefs[leftFreeInputsNumber-1].ref
+                    .current.children[0].children[0] as HTMLInputElement).focus();
             }
             value = resValue;
         } else {
