@@ -102,14 +102,14 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
         return '';
     };
 
-    const setupPastedValue = (value: string) => {
+    const validatePastedValue = (value: string) => {
         const res = value.match(/[01]+/g);
         // валидация вводимых данных и отображение ошибки в инпуте
         if (timerId !== -1) {
             clearTimeout(timerId);
         }
         if (!res || res[0] !== value) {
-            setErrorId(-1); // при id < 0 загораются все инпуты
+            setErrorId(-1); // при errorId < 0 загораются все инпуты
             setTimerId(setTimeout(() => {
                 setErrorId(undefined);
                 setTimerId(-1);
@@ -119,6 +119,10 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
             setErrorId(undefined);
             setTimerId(-1);
         }
+        return true;
+    };
+
+    const setupPastedValue = (value: string) => {
         let resValue = value;
         textFieldRefs.forEach((refObj, idx) => {
             if (idx < digitsNumber - resValue.length) {
@@ -128,14 +132,28 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
         });
         resValue = transFormValue(resValue);
         (inputRef as MutableRefObject<HTMLInputElement>).current.value = resValue;
-        return true;
     };
 
     const transFormValue = (value: string) => {
+        console.log(value.length);
         if (value.length === 0) {
             value = nullSymbol.repeat(digitsNumber);
         } else if (value.length < digitsNumber) {
-            value = nullSymbol.repeat(digitsNumber - value.length) + value;
+            const inputElement = (inputRef as MutableRefObject<HTMLInputElement>).current;
+            const focusedTextFieldNumber = +(inputElement.getAttribute('data-focusedIndex') ?? 0);
+            let resValue = '';
+            if (focusedTextFieldNumber + value.length <= digitsNumber) {
+                // если есть место для вставки справа
+                resValue += nullSymbol.repeat(focusedTextFieldNumber);
+                resValue += value;
+                resValue += nullSymbol.repeat(digitsNumber - focusedTextFieldNumber - value.length);
+            } else {
+                // если есть место для вставки слева
+                resValue += nullSymbol.repeat(focusedTextFieldNumber - value.length + 1);
+                resValue += value;
+                resValue += nullSymbol.repeat(digitsNumber - focusedTextFieldNumber - 1);
+            }
+            value = resValue;
         } else {
             value = value.slice(0, digitsNumber);
         }
@@ -157,7 +175,8 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
     };
 
     const handleInputChange = (evt: any) => {
-        const isValid = setupPastedValue(evt.currentTarget.value);
+        const isValid = validatePastedValue(evt.currentTarget.value);
+        setupPastedValue(evt.currentTarget.value);
         if (!isValid) {
             return;
         }
@@ -218,7 +237,8 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
             <input
                 className={styles.invisibleInput}
                 data-focusedIndex={7}
-                ref={inputRef} value={value || val}
+                ref={inputRef}
+                value={value || val}
                 onChange={handleInputChange}/>
             {textFieldRefs.map((refObj, idx) => (
                 <TextField

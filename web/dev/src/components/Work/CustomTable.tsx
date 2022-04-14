@@ -227,8 +227,9 @@ const TextCell: FC<TextCellProps> = ({
 const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, setOverflow}: InputCellProps) => {
     const styles = useStyles();
     const ref = useRef<HTMLInputElement>(null);
+    // const digitsNumber = 8; // числа в кр состоят из 8 разрядов
 
-    const clickHandler = (evt: React.MouseEvent) => {
+    const pasteClickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
 
         const input = ref.current as HTMLInputElement;
@@ -261,8 +262,9 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
                 onChange={onChange}
                 className={styles.input}
                 disabled={overflow ? overflow : false}
+                // digitsNumber={digitsNumber}
             />
-            <svg className={styles.icon} viewBox="0 0 24 24" onClick={clickHandler}>
+            <svg className={styles.icon} viewBox="0 0 24 24" onClick={pasteClickHandler}>
                 {/* eslint-disable max-len */}
                 <path
                     d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
