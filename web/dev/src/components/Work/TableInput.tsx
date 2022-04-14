@@ -3,7 +3,6 @@ import {TextField} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
 import ReactTestUtils from 'react-dom/test-utils';
-import ReactDOM from 'react-dom';
 
 const useStyles = makeStyles({
     input: {
@@ -139,9 +138,9 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
             value = nullSymbol.repeat(digitsNumber);
         } else if (value.length < digitsNumber) {
             const inputElement = (inputRef as MutableRefObject<HTMLInputElement>).current;
-            const focusedTextFieldNumber = +(inputElement.getAttribute('data-focusedIndex') ?? 0);
-            let leftFreeInputsNumber = 0;
-            let rightFreeInputsNumber = 0;
+            const focusedTextFieldNumber = +(inputElement.getAttribute('data-focusedIndex') || 0);
+            let leftFreeInputsNumber: number;
+            let rightFreeInputsNumber: number;
             let resValue = '';
             if (focusedTextFieldNumber + value.length <= digitsNumber) {
                 // если есть место для вставки справа
@@ -159,7 +158,7 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
                 (textFieldRefs[leftFreeInputsNumber + value.length].ref
                     .current.children[0].children[0] as HTMLInputElement).focus();
             } else {
-                (textFieldRefs[leftFreeInputsNumber-1].ref
+                (textFieldRefs[leftFreeInputsNumber - 1].ref
                     .current.children[0].children[0] as HTMLInputElement).focus();
             }
             value = resValue;
@@ -198,11 +197,11 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
     };
 
     const handleTextFieldChange = (evt: any) => {
-        const id = +evt.currentTarget.name.split('_').pop();
+        const id = +evt.target.name.split('_').pop();
         const idxValue = evt.target.value;
         let fullValue = (inputRef as MutableRefObject<HTMLInputElement>).current.value;
 
-        // заменяем пустую строку на строку с незначащими символами, чтобы правильно отрабатывался ввод в любой разряд
+        // дополняем  строку незначащими символами, чтобы правильно отрабатывался ввод в любой разряд
         fullValue = transFormValue(fullValue);
         (inputRef as MutableRefObject<HTMLInputElement>).current.value = fullValue;
 
@@ -256,7 +255,7 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
                     ref={refObj.ref}
                     className={styles.input}
                     value={validateIdxValue(value ? value[idx] : val[idx])}
-                    onChange={handleTextFieldChange}
+                    onInput={handleTextFieldChange}
                     onPaste={handleTextFieldPaste}
                     onFocus={handleTextFieldFocus}
                     variant="standard"
