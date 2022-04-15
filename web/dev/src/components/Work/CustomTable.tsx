@@ -153,9 +153,29 @@ const TextCell: FC<TextCellProps> = ({
 }) => {
     const styles = useStyles();
     const classes = useStyle();
+    const [open, setOpen] = useState(false);
+    const [timerId, setTimerId] = useState<any>(-1);
+
+    // эти танцы с бубном тут из-за особенностей реализации тултипов в mui: они завязаны на дочерних элементах и
+    // начинают багать при отсутствии таковых(а иконка исчезает при снятии курсора). Поэтому и убираем тултип ручками
+    const cellMouseOutHandler = () => {
+        if (timerId !== -1) {
+            clearTimeout(timerId);
+        }
+        setOpen(false);
+    };
 
     const copyClickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
+
+        if (timerId !== -1) {
+            clearTimeout(timerId);
+        }
+        setOpen(true);
+        setTimerId(setTimeout(() => {
+            setOpen(false);
+            setTimerId(-1);
+        }, 1200));
 
         const tmpSelection = popSelectState();
         const selectionParentId = tmpSelection?.anchorNode?.parentElement?.id?.split('_')?.pop() ?? '';
@@ -185,7 +205,7 @@ const TextCell: FC<TextCellProps> = ({
         </div>;
     } else {
         return (
-            <div id={id || ''} className={styles.iconContainer}>
+            <div id={id || ''} className={styles.iconContainer} onMouseOut={cellMouseOutHandler}>
                 {
                     isAnswerCorrect === AnswerType.CORRECT && (
                         <CheckCircleIcon
@@ -208,19 +228,28 @@ const TextCell: FC<TextCellProps> = ({
                 >
                     {cellText}
                 </Typography>
-                <svg
-                    id={id ? 'icon_' + id : ''}
-                    className={classNames(styles.icon, classes.root)}
-                    viewBox="0 0 24 24"
-                    onClick={copyClickHandler}
+                <Tooltip
+                    open={open}
+                    disableFocusListener
+                    disableHoverListener
+                    disableTouchListener
+                    title={'Скопировано'}
+                    placement="top"
+                    arrow
                 >
-                    {/* eslint-disable max-len */}
-                    <path
-                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                </svg>
+                    <svg
+                        id={id ? 'icon_' + id : ''}
+                        className={classNames(styles.icon, classes.root)}
+                        viewBox="0 0 24 24"
+                        onClick={copyClickHandler}
+                    >
+                        {/* eslint-disable max-len */}
+                        <path
+                            d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                </Tooltip>
             </div>
-        )
-        ;
+        );
     }
 };
 
