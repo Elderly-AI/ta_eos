@@ -51,7 +51,7 @@ const useStyles = makeStyles({
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
-        gridGap: '15px',
+        gridGap: '5px',
 
         '&:hover': {
             '& .MuiCustomSvgIcon-root': {
@@ -61,7 +61,7 @@ const useStyles = makeStyles({
     },
 
     left: {
-        left: '-53px',
+        left: '-43px',
     },
 
     wrongCell: {
@@ -83,6 +83,7 @@ const useStyles = makeStyles({
     icon: {
         width: '1em',
         height: '1em',
+        padding: '0 10px',
         fontSize: '1rem',
         fill: '#0d47a1',
     },
@@ -188,7 +189,7 @@ const TextCell: FC<TextCellProps> = ({
             tmpSelection.anchorNode === tmpSelection.focusNode &&
             selectionParentId === currentTargetId
         ) {
-            copyText(tmpSelection.selelctedText ?? value);
+            copyText(tmpSelection.selectedText ?? value);
         } else {
             copyText(value);
         }
@@ -256,7 +257,6 @@ const TextCell: FC<TextCellProps> = ({
 const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, setOverflow}: InputCellProps) => {
     const styles = useStyles();
     const ref = useRef<HTMLInputElement>(null);
-    // const digitsNumber = 8; // числа в кр состоят из 8 разрядов
 
     const pasteClickHandler = (evt: React.MouseEvent) => {
         evt.stopPropagation();
@@ -284,20 +284,25 @@ const InputCell = ({inputValue, onChange, copiedText, operationType, overflow, s
     return (
         <div className={classNames(styles.iconContainer, operationType === OpType.SHIFT ? styles.left : '')}>
             {checkbox}
-            <TableInput
-                id="input"
-                ref={ref}
-                value={inputValue}
-                onChange={onChange}
-                className={styles.input}
-                disabled={overflow ? overflow : false}
-                // digitsNumber={digitsNumber}
-            />
-            <svg className={styles.icon} viewBox="0 0 24 24" onClick={pasteClickHandler}>
-                {/* eslint-disable max-len */}
-                <path
-                    d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
-            </svg>
+            {overflow ?
+                <Typography variant="subtitle1">
+                    Переполнение
+                </Typography> :
+                <>
+                    <TableInput
+                        id="input"
+                        ref={ref}
+                        value={inputValue}
+                        onChange={onChange}
+                        className={styles.input}
+                    />
+                    <svg className={styles.icon} viewBox="0 0 24 24" onClick={pasteClickHandler}>
+                        {/* eslint-disable max-len */}
+                        <path
+                            d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/>
+                    </svg>
+                </>
+            }
         </div>
     );
 };
@@ -346,7 +351,7 @@ interface SelectionMock {
     focusNode: Node | null | undefined;
     focusOffset: number | undefined;
     isCollapsed: boolean | undefined,
-    selelctedText: string | null | undefined,
+    selectedText: string | null | undefined,
 }
 
 const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: CustomTableProps) => {
@@ -357,6 +362,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
     const [sumTmpValues, setSumValues] = useState<Record<string, any>>({});
     const [prevSelection, setPrevSelection] = useState<SelectionMock>({} as SelectionMock);
     const [text, setText] = useClippy();
+    const [cellIsInput, setCellIsInput] = useState(true);
 
     const popPrevSelectState = () => {
         const selectState = {
@@ -365,36 +371,42 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
             focusNode: prevSelection?.focusNode,
             focusOffset: prevSelection?.focusOffset,
             isCollapsed: prevSelection?.isCollapsed,
-            selelctedText: prevSelection.selelctedText,
+            selectedText: prevSelection.selectedText,
         };
         setPrevSelection({} as SelectionMock);
         return selectState;
     };
 
     const cellClickHandler = (evt: any) => {
+        // условие аналогично тому, что произошел клик, а не селект текста
+        const id = +evt.currentTarget.id.split('_')[1];
+
+        if (evt.currentTarget === evt.target && inputNumber == id) {
+            setCellIsInput((prev) => !prev);
+        }
         const tmpSelection = document.getSelection();
 
+        // условие для проверки того, что это действительно клик, а не выделение текста
         if (tmpSelection?.isCollapsed || (
             tmpSelection?.anchorNode === prevSelection?.anchorNode &&
             tmpSelection?.anchorOffset === prevSelection?.anchorOffset &&
             tmpSelection?.focusNode === prevSelection?.focusNode &&
             tmpSelection?.focusOffset === prevSelection?.focusOffset
         )) {
-            // условие аналогично тому, что произошел клик, а не селект текста
-            const id = +evt.currentTarget.id.split('_')[1];
             if (id !== inputNumber) {
                 setInputText(array[id % 3 + 1].data[~~(id / 3)].value?.toString() || '');
                 setInputCheckbox(array[id % 3 + 1].data[~~(id / 3)].overflow || false);
                 setInputNumber(id);
             }
         }
+
         setPrevSelection({
             anchorNode: tmpSelection?.anchorNode,
             anchorOffset: tmpSelection?.anchorOffset,
             focusNode: tmpSelection?.focusNode,
             focusOffset: tmpSelection?.focusOffset,
             isCollapsed: tmpSelection?.isCollapsed,
-            selelctedText: tmpSelection?.toString(),
+            selectedText: tmpSelection?.toString(),
         });
     };
 
@@ -472,7 +484,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                                 setInputCheckbox(evt.target.checked);
                             };
 
-                            const cellIsInput = inputNumber === tmpCellNumber &&
+                            const isCellSelected = inputNumber === tmpCellNumber &&
                                 getOpType(cur.data[idx].name) !== OpType.SUM &&
                                 !compareArray.length;
 
@@ -484,7 +496,7 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
                                     onClick={cellClickHandler}
                                     className={styles.pointer}
                                 >
-                                    {cellIsInput ?
+                                    {cellIsInput && isCellSelected ?
                                         <InputCell
                                             inputValue={inputText}
                                             onChange={changeHandler}
@@ -522,9 +534,12 @@ const CustomTable = ({array, setArray, compareArray, mistakeCountHandler}: Custo
         styles.collapseCell,
         styles.tableRow,
         styles.pointer,
-        inputText, setText,
-        setArray, sumTmpValues,
-        cellClickHandler, text,
+        inputText,
+        setText,
+        setArray,
+        sumTmpValues,
+        cellClickHandler,
+        text,
         inputCheckbox
     ]
     );

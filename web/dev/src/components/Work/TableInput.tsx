@@ -129,11 +129,11 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
             }
             refObj.ref.current.value = resValue[idx];
         });
-        resValue = transFormValue(resValue);
+        resValue = transformValue(resValue);
         (inputRef as MutableRefObject<HTMLInputElement>).current.value = resValue;
     };
 
-    const transFormValue = (value: string) => {
+    const transformValue = (value: string) => {
         if (value.length === 0) {
             value = nullSymbol.repeat(digitsNumber);
         } else if (value.length < digitsNumber) {
@@ -155,7 +155,7 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
             resValue += value;
             resValue += nullSymbol.repeat(rightFreeInputsNumber);
             if (leftFreeInputsNumber + value.length < digitsNumber) {
-                (textFieldRefs[leftFreeInputsNumber + value.length].ref
+                (textFieldRefs[digitsNumber - 1].ref
                     .current.children[0].children[0] as HTMLInputElement).focus();
             } else {
                 (textFieldRefs[leftFreeInputsNumber - 1].ref
@@ -202,7 +202,7 @@ const TableInput = forwardRef<HTMLInputElement, TableInputProps>((
         let fullValue = (inputRef as MutableRefObject<HTMLInputElement>).current.value;
 
         // дополняем  строку незначащими символами, чтобы правильно отрабатывался ввод в любой разряд
-        fullValue = transFormValue(fullValue);
+        fullValue = transformValue(fullValue);
         (inputRef as MutableRefObject<HTMLInputElement>).current.value = fullValue;
 
         // валидация вводимых данных и отображение ошибки в инпуте

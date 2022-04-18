@@ -246,6 +246,8 @@ const SumCell = React.memo(({
     const [isResultInput, setIsInput] = useState(false);
     const [inputNumber, setInputNumber] = useState(0);
     const [inputText, setInputText] = useState('');
+    const [isErrorInDecimalField, setIsErrorInDecimalField] = useState(false);
+    const [timerId, setTimerId] = useState<any>(-1);
 
     const handleChecked = () => {
         setSumValues((obj) => {
@@ -281,7 +283,24 @@ const SumCell = React.memo(({
         });
         setInputText(evt?.currentTarget.value || '');
     };
-    console.log('ID:', id, id.split('_').pop()!);
+
+    const validateDecimalValue = (value: string) => {
+        const res = value.match(/^-?\d*/g);
+
+        if (timerId !== -1) {
+            clearTimeout(timerId);
+        }
+        if (!res || res[0] !== value) {
+            setIsErrorInDecimalField(true);
+            setTimerId(setTimeout(() => {
+                setIsErrorInDecimalField(false);
+                setTimerId(-1);
+            }, 3000));
+            return false;
+        }
+        return true;
+    };
+
     const operationName = array[0].data[+id.split('_').pop()!].name;
     let operationNameValues = [];
     let resultName = '';
@@ -379,9 +398,12 @@ const SumCell = React.memo(({
                     className={styles.seventhLine}
                     value={sumTmpValues[inputCellNumber] ? sumTmpValues[inputCellNumber].value[5] : ''}
                     onChange={(evt) => {
+                        const isValid = validateDecimalValue(evt.currentTarget.value ?? '');
+                        if (!isValid) return;
                         handleChange(evt, 5);
                         onChange(evt, id, 'decimal');
                     }}
+                    error={isErrorInDecimalField}
                 />
             </div>
         </div>
@@ -512,7 +534,6 @@ const CollapseTable = React.memo(({
     }
 
     const changeHandler = (evt: any, index: number, idx: number, value?: string, field?: keyof CollapsedTableCell) => {
-        console.log('handle check', evt, index, idx, value, array);
         const newValue = evt?.currentTarget.value || '';
 
         switch (field) {
