@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useRef, useState} from 'react';
+import React, {ChangeEvent, Dispatch, SetStateAction, useRef, useState} from 'react';
 import {Checkbox, Table, TableBody, TableCell, TableRow, TextField, Tooltip, Typography} from '@material-ui/core';
 import {CollapsedTableCell, TableState} from './Work';
 import classNames from 'classnames';
@@ -301,6 +301,13 @@ const SumCell = React.memo(({
         return true;
     };
 
+    const handleDecimalFieldChange = (evt: ChangeEvent<HTMLInputElement>) => {
+        const isValid = validateDecimalValue(evt.currentTarget.value ?? '');
+        if (!isValid) return;
+        handleChange(evt, 5);
+        onChange(evt, id, 'decimal');
+    };
+
     const operationName = array[0].data[+id.split('_').pop()!].name;
     let operationNameValues = [];
     let resultName = '';
@@ -397,12 +404,7 @@ const SumCell = React.memo(({
                 <TextField
                     className={styles.seventhLine}
                     value={sumTmpValues[inputCellNumber] ? sumTmpValues[inputCellNumber].value[5] : ''}
-                    onChange={(evt) => {
-                        const isValid = validateDecimalValue(evt.currentTarget.value ?? '');
-                        if (!isValid) return;
-                        handleChange(evt, 5);
-                        onChange(evt, id, 'decimal');
-                    }}
+                    onChange={handleDecimalFieldChange}
                     error={isErrorInDecimalField}
                 />
             </div>
