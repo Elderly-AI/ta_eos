@@ -2,8 +2,8 @@ import React, {useEffect} from 'react';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import {grey, red} from '@material-ui/core/colors';
-import {useTypedSelector} from '@hooks/useTypedSelector';
-import {useActions} from '@hooks/useActions';
+import {useTypedSelector} from '../../../src/hooks/useTypedSelector';
+import {useActions} from '../../../src/hooks/useActions';
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {

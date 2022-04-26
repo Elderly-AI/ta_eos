@@ -13,6 +13,9 @@
     },
     {
       "name": "Metrics"
+    },
+    {
+      "name": "Template"
     }
   ],
   "consumes": [
@@ -371,6 +374,70 @@
           "Metrics"
         ]
       }
+    },
+    "/api/v1/template/approve_kr": {
+      "post": {
+        "operationId": "Template_ApproveKrHandler",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/templateApproveKrHandlerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/templateApproveKrHandlerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Template"
+        ]
+      }
+    },
+    "/api/v1/template/get_kr": {
+      "post": {
+        "operationId": "Template_GetKrHandler",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/templateGetKrHandlerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/templateGetKrHandlerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Template"
+        ]
+      }
     }
   },
   "definitions": {
@@ -412,6 +479,9 @@
           "type": "string"
         },
         "userId": {
+          "type": "string"
+        },
+        "grades": {
           "type": "string"
         }
       }
@@ -730,6 +800,54 @@
           "items": {
             "$ref": "#/definitions/protobufAny"
           }
+        }
+      }
+    },
+    "templateApproveKrHandlerRequest": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "templateApproveKrHandlerResponse": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        },
+        "points": {
+          "type": "number",
+          "format": "float"
+        },
+        "data": {
+          "type": "object"
+        }
+      }
+    },
+    "templateGetKrHandlerRequest": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        }
+      }
+    },
+    "templateGetKrHandlerResponse": {
+      "type": "object",
+      "properties": {
+        "krName": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        },
+        "krStartTime": {
+          "type": "string"
         }
       }
     }

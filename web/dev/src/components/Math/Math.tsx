@@ -8,17 +8,17 @@ import Button from '@material-ui/core/Button';
 import {blue, grey} from '@material-ui/core/colors';
 import Paper from '@material-ui/core/Paper';
 import {makeStyles, Theme} from '@material-ui/core/styles';
-import CustomInput, {CustomInputProps} from '@CustomInput';
+import CustomInput, {CustomInputProps} from '../../../src/components/CustomInput';
 import HighDigitsLeftShift from './HighDigitsLeftShift';
 import LowDigitsLeftShift from './LowDigitsLeftShift';
 import HighDigitsRightShift from './HighDigitsRightShift';
 import LowDigitsRightShift from './LowDigitsRightShift';
 import AdditionalCorrectiveStep from './AitionalCorrectiveStep';
-import DataService from '@data/DataService';
-import {calcMultipleResponse, calcMultipleResponseStep} from '@data/Models';
+import DataService from '../../../src/data/DataService';
+import {calcMultipleResponse, calcMultipleResponseStep} from '../../../src/data/Models';
 import SumShift from './SumShift';
 import FactorShift from './FactorShift';
-import Validator from '@utils/Validator';
+import Validator from '../../../src/utils/Validator';
 
 const useStyles = makeStyles((theme: Theme) => ({
     header: {

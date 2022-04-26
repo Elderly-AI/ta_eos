@@ -4,15 +4,24 @@
   "private": true,
   "dependencies": {
     "@amcharts/amcharts5": "^5.0.19",
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
     "@material-ui/core": "^4.11.4",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@mui/icons-material": "^5.5.1",
+    "@mui/material": "^5.5.1",
+    "@types/react-copy-to-clipboard": "^5.0.2",
     "classnames": "^2.3.1",
+    "http-proxy-middleware": "^2.0.4",
     "react": "^17.0.2",
+    "react-countdown-circle-timer": "^3.0.8",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.3",
+    "react-redux": "^7.2.6",
     "react-router-dom": "^5.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "typescript": "^4.1.2",
+    "use-clippy": "^1.0.8",
     "web-vitals": "^1.0.1"
   },
   "devDependencies": {
@@ -23,12 +32,13 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.7",
     "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "react-app-rewire-alias": "^1.1.5",
     "react-app-rewired": "^2.1.8",
     "react-scripts": "4.0.3"
   },
   "scripts": {
-    "start": "PORT=3000 HOST=127.0.0.1 react-app-rewired start",
+    "start": "PORT=3000 HOST=127.0.0.1 react-scripts start",
     "build": "PORT=3000 BUILD_PATH='../dist/app' react-app-rewired build",
     "test": "react-app-rewired test",
     "lint-fix": "./node_modules/react-scripts/node_modules/.bin/eslint src --fix",
@@ -39,7 +49,8 @@
       "google",
       "eslint:recommended",
       "plugin:react/recommended",
-      "plugin:@typescript-eslint/recommended"
+      "plugin:@typescript-eslint/recommended",
+      "plugin:react-hooks/recommended"
     ],
     "rules": {
       "indent": [
@@ -58,6 +69,8 @@
         "error",
         "smart-tabs"
       ],
+      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/rules-of-hooks": "warn",
       "no-duplicate-imports": "error",
       "no-var": "error",
       "no-redeclare": "error",
@@ -87,7 +100,8 @@
       "comma-dangle": "off",
       "react/prop-types": "off",
       "react/no-children-prop": "off",
-      "no-invalid-this": "off"
+      "no-invalid-this": "off",
+      "quote-props": "off"
     }
   },
   "browserslist": {

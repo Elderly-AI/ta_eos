@@ -5,10 +5,40 @@ import {
     authSafeUser,
     calcMultipleRequest,
     calcMultipleResponse,
-    SearchResult,
+    Grades,
     metricsMetricsArray,
+    SearchResult,
     SearchUser,
+    TemplateTemplateRequest,
+    WorkItem,
 } from './Models';
+
+const MOCK_KP_LIST: WorkItem[] = [
+    {
+        key: 'first',
+        name: 'Контрольная работа №1',
+        possibility: false,
+    },
+    {
+        key: 'second',
+        name: 'Контрольная работа №2',
+        possibility: false,
+    },
+    {
+        key: 'third',
+        name: 'Контрольная работа №3',
+        possibility: false,
+    }
+];
+
+const START_KP: WorkItem[] = [
+    {
+        ...MOCK_KP_LIST[0],
+        possibility: true
+    },
+    ...MOCK_KP_LIST.slice(1, MOCK_KP_LIST.length)
+]
+;
 
 class DataService implements ApiInterface {
     async curUser(): Promise<authSafeUser> {
@@ -127,6 +157,63 @@ class DataService implements ApiInterface {
             .then((res) => res.json())
             .catch((err) => console.error(err))
             .then((dat: metricsMetricsArray) => dat);
+    }
+
+    async getWork(id: string, grades: Grades): Promise<WorkItem[]> {
+        const prom = new Promise((resolve, reject) => {
+            try {
+                const preparedList = MOCK_KP_LIST.map((kp) => {
+                    const newItem: WorkItem = {
+                        ...kp,
+                    };
+                    // @ts-ignore
+                    const grade = grades[kp.key];
+                    const isGradeExist = !isNaN(grade);
+
+                    if (isGradeExist) {
+                        newItem.estimation = grade;
+                        newItem.possibility = isGradeExist;
+                    }
+                    return newItem;
+                });
+
+                const isAnyKrHasEstimation = preparedList.some((kp) => kp.estimation !== undefined);
+
+                resolve(isAnyKrHasEstimation ? preparedList : START_KP);
+            } catch (e) {
+                reject(e);
+            }
+        });
+
+        return prom.then((res) => res as WorkItem[]);
+    }
+
+    async getKR(name: string): Promise<TemplateTemplateRequest> {
+        const body = JSON.stringify({
+            krName: name
+        });
+        return await fetch(api.kr.getKR, {
+            body,
+            method: 'POST'
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((res: TemplateTemplateRequest) => res);
+    }
+
+    async approveKR(name: string, data: TemplateTemplateRequest): Promise<TemplateTemplateRequest> {
+        const body = JSON.stringify(data);
+
+        return await fetch(api.kr.approveKR, {
+            body,
+            method: 'POST'
+        })
+            .then((res) => res.json())
+            .catch((err) => console.error(err))
+            .then((res) => ({
+                ...res,
+                points: res.points ?? 0
+            }));
     }
 }
 

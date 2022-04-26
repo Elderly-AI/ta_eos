@@ -4,13 +4,16 @@ import {
     authSafeUser,
     calcMultipleRequest,
     calcMultipleResponse,
+    Grades,
     metricsMetricsArray,
     SearchUser,
+    TemplateTemplateRequest,
+    WorkItem,
 } from './Models';
 
-const host = 'http://188.35.161.40';
+const host = 'http://127.0.0.1';
 const apiPrefix = '/api/v1';
-const apiHost = host + apiPrefix;
+const apiHost = apiPrefix;
 
 const api = {
     inside: apiHost + '/users', // ???
@@ -20,6 +23,7 @@ const api = {
     searchUsers: apiHost + '/auth/search',
     math: { // Добавляем сюда новые ручки
         directCode: {
+            // /api/v1/calculations/direct_code/lhigh_digits/left_code
             highLeftShift: apiHost + '/calculations/direct_code/high_digits/left_shift',
             highRightShift: apiHost + '/calculations/direct_code/high_digits/right_shift',
             lowLeftShift: apiHost + '/calculations/direct_code/low_digits/left_shift',
@@ -32,6 +36,10 @@ const api = {
     admin: {
         search: apiHost + '/metrics/search',
         metrics: apiHost + '/api/v1/metrics/search_timestamp',
+    },
+    kr: {
+        getKR: apiHost + '/template/get_kr',
+        approveKR: apiHost + '/template/approve_kr'
     }
 };
 
@@ -44,6 +52,8 @@ export interface ApiInterface {
   search: (text: string) => Promise<Array<SearchUser>>,
   searchMetric: (text: string) => Promise<metricsMetricsArray>,
   searchTimestamp: (text: string, from: string, to: string) => Promise<metricsMetricsArray>
+  getWork: (id: string, grades: Grades) => Promise<WorkItem[]>,
+  getKR: (name: string) => Promise<TemplateTemplateRequest>
 }
 
 export default api;

@@ -1,12 +1,12 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import Header from '@Header';
+import Header from '../../../src/components/Header';
 import {makeStyles, Theme} from '@material-ui/core/styles';
 import {blue} from '@material-ui/core/colors';
 import {Paper} from '@material-ui/core';
 import Metric from './Metric/Metric';
 import {useParams} from 'react-router-dom';
-import DataService from '@data/DataService';
-import {metricsMetric} from '@data/Models';
+import DataService from '../../../src/data/DataService';
+import {metricsMetric} from '../../../src/data/Models';
 import metricName from './metricName';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -42,7 +42,7 @@ const Admin: React.FC = () => {
         DataService.searchMetric(userId)
             .then((res) => setMetrics(res.metrics))
             .catch((err) => console.log('res err', err));
-    }, []);
+    }, [userId]);
 
     const normalizedMetrics: NormalizedMetricsType | undefined = useMemo(() => metrics?.reduce((acc, cur) => {
         const name: string = cur.methodName;

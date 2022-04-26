@@ -11,6 +11,7 @@ type SafeUser struct {
 	Email  string `json:"email,omitempty" db:"email"`
 	Group  string `json:"group,omitempty" db:"study_group"`
 	Role   string `json:"role,omitempty" db:"role"`
+	Grades string `json:"grades,omitempty" db:"grades"`
 }
 
 type User struct {
@@ -20,13 +21,15 @@ type User struct {
 	Group    string `json:"group,omitempty" db:"study_group" validate:"required,min=2,max=7"`
 	Password string `json:"password,omitempty" db:"password" validate:"required,min=2,max=40"`
 	Role     string `json:"role,omitempty" db:"role"`
+	Grades   string `json:"grades,omitempty" db:"grades"`
 }
 
 func SafeUserFromUser(usr User) SafeUser {
 	return SafeUser{
-		Name:  usr.Name,
-		Email: usr.Email,
-		Group: usr.Group,
+		Name:   usr.Name,
+		Email:  usr.Email,
+		Group:  usr.Group,
+		Grades: usr.Grades,
 	}
 }
 
@@ -68,6 +71,7 @@ func UserToGRPCSafeUser(usr User) *pb.SafeUser {
 		Group:  usr.Group,
 		Role:   usr.Role,
 		UserId: usr.UserID,
+		Grades: usr.Grades,
 	}
 }
 

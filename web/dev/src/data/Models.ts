@@ -16,15 +16,19 @@ export type authRegisterRequest = {
   user: authUser
 }
 
+export type Grades = Record<string, number> | string;
+
 export type authSafeUser = {
   name: string,
   email: string,
   group: string,
   role: string,
+  userId: string,
+  grades?: Grades
 }
 
 export type SearchResult = {
-    users: Array<SearchUser>,
+  users: Array<SearchUser>,
 }
 
 export type SearchUser = {
@@ -71,4 +75,41 @@ export type metricsMetric = {
 
 export type metricsMetricsArray = {
   metrics: metricsMetric[]
+}
+
+
+// mocks
+
+export type WorkItem = {
+  name: string;
+  estimation?: string | number;
+  possibility: boolean;
+  key: string
+};
+
+export type TableItem = {
+  UI: {
+    data: UITemplateRequestData[];
+    name: string;
+  }[]
+  templateName: string;
+  whatToDo: string
+}
+
+export type UITemplateRequestValue = {
+  name: string;
+  value: string | null;
+  overflow?: boolean | null,
+}
+
+export type UITemplateRequestData = {
+  data: UITemplateRequestValue[];
+  name: string;
+}
+
+export type TemplateTemplateRequest = {
+  krName: string;
+  data: TableItem;
+  krStartTime?: string;
+  points?: number
 }

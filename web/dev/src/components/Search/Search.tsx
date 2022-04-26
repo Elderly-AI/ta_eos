@@ -1,4 +1,4 @@
-import Header from '@Header';
+import Header from '../../../src/components/Header';
 import React, {useState} from 'react';
 import {
     Button,
@@ -12,8 +12,8 @@ import {
     TableRow,
     TextField
 } from '@material-ui/core';
-import DataService from '@data/DataService';
-import {SearchUser} from '@data/Models';
+import DataService from '../../../src/data/DataService';
+import {SearchUser} from '../../../src/data/Models';
 import {useHistory} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({

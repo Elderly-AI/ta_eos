@@ -3,10 +3,11 @@ services:
   app:
     build: "./app"
     ports:
-      - "8090"
+      - "8090:8090"
     depends_on:
       - "postgres"
       - "redis"
+    restart: "on-failure"
   web:
     build: "./web"
     ports:
@@ -14,6 +15,7 @@ services:
       - "84:84"
     depends_on:
       - "app"
+    restart: "on-failure"
   postgres:
     image: "postgres"
     environment:
@@ -21,7 +23,9 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432"
+    restart: "on-failure"
   redis:
     image: "redis:alpine"
     ports:
       - "6379"
+    restart: "on-failure"
