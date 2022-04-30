@@ -23,7 +23,6 @@ const api = {
     searchUsers: apiHost + '/auth/search',
     math: { // Добавляем сюда новые ручки
         directCode: {
-            // /api/v1/calculations/direct_code/lhigh_digits/left_code
             highLeftShift: apiHost + '/calculations/direct_code/high_digits/left_shift',
             highRightShift: apiHost + '/calculations/direct_code/high_digits/right_shift',
             lowLeftShift: apiHost + '/calculations/direct_code/low_digits/left_shift',
@@ -35,7 +34,7 @@ const api = {
     },
     admin: {
         search: apiHost + '/metrics/search',
-        metrics: apiHost + '/api/v1/metrics/search_timestamp',
+        metrics: apiHost + '/metrics/search_timestamp',
     },
     kr: {
         getKR: apiHost + '/template/get_kr',
